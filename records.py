@@ -45,6 +45,13 @@ def load_data(url):
 
     # 데이터 확인
     for i, table in enumerate(tables):
+        # 정규 표현식을 사용하여 table 내 '이름' 열의 데이터를 분리
+        extracted_df = table['이름'].str.extract(r"(\w+)\((\d+)\)")
+        # 새로운 열 이름 지정
+        extracted_df.columns = ['성명', '배번']
+        extracted_df = extracted_df[['배번', '성명']]
+        extracted_df['배번'] = extracted_df['배번'].astype('int')
+        table = pd.concat([extracted_df, table.drop(['이름'], axis = 1)], axis = 1)
         if i == 0:
             above_min = table
             if 'hitter' in url :
@@ -66,7 +73,7 @@ df_p_concat = pd.concat([data_p[0], data_p[1]], axis = 0).reset_index(drop=True)
 df_p_concat = df_p_concat.drop(['순위'], axis = 1)
 #t.write(df_p_concat)
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정이상", "타자:규정미만", "투수:규정이상", "투수:규정미달"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정타석이상", "타자:규정타석미만", "투수:규정이닝이상", "투수:규정이닝미달"])
 
 with tab1:
     st.subheader('전체 타자 : {}'.format(team_name))
@@ -78,16 +85,16 @@ with tab2:
 
 with tab3:
    st.subheader('규정타석 이상 : {}'.format(team_name))
-   st.dataframe(data_b[0])
+   st.write(data_b[0])
 
 with tab4:
    st.subheader('규정타석 미만 : {}'.format(team_name))
-   st.dataframe(data_b[1]) 
+   st.write(data_b[1]) 
 
 with tab5:
     st.subheader('규정이닝 이상 : {}'.format(team_name))
-    st.dataframe(data_p[0])   
+    st.write(data_p[0])   
 
 with tab6:
     st.subheader('규정이닝 미달 : {}'.format(team_name))
-    st.dataframe(data_p[1])       
+    st.write(data_p[1])       
