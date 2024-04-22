@@ -66,28 +66,28 @@ df_p_concat = pd.concat([data_p[0], data_p[1]], axis = 0).reset_index(drop=True)
 df_p_concat = df_p_concat.drop(['순위'], axis = 1)
 #t.write(df_p_concat)
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정타석이상", "타자:규정타석미만", "투수:규정이닝이상", "투수:규정이닝미달"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정이상", "타자:규정미만", "투수:규정이상", "투수:규정미달"])
 
 with tab1:
     st.subheader('전체 타자 : {}'.format(team_name))
-    st.write(df_b_concat)
+    st.dataframe(df_b_concat)
 
 with tab2:
     st.subheader('전체 투수 : {}'.format(team_name))
-    st.write(df_p_concat) 
+    st.dataframe(df_p_concat) 
 
 with tab3:
    st.subheader('규정타석 이상 : {}'.format(team_name))
-   st.write(data_b[0])
+   st.dataframe(data_b[0])
 
 with tab4:
    st.subheader('규정타석 미만 : {}'.format(team_name))
-   st.write(data_b[1]) 
+   st.dataframe(data_b[1]) 
 
 with tab5:
     st.subheader('규정이닝 이상 : {}'.format(team_name))
-    st.write(data_p[0])   
+    st.dataframe(data_p[0])   
 
 with tab6:
     st.subheader('규정이닝 미달 : {}'.format(team_name))
-    st.write(data_p[1])       
+    st.dataframe(data_p[1])       
