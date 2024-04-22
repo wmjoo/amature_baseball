@@ -42,10 +42,8 @@ df_concat = df_concat.drop(['순위'], axis = 1)
 # data_load_state.text('Loading data...done!')
 # data_load_state.text("Done! (using st.cache_data)")
 
-st.subheader('Raw data')
-if st.checkbox('Show raw data(ALL)'):
-    # st.subheader('규정 타석 이상')
-    st.write(df_concat)
+st.subheader('Raw entire data')
+st.write(df_concat)
 
 if st.checkbox('Show raw data(Above PA)'):
     st.subheader('규정 타석 이상')
