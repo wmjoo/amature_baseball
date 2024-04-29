@@ -107,7 +107,49 @@ with tab6:
     st.write(data_p[1])       
 
 with tab7:
+    # 페이지 URL
+    url = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
+    
+    # requests를 사용해 웹 페이지 가져오기
+    response = requests.get(url)
+    response.encoding = 'euc-kr' # 인코딩 설정
+    
+    # BeautifulSoup 객체 생성
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # 모든 테이블을 찾기
+    tables = soup.find_all('table')
+    table = tables[6]
+    
+    # 데이터프레임 리스트 생성
+    dataframes = []
+    
+    rows = []
+    for tr in table.find_all('tr'):
+        cells = [td.get_text(strip=True) for td in tr.find_all('td')]
+        if cells:
+            rows.append(cells)
+    
+    # 데이터프레임 생성
+    df = pd.DataFrame(rows) 
+    dataframes.append(df)
+    df = dataframes[0]
+    del rows
+    
+    df.columns = df.iloc[3].tolist()
+    df2 = df.iloc[4:]
+    df3 = df2.loc[:, ~df2.isna().all(0)].sort_values('날짜,시간').reset_index(drop=True)
+    df3.columns = ['No', '일시', '1루', '3루', '대회타이틀', '구장', '진행', '비고']
+    df3['일시'] = df3['일시'].str.replace(' -m', '')
+    
+    df3['일자'] = df3['일시'].apply(lambda x: x[:-6])
+    df3['시간'] = df3['일시'].apply(lambda x: x[-5:])
+    df3['1루'] = df3['1루'].apply(lambda x: x[:-1] if x.endswith('d') else x)
+    df3['3루'] = df3['3루'].apply(lambda x: x[:-1] if x.endswith('d') else x)
+    df4 = df3.loc[:, ['No', '일자', '시간', '진행', '1루', '3루', '대회타이틀', '구장', '비고']]
+    
     st.subheader('안양리그 일정[2024]')
+    st.write(df4)
     # data_alb_scd = load_data(ALB_URL_SCHD)
     # for i in range(len(data_alb_scd)):
     #     st.write(data_alb_scd[i])
