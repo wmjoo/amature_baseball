@@ -69,7 +69,6 @@ def load_data(url):
 
 data_b = load_data(DATA_URL_B)
 data_p = load_data(DATA_URL_P)
-data_alb_scd = load_data(ALB_URL_SCHD)
 # st.write(data_p)
 
 df_b_concat = pd.concat([data_b[0], data_b[1]], axis = 0).reset_index(drop=True)
@@ -109,6 +108,7 @@ with tab6:
 
 with tab7:
     st.subheader('안양리그 일정[2024]')
-    for i in range(len(data_alb_scd)):
-        st.write(data_alb_scd[i])
+    # data_alb_scd = load_data(ALB_URL_SCHD)
+    # for i in range(len(data_alb_scd)):
+    #     st.write(data_alb_scd[i])
         
