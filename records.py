@@ -39,6 +39,8 @@ team_id = team_id_dict[team_name]
 DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
 DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
 
+ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
+
 # @st.cache_data
 def load_data(url):
     # st.write(url)
@@ -67,6 +69,7 @@ def load_data(url):
 
 data_b = load_data(DATA_URL_B)
 data_p = load_data(DATA_URL_P)
+data_alb_scd = load_data(ALB_URL_SCHD)
 # st.write(data_p)
 
 df_b_concat = pd.concat([data_b[0], data_b[1]], axis = 0).reset_index(drop=True)
@@ -76,7 +79,7 @@ df_p_concat = pd.concat([data_p[0], data_p[1]], axis = 0).reset_index(drop=True)
 df_p_concat = df_p_concat.drop(['순위'], axis = 1)
 #t.write(df_p_concat)
 
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정이상", "타자:규정미만", "투수:규정이상", "투수:규정미달"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정이상", "타자:규정미만", "투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
     st.subheader('전체 타자 : {}'.format(team_name))
@@ -103,3 +106,9 @@ with tab5:
 with tab6:
     st.subheader('규정이닝 미달 : {}'.format(team_name))
     st.write(data_p[1])       
+
+with tab7:
+    st.subheader('안양리그 일정[2024]')
+    for i in range(len(data_alb_scd)):
+        st.write(data_alb_scd[i])
+        
