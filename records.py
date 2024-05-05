@@ -113,8 +113,7 @@ df_pitcher = final_pitchers_data.astype(pitcher_data_types)
 df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
                       'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
 # IP 컬럼을 올바른 소수 형태로 변환
-df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3)
-
+df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 # 팀명을 기준으로 데이터 프레임 필터링
 team_id = team_id_dict[team_name]
@@ -161,17 +160,10 @@ with tab4:
     st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
     st.dataframe(df_pitcher)
     st.subheader('팀별 기록')
-    df = df_pitcher.copy() #pd.read_csv(file_path)
-    # IP 컬럼을 올바른 소수 형태로 변환
-    df['IP'] = df['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3)
-
-    
-    # 데이터 검토
-    # print(df.head())
-    
+    # df = df_pitcher.copy() #pd.read_csv(file_path)
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
-    int_columns = df.select_dtypes(include=['int64']).columns.tolist()  # 정수형 컬럼 선택
-    grouped_df = df.groupby('Team')[int_columns].sum().reset_index()  # 팀별 합계
+    int_columns = df_pitcher.select_dtypes(include=['int64']).columns.tolist()  # 정수형 컬럼 선택
+    grouped_df = df_pitcher.groupby('Team')[int_columns].sum().reset_index()  # 팀별 합계
     st.write(grouped_df)
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
