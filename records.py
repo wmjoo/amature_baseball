@@ -173,25 +173,28 @@ with tab5:
     # rows 수 결정
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
 
-    # 선택된 그래프 유형에 따라 그래프 생성
-    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
-    axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
+   # "Plotting" 버튼 추가
+    if st.button('Plotting'):
+        # 선택된 그래프 유형에 따라 그래프 생성
+        fig, axs = plt.subplots(rows, colsNo, figsize=(15, 5 * rows))
+        axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
 
-    for i, var in enumerate(numeric_columns):
-        if graph_type == '히스토그램':
-            sns.histplot(df[var].dropna(), kde=False, ax=axs[i])
-            axs[i].set_title(f'{var}', fontsize=10)
-        elif graph_type == '박스플롯':
-            sns.boxplot(x=df[var].dropna(), ax=axs[i])
-            axs[i].set_title(f'{var}', fontsize=10)
-        axs[i].set_xlabel('')  # X축 레이블 비활성화
+        for i, var in enumerate(numeric_columns):
+            ax = axs[i // colsNo, i % colsNo]
+            if graph_type == '히스토그램':
+                sns.histplot(df[var].dropna(), kde=False, ax=ax)
+                ax.set_title(f'{var}')
+            elif graph_type == '박스플롯':
+                sns.boxplot(x=df[var].dropna(), ax=ax)
+                ax.set_title(f'{var}')
 
-    # 빈 서브플롯 숨기기
-    for i in range(len(numeric_columns), rows * colsNo):
-        axs[i].set_visible(False)
+            # 빈 서브플롯 숨기기
+            for j in range(len(numeric_columns), rows * colsNo):
+                axs[j].set_visible(False)
 
-    plt.tight_layout()
-    st.pyplot(fig)
+        plt.tight_layout()
+        st.pyplot(fig)
+
 with tab6:
     st.subheader('야구 기록 설명')
     col1, col2 = st.columns(2)
