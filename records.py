@@ -155,8 +155,43 @@ with tab3:
     st.dataframe(hitter_grpby)
 
 with tab4:
-   st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
-   st.dataframe(df_pitcher)
+    st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
+    st.dataframe(df_pitcher)
+    st.subheader('팀별 기록')
+    df = df_pitcher.copy() #pd.read_csv(file_path)
+    
+    # 데이터 검토
+    # print(df.head())
+    
+    # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+    int_columns = df.select_dtypes(include=['int64']).columns.tolist()  # 정수형 컬럼 선택
+    grouped_df = df.groupby('Team')[int_columns].sum().reset_index()  # 팀별 합계
+    
+    # 파생 변수 추가
+    # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
+    if 'ER' in df.columns and 'IP' in df.columns:
+        grouped_df['ERA'] = (grouped_df['ER'] / grouped_df['IP']) * 9
+    
+    # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+    if 'K' in df.columns and 'BB' in df.columns and 'HA' in df.columns:
+        grouped_df['K/9'] = (grouped_df['K'] / grouped_df['IP']) * 9
+        grouped_df['BB/9'] = (grouped_df['BB'] / grouped_df['IP']) * 9
+        grouped_df['H/9'] = (grouped_df['HA'] / grouped_df['IP']) * 9
+    
+    # WHIP 계산: (볼넷 + 피안타) / 이닝
+    if 'BB' in df.columns and 'HA' in df.columns:
+        grouped_df['WHIP'] = (grouped_df['BB'] + grouped_df['HA']) / grouped_df['IP']
+    
+    # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+    new_cols = ['ERA', 'K/9', 'BB/9', 'H/9', 'WHIP']
+    for col in new_cols:
+        if col in grouped_df.columns:
+            team_idx = grouped_df.columns.get_loc('Team') + 1
+            grouped_df.insert(team_idx, col, grouped_df.pop(col))
+    
+    # 결과 확인
+    st.write(grouped_df)
+
 
 # Tab5 내용 구성
 with tab5:
