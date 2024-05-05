@@ -137,11 +137,8 @@ with tab2:
 with tab3:
    st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
    st.dataframe(df_hitter)
-# ['Name', 'No',
-    #'BA', #'G', 
-, 'OPS', 'BB/K', 'XBH/H', 'Team']
-    st.subheader('팀별 기록')
-    hitter_sumcols = [    'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
+   st.subheader('팀별 기록')
+   hitter_sumcols = [    'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
                     'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
     hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
     st.dataframe(hitter_grpby)
