@@ -118,8 +118,8 @@ DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format
 DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
 
 ## 탭 설정
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["성남:팀별타자", "성남:팀별투수",
-                                                                            "성남:전체타자", "성남:전체투수", "성남:시각화"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:팀별타자", "성남:팀별투수",
+                                                                            "성남:전체타자", "성남:전체투수", "성남:시각화", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -192,3 +192,38 @@ with tab5:
 
     plt.tight_layout()
     st.pyplot(fig)
+with tab6:
+    | English Term | Korean Term | Data Type | Description                    |
+|--------------|-------------|-----------|--------------------------------|
+| Name         | 성명        | str       | Player's name                  |
+| No           | 배번        | str       | Jersey number                  |
+| BA           | 타율        | float     | Batting average                |
+| G            | 경기        | int       | Games played                   |
+| PA           | 타석        | int       | Plate appearances              |
+| AB           | 타수        | int       | At bats                        |
+| R            | 득점        | int       | Runs                           |
+| H            | 총안타      | int       | Hits                           |
+| 1B           | 1루타       | int       | Singles                        |
+| 2B           | 2루타       | int       | Doubles                        |
+| 3B           | 3루타       | int       | Triples                        |
+| HR           | 홈런        | int       | Home runs                      |
+| TB           | 루타        | int       | Total bases                    |
+| RBI          | 타점        | int       | Runs batted in                 |
+| SB           | 도루        | int       | Stolen bases                   |
+| CS           | 도실(도루자)| int       | Caught stealing                |
+| SH           | 희타        | int       | Sacrifice hits                 |
+| SF           | 희비        | int       | Sacrifice flies                |
+| BB           | 볼넷        | int       | Walks                          |
+| IBB          | 고의4구     | int       | Intentional walks              |
+| HBP          | 사구        | int       | Hit by pitch                   |
+| SO           | 삼진        | int       | Strikeouts                     |
+| DP           | 병살        | int       | Double plays                   |
+| SLG          | 장타율      | float     | Slugging percentage            |
+| OBP          | 출루율      | float     | On-base percentage             |
+| SB%          | 도루성공률  | float     | Stolen base percentage         |
+| MHit         | 멀티히트    | int       | Multi-hit games                |
+| OPS          | OPS         | float     | On-base plus slugging          |
+| BB/K         | BB/K        | float     | Walks per strikeout            |
+| XBH/H        | 장타/안타   | float     | Extra base hits per hit        |
+| Team         | 팀          | str       | Team name                      |
+
