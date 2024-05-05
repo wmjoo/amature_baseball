@@ -148,7 +148,7 @@ with tab3:
     hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
     
     # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-    for col in ['BA', 'OBP', 'SLG', 'OPS'].reverse():
+    for col in ['OPS', 'SLG', 'OBP', 'BA']:
         team_idx = hitter_grpby.columns.get_loc('Team') + 1
         hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
         
