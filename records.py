@@ -153,7 +153,11 @@ with tab5:
             graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
 
     with col3:
-            cols = st.radio('그래프 컬럼 수', (1, 2, 3, 4, 5))
+            colsNo = = st.selectbox(
+                                    '1부터 5 사이의 숫자를 선택하세요:',
+                                    options=[1, 2, 3, 4, 5],
+                                    index=2  # 'options' 리스트에서 '3'이 위치한 인덱스는 2 (0부터 시작)
+                                )
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '타자 데이터':
         df = df_hitter
@@ -164,13 +168,13 @@ with tab5:
     numeric_columns = df.select_dtypes(include=['float', 'int']).columns
     # 열의 수 결정
 
-    rows = (len(numeric_columns) + 1) // cols
+    rows = (len(numeric_columns) + 1) // colsNo
 
     # 선택된 그래프 유형에 따라 그래프 생성
-    fig, axs = plt.subplots(rows, cols, figsize=(15, 5 * rows))
+    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 5 * rows))
 
     for i, var in enumerate(numeric_columns):
-        ax = axs[i // cols, i % cols]
+        ax = axs[i // colsNo, i % colsNo]
         if graph_type == '히스토그램':
             sns.histplot(df[var].dropna(), kde=False, ax=ax)
             ax.set_title(f'{var} 히스토그램')
@@ -179,8 +183,8 @@ with tab5:
             ax.set_title(f'{var} 박스플롯')
 
     # 빈 서브플롯 숨기기
-    for i in range(i + 1, rows * cols):
-        axs[i // cols, i % cols].set_visible(False)
+    for i in range(i + 1, rows * colsNo):
+        axs[i // cols, i % colsNo].set_visible(False)
 
     plt.tight_layout()
     st.pyplot(fig)
