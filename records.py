@@ -173,7 +173,7 @@ with tab4:
     
     # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
     if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df.columns:
-        grouped_df['K/IP'] = (grouped_df['K'] / grouped_df['IP']).round(2)
+        grouped_df['SO/IP'] = (grouped_df['SO'] / grouped_df['IP']).round(2)
         grouped_df['BB/IP'] = (grouped_df['BB'] / grouped_df['IP']).round(2)
         grouped_df['H/IP'] = (grouped_df['HA'] / grouped_df['IP']).round(2)
     
