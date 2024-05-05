@@ -136,32 +136,33 @@ with tab4:
 
 # Tab5 내용 구성
 with tab5:
-    # 사용자가 선택할 수 있는 데이터셋 옵션
-    dataset_choice = st.sidebar.selectbox('데이터셋 선택', ('타자 데이터', '투수 데이터'))
+    st.header('야구 통계 시각화')
 
-    # 선택된 데이터셋에 따라 변수 목록 동적 생성
+    # 데이터셋 선택을 위한 토글 버튼
+    dataset_choice = st.radio('데이터셋 선택', ('타자 데이터', '투수 데이터'))
+
+    # 그래프 유형 선택을 위한 토글 버튼
+    graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
+
+    # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '타자 데이터':
         df = df_hitter
     else:
         df = df_pitcher
-    
+
     # 수치형 데이터만 필터링
     numeric_columns = df.select_dtypes(include=['float', 'int']).columns
 
-    # 사용자가 그래프에 사용할 수치형 변수 선택
-    variable = st.sidebar.selectbox('변수 선택', numeric_columns)
+    # 선택된 그래프 유형에 따라 그래프 생성
+    fig, axs = plt.subplots(len(numeric_columns), 1, figsize=(10, 5 * len(numeric_columns)))
 
-    # 사용자가 그래프 유형 선택
-    graph_type = st.sidebar.radio('그래프 유형', ('히스토그램', '박스플롯'))
+    for i, var in enumerate(numeric_columns):
+        if graph_type == '히스토그램':
+            sns.histplot(df[var].dropna(), kde=False, ax=axs[i])
+            axs[i].set_title(f'{var} 히스토그램')
+        elif graph_type == '박스플롯':
+            sns.boxplot(x=df[var].dropna(), ax=axs[i])
+            axs[i].set_title(f'{var} 박스플롯')
 
-    # 그래프 그리기
-    if graph_type == '히스토그램':
-        fig, ax = plt.subplots()
-        sns.histplot(df[variable].dropna(), kde=False, ax=ax, bins = 20)
-        ax.set_title(f'{variable} Histogram')
-        st.pyplot(fig)
-    elif graph_type == '박스플롯':
-        fig, ax = plt.subplots()
-        sns.boxplot(x=df[variable].dropna(), ax=ax)
-        ax.set_title(f'{variable} Boxplot')
-        st.pyplot(fig)
+    plt.tight_layout()
+    st.pyplot(fig)
