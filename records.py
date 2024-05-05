@@ -105,8 +105,8 @@ DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format
 DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
 
 ## 탭 설정
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["성남:팀별타자", "성남:팀별투수",
-                                                                            "성남:전체타자", "성남:전체투수", "투수:규정이상", "투수:규정미달", "안양_일정"])
+tab1, tab2, tab3, tab4 = st.tabs(["성남:팀별타자", "성남:팀별투수",
+                                                                            "성남:전체타자", "성남:전체투수",]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
     df_hitter_team = df_hitter.loc[df_hitter.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)
@@ -127,7 +127,7 @@ with tab3:
 with tab4:
    st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
    st.dataframe(df_pitcher)
-
+'''
 with tab5:
     st.subheader('규정이닝 이상 : {}'.format(team_name))
     #st.write(data_p[0])   
@@ -183,4 +183,4 @@ with tab7:
     # data_alb_scd = load_data(ALB_URL_SCHD)
     # for i in range(len(data_alb_scd)):
     #     st.write(data_alb_scd[i])
-        
+        '''
