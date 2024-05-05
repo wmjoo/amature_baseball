@@ -166,7 +166,7 @@ with tab4:
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     int_columns = df.select_dtypes(include=['int64']).columns.tolist()  # 정수형 컬럼 선택
     grouped_df = df.groupby('Team')[int_columns].sum().reset_index()  # 팀별 합계
-    
+    st.write(grouped_df)
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
     if 'ER' in df.columns and 'IP' in df.columns:
