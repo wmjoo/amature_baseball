@@ -162,8 +162,8 @@ with tab4:
     st.subheader('팀별 기록')
     # df = df_pitcher.copy() #pd.read_csv(file_path)
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
-    int_columns = df_pitcher.select_dtypes(include=['int64']).columns.tolist()  # 정수형 컬럼 선택
-    grouped_df = df_pitcher.groupby('Team')[int_columns].sum().reset_index()  # 팀별 합계
+    pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
+    grouped_df = df_pitcher.groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
     st.write(grouped_df)
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
