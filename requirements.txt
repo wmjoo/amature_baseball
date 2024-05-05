@@ -2,8 +2,7 @@ lxml
 streamlit
 pandas
 numpy
+requests
+beautifulsoup4
 matplotlib
 seaborn
-beautifulsoup4
-concurrent
-warnings
