@@ -112,6 +112,9 @@ df_pitcher = final_pitchers_data.astype(pitcher_data_types)
 # 투수 데이터프레임 컬럼명 영어로
 df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
                       'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
+# IP 컬럼을 올바른 소수 형태로 변환
+df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3)
+
 
 # 팀명을 기준으로 데이터 프레임 필터링
 team_id = team_id_dict[team_name]
