@@ -167,17 +167,17 @@ with tab4:
     st.write(grouped_df)
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
-    if 'ER' in df.columns and 'IP' in df.columns:
+    if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
         grouped_df['ERA'] = (grouped_df['ER'] / grouped_df['IP']) * 9
     
     # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
-    if 'K' in df.columns and 'BB' in df.columns and 'HA' in df.columns:
+    if 'K' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df.columns:
         grouped_df['K/9'] = (grouped_df['K'] / grouped_df['IP']) * 9
         grouped_df['BB/9'] = (grouped_df['BB'] / grouped_df['IP']) * 9
         grouped_df['H/9'] = (grouped_df['HA'] / grouped_df['IP']) * 9
     
     # WHIP 계산: (볼넷 + 피안타) / 이닝
-    if 'BB' in df.columns and 'HA' in df.columns:
+    if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
         grouped_df['WHIP'] = (grouped_df['BB'] + grouped_df['HA']) / grouped_df['IP']
     
     # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
