@@ -94,7 +94,8 @@ hitter_data_types = {
 # 데이터프레임 df의 컬럼 자료형 설정
 df_hitter = final_hitters_data.astype(hitter_data_types)
 # 타자 데이터프레임 컬럼명 영어로
-df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP',  'SB%', 'MHit', 'OPS', 'BB/K', 'XBH/H', 'Team']
+df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
+                     'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP',  'SB%', 'MHit', 'OPS', 'BB/K', 'XBH/H', 'Team']
 
 # 투수 데이터프레임 df_pitcher에 적용할 자료형 매핑
 pitcher_data_types = {
@@ -136,6 +137,14 @@ with tab2:
 with tab3:
    st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
    st.dataframe(df_hitter)
+# ['Name', 'No',
+    #'BA', #'G', 
+, 'OPS', 'BB/K', 'XBH/H', 'Team']
+    st.subheader('팀별 기록')
+    hitter_sumcols = [    'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
+                    'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
+    hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+    st.dataframe(hitter_grpby)
 
 with tab4:
    st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
