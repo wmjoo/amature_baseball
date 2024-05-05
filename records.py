@@ -159,6 +159,9 @@ with tab4:
     st.dataframe(df_pitcher)
     st.subheader('팀별 기록')
     df = df_pitcher.copy() #pd.read_csv(file_path)
+    # IP 컬럼을 올바른 소수 형태로 변환
+    df['IP'] = df['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3)
+
     
     # 데이터 검토
     # print(df.head())
