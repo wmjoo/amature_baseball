@@ -143,7 +143,7 @@ with tab4:
 # Tab5 내용 구성
 with tab5:
     st.subheader('야구 통계 시각화')
-    col1, col2, col3 = st,columns(3)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
             # 데이터셋 선택을 위한 토글 버튼
