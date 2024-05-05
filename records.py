@@ -235,39 +235,39 @@ st.markdown("""
 | XBH/H        | 장타/안타   | Extra base hits per hit        |
 | Team         | 팀          | Team name                      |
 """)
-
-# 투수 데이터 설명
-st.markdown("""
-### 투수(Pitchers) 컬럼명 약어:
-| English Term | Korean Term | Description                    |
-|--------------|-------------|--------------------------------|
-| Name         | 성명        | Player's name                  |
-| No           | 배번        | Jersey number                  |
-| ERA          | 방어율      | Earned run average             |
-| GS           | 경기수      | Games started                  |
-| W            | 승          | Wins                           |
-| L            | 패          | Losses                         |
-| SV           | 세          | Saves                          |
-| HLD          | 홀드        | Holds                          |
-| WPCT         | 승률        | Winning percentage             |
-| BF           | 타자        | Batters faced                  |
-| AB           | 타수        | At bats against                |
-| P            | 투구수      | Pitches thrown                 |
-| IP           | 이닝        | Innings pitched                |
-| HA           | 피안타      | Hits allowed                   |
-| HR           | 피홈런      | Home runs allowed              |
-| SH           | 희타        | Sacrifice hits allowed         |
-| SF           | 희비        | Sacrifice flies allowed        |
-| BB           | 볼넷        | Walks allowed                  |
-| IBB          | 고의4구     | Intentional walks allowed      |
-| HBP          | 사구        | Hit by pitch allowed           |
-| SO           | 탈삼진      | Strikeouts                     |
-| WP           | 폭투        | Wild pitches                   |
-| BK           | 보크        | Balks                          |
-| R            | 실점        | Runs allowed                   |
-| ER           | 자책점      | Earned runs allowed            |
-| WHIP         | WHIP        | Walks plus hits per inning     |
-| BAA          | 피안타율    | Batting average against        |
-| K9           | 탈삼진율    | Strikeouts per nine innings    |
-| Team         | 팀          | Team name                      |
-""")
+    with col2:
+        # 투수 데이터 설명
+        st.markdown("""
+        ### 투수(Pitchers) 컬럼명 약어:
+        | English Term | Korean Term | Description                    |
+        |--------------|-------------|--------------------------------|
+        | Name         | 성명        | Player's name                  |
+        | No           | 배번        | Jersey number                  |
+        | ERA          | 방어율      | Earned run average             |
+        | GS           | 경기수      | Games started                  |
+        | W            | 승          | Wins                           |
+        | L            | 패          | Losses                         |
+        | SV           | 세          | Saves                          |
+        | HLD          | 홀드        | Holds                          |
+        | WPCT         | 승률        | Winning percentage             |
+        | BF           | 타자        | Batters faced                  |
+        | AB           | 타수        | At bats against                |
+        | P            | 투구수      | Pitches thrown                 |
+        | IP           | 이닝        | Innings pitched                |
+        | HA           | 피안타      | Hits allowed                   |
+        | HR           | 피홈런      | Home runs allowed              |
+        | SH           | 희타        | Sacrifice hits allowed         |
+        | SF           | 희비        | Sacrifice flies allowed        |
+        | BB           | 볼넷        | Walks allowed                  |
+        | IBB          | 고의4구     | Intentional walks allowed      |
+        | HBP          | 사구        | Hit by pitch allowed           |
+        | SO           | 탈삼진      | Strikeouts                     |
+        | WP           | 폭투        | Wild pitches                   |
+        | BK           | 보크        | Balks                          |
+        | R            | 실점        | Runs allowed                   |
+        | ER           | 자책점      | Earned runs allowed            |
+        | WHIP         | WHIP        | Walks plus hits per inning     |
+        | BAA          | 피안타율    | Batting average against        |
+        | K9           | 탈삼진율    | Strikeouts per nine innings    |
+        | Team         | 팀          | Team name                      |
+        """)
