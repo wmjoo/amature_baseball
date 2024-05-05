@@ -195,7 +195,7 @@ with tab5:
 with tab6:
     col1, col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
-    st.subtitle('야구 기록 설명')
+    st.subheader('야구 기록 설명')
     with col1:
         # 타자 데이터 설명
         st.markdown("""
