@@ -164,7 +164,7 @@ with tab4:
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
     grouped_df = df_pitcher.groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
-    st.write(grouped_df)
+    # st.write(grouped_df)
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
     if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
@@ -185,7 +185,7 @@ with tab4:
     for col in new_cols:
         if col in grouped_df.columns:
             team_idx = grouped_df.columns.get_loc('Team') + 1
-            grouped_df.insert(team_idx, col, grouped_df.pop(col))
+            grouped_df.insert(team_idx, col, grouped_df.pop(col).round(3))
     
     # 결과 확인
     st.write(grouped_df)
