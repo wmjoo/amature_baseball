@@ -194,13 +194,13 @@ with tab5:
     st.pyplot(fig)
 with tab6:
     col1, col2 = st.columns(2)
+    # 스트림릿 페이지 제목 설정
+    st.subtitle('야구 기록 설명')
     with col1:
-            # 스트림릿 페이지 제목 설정
-        st.title('야구 기록 설명')
         # 타자 데이터 설명
         st.markdown("""
         ### 타자(Hitters) 컬럼명 약어:
-        | English Term | Korean Term | Description                    |
+        | ENG | KOR | Desc                    |
         |--------------|-------------|--------------------------------|
         | Name         | 성명        | Player's name                  |
         | No           | 배번        | Jersey number                  |
@@ -238,7 +238,7 @@ with tab6:
         # 투수 데이터 설명
         st.markdown("""
         ### 투수(Pitchers) 컬럼명 약어:
-        | English Term | Korean Term | Description                    |
+        | ENG | KOR | Desc                    |
         |--------------|-------------|--------------------------------|
         | Name         | 성명        | Player's name                  |
         | No           | 배번        | Jersey number                  |
