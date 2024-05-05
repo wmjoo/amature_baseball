@@ -7,8 +7,11 @@ from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
 import seaborn as sns
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# 한글 폰트 설정
+plt.rc('font', family='NanumGothic') # or the name of the font you have installed
+
 
 st.set_page_config(
         page_title="Baseball Data",
@@ -131,34 +134,34 @@ with tab4:
    st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
    st.dataframe(df_pitcher)
 
+# Tab5 내용 구성
 with tab5:
-   st.title('야구 통계 시각화 도구')
+    # 사용자가 선택할 수 있는 데이터셋 옵션
+    dataset_choice = st.sidebar.selectbox('데이터셋 선택', ('타자 데이터', '투수 데이터'))
 
-   # 사용자가 선택할 수 있는 데이터셋 옵션
-   dataset_choice = st.sidebar.selectbox('데이터셋 선택', ('타자 데이터', '투수 데이터'))
+    # 선택된 데이터셋에 따라 변수 목록 동적 생성
+    if dataset_choice == '타자 데이터':
+        df = df_hitter
+    else:
+        df = df_pitcher
+    
+    # 수치형 데이터만 필터링
+    numeric_columns = df.select_dtypes(include=['float', 'int']).columns
 
-   # 선택된 데이터셋에 따라 변수 목록 동적 생성
-   if dataset_choice == '타자 데이터':
-           df = df_hitter
-   else:
-           df = df_pitcher
-   # 사용자가 그래프에 사용할 변수 선택
-   variable = st.sidebar.selectbox('변수 선택', df.columns)
+    # 사용자가 그래프에 사용할 수치형 변수 선택
+    variable = st.sidebar.selectbox('변수 선택', numeric_columns)
 
-   # 사용자가 그래프 유형 선택
-   graph_type = st.sidebar.radio('그래프 유형', ('히스토그램', '박스플롯'))
+    # 사용자가 그래프 유형 선택
+    graph_type = st.sidebar.radio('그래프 유형', ('히스토그램', '박스플롯'))
 
-   # 그래프 그리기
-   # 한글 폰트 설정
-   plt.rc('font', family='NanumGothic') # or the name of the font you have installed
-
-   if graph_type == '히스토그램':
-           fig, ax = plt.subplots()
-           sns.histplot(df[variable].dropna(), kde=False, ax=ax, bins = 20)
-           ax.set_title(f'{variable} 히스토그램')
-           st.pyplot(fig)
-   elif graph_type == '박스플롯':
-           fig, ax = plt.subplots()
-           sns.boxplot(x=df[variable].dropna(), ax=ax)
-           ax.set_title(f'{variable} 박스플롯')
-           st.pyplot(fig)
+    # 그래프 그리기
+    if graph_type == '히스토그램':
+        fig, ax = plt.subplots()
+        sns.histplot(df[variable].dropna(), kde=False, ax=ax, bins = 20)
+        ax.set_title(f'{variable} Histogram')
+        st.pyplot(fig)
+    elif graph_type == '박스플롯':
+        fig, ax = plt.subplots()
+        sns.boxplot(x=df[variable].dropna(), ax=ax)
+        ax.set_title(f'{variable} Boxplot')
+        st.pyplot(fig)
