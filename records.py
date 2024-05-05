@@ -121,11 +121,11 @@ with tab2:
     st.write(DATA_URL_P)
 
 with tab3:
-   st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0])
+   st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
    st.dataframe(df_hitter)
 
 with tab4:
-   st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0])
+   st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
    st.dataframe(df_pitcher)
 
 with tab5:
