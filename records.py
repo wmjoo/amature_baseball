@@ -149,9 +149,12 @@ with tab5:
    graph_type = st.sidebar.radio('그래프 유형', ('히스토그램', '박스플롯'))
 
    # 그래프 그리기
+   # 한글 폰트 설정
+   plt.rc('font', family='NanumGothic') # or the name of the font you have installed
+
    if graph_type == '히스토그램':
            fig, ax = plt.subplots()
-           sns.histplot(df[variable].dropna(), kde=False, ax=ax)
+           sns.histplot(df[variable].dropna(), kde=False, ax=ax, bins = 20)
            ax.set_title(f'{variable} 히스토그램')
            st.pyplot(fig)
    elif graph_type == '박스플롯':
