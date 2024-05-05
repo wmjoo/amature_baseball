@@ -108,8 +108,8 @@ DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format
 DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
 
 ## 탭 설정
-tab1, tab2, tab3, tab4 = st.tabs(["성남:팀별타자", "성남:팀별투수",
-                                                                            "성남:전체타자", "성남:전체투수",]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["성남:팀별타자", "성남:팀별투수",
+                                                                            "성남:전체타자", "성남:전체투수", "성남:시각화"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
     df_hitter_team = df_hitter.loc[df_hitter.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)
