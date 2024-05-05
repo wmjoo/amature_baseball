@@ -136,10 +136,10 @@ with tab4:
 
 # Tab5 내용 구성
 with tab5:
-    st.header('야구 통계 시각화')
+    st.subheader('야구 통계 시각화')
 
     # 데이터셋 선택을 위한 토글 버튼
-    dataset_choice = st.radio('데이터셋 선택', ('타자 데이터', '투수 데이터'))
+    dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
 
     # 그래프 유형 선택을 위한 토글 버튼
     graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
