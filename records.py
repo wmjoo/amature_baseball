@@ -154,6 +154,7 @@ with tab5:
 
     with col2:
             # 그래프 유형 선택을 위한 토글 버튼
+            graph_type = '히스토그램'
             graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
 
     with col3:
@@ -173,16 +174,16 @@ with tab5:
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
 
     # 선택된 그래프 유형에 따라 그래프 생성
-    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 5 * rows))
+    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
     axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
 
     for i, var in enumerate(numeric_columns):
         if graph_type == '히스토그램':
             sns.histplot(df[var].dropna(), kde=False, ax=axs[i])
-            axs[i].set_title(f'{var}', fontsize=12)
+            axs[i].set_title(f'{var}', fontsize=10)
         elif graph_type == '박스플롯':
             sns.boxplot(x=df[var].dropna(), ax=axs[i])
-            axs[i].set_title(f'{var}', fontsize=12)
+            axs[i].set_title(f'{var}', fontsize=10)
         axs[i].set_xlabel('')  # X축 레이블 비활성화
 
     # 빈 서브플롯 숨기기
