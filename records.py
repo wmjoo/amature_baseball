@@ -4,14 +4,14 @@ import pandas as pd
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
-import requests
+
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # 한글 폰트 설정
-plt.rc('font', family='NanumGothic') # or the name of the font you have installed
-
+# plt.rc('font', family='NanumGothic') # or the name of the font you have installed
 
 st.set_page_config(
         page_title="Baseball Data",
