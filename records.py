@@ -141,14 +141,14 @@ with tab3:
     hitter_sumcols = [    'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
     hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
-    # 타율(BA), 출루율(OBP), 장타율(SLG), OPS 계산
-    hitter_grpby['BA'] = hitter_grpby['H'] / hitter_grpby['AB']
-    hitter_grpby['OBP'] = (hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])
-    hitter_grpby['SLG'] = hitter_grpby['TB'] / hitter_grpby['AB']
-    hitter_grpby['OPS'] = hitter_grpby['OBP'] + hitter_grpby['SLG']
+    # 타율(BA), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
+    hitter_grpby['BA'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
+    hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
+    hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
+    hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
     
     # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-    for col in ['BA', 'OBP', 'SLG', 'OPS']:
+    for col in ['BA', 'OBP', 'SLG', 'OPS'].reverse():
         team_idx = hitter_grpby.columns.get_loc('Team') + 1
         hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
         
