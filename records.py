@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import warnings
+warnings.filterwarnings('ignore')
 
 # 한글 폰트 설정
 # plt.rc('font', family='NanumGothic') # or the name of the font you have installed
