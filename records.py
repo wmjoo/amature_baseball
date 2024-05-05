@@ -74,8 +74,6 @@ with ThreadPoolExecutor(max_workers=10) as executor:
 final_hitters_data = pd.concat(hitters, ignore_index=True)
 final_pitchers_data = pd.concat(pitchers, ignore_index=True)
 
-final_hitters_data.columns
-
 # 데이터프레임 df에 적용할 자료형 매핑
 hitter_data_types = {
     '성명': 'str', '배번': 'str', '타율': 'float', '경기': 'int', '타석': 'int', '타수': 'int',
@@ -112,25 +110,26 @@ DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".forma
 #print("Pitchers Data:")
 #display(df_pitcher)
 
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["[전체타자]", "[전체투수]", "타자:규정이상", "타자:규정미만", "투수:규정이상", "투수:규정미달", "안양_일정"])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["성남:팀별타자", "성남:팀별투수",
+                                                                            "성남:전체타자", "성남:전체투수", "투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
-    st.subheader('전체 타자 : {}'.format(team_name))
-    st.dataframe(df_hitter)
+    st.subheader('타자 : {}'.format(team_name))
+    st.dataframe(df_hitter.loc[df_hitter.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)) #)
     st.write(DATA_URL_B)
 
 with tab2:
-    st.subheader('전체 투수 : {}'.format(team_name))
-    st.dataframe(df_pitcher) 
+    st.subheader('투수 : {}'.format(team_name))
+    st.dataframe(df_pitcher.loc[df_pitcher.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)) 
     st.write(DATA_URL_P)
 
 with tab3:
-   st.subheader('규정타석 이상 : {}'.format(team_name))
-   #st.write(data_b[0])
+   st.subheader('성남 : 전체타자')
+   st.dataframe(df_hitter)
 
 with tab4:
-   st.subheader('규정타석 미만 : {}'.format(team_name))
-   #st.write(data_b[1]) 
+   st.subheader('성남 : 전체투수')
+   st.dataframe(df_pitcher)
 
 with tab5:
     st.subheader('규정이닝 이상 : {}'.format(team_name))
