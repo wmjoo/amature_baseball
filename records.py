@@ -153,10 +153,8 @@ with tab5:
             graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
 
     with col3:
-            colsNo = = st.selectbox(
-                                    '1부터 5 사이의 숫자를 선택하세요:',
-                                    options=[1, 2, 3, 4, 5],
-                                    index=2  # 'options' 리스트에서 '3'이 위치한 인덱스는 2 (0부터 시작)
+            colsNo = = st.selectbox( '1부터 5 사이의 숫자를 선택하세요:',
+                                    options=[1, 2, 3, 4, 5], index=2  # 'options' 리스트에서 '3'이 위치한 인덱스는 2 (0부터 시작)
                                 )
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '타자 데이터':
