@@ -5,3 +5,5 @@ numpy
 matplotlib
 seaborn
 bs4
+concurrent
+warnings
