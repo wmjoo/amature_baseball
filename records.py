@@ -193,9 +193,9 @@ with tab5:
     plt.tight_layout()
     st.pyplot(fig)
 with tab6:
+    st.subheader('야구 기록 설명')
     col1, col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
-    st.subheader('야구 기록 설명')
     with col1:
         # 타자 데이터 설명
         st.markdown("""
