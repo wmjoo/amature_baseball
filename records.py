@@ -169,16 +169,16 @@ with tab5:
     rows = (len(numeric_columns) + 1) // colsNo
 
     # 선택된 그래프 유형에 따라 그래프 생성
-    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 5 * rows))
+    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
 
     for i, var in enumerate(numeric_columns):
         ax = axs[i // colsNo, i % colsNo]
         if graph_type == '히스토그램':
             sns.histplot(df[var].dropna(), kde=False, ax=ax)
-            ax.set_title(f'{var} 히스토그램')
+            ax.set_title(f'{var}')
         elif graph_type == '박스플롯':
             sns.boxplot(x=df[var].dropna(), ax=ax)
-            ax.set_title(f'{var} 박스플롯')
+            ax.set_title(f'{var}')
 
     # 빈 서브플롯 숨기기
     for i in range(i + 1, rows * colsNo):
