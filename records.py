@@ -92,8 +92,7 @@ hitter_data_types = {
 # 데이터프레임 df의 컬럼 자료형 설정
 df_hitter = final_hitters_data.astype(hitter_data_types)
 # 타자 데이터프레임 컬럼명 영어로
-df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 
-                     'SB%', 'MH', 'OPS', 'BB/K', 'XBH/H', 'Team']
+df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP',  'SB%', 'MHit', 'OPS', 'BB/K', 'XBH/H', 'Team']
 
 # 투수 데이터프레임 df_pitcher에 적용할 자료형 매핑
 pitcher_data_types = {
