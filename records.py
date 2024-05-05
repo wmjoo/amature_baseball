@@ -140,8 +140,8 @@ with tab3:
    st.subheader('팀별 기록')
    hitter_sumcols = [    'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
                     'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
-    hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
-    st.dataframe(hitter_grpby)
+   hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+   st.dataframe(hitter_grpby)
 
 with tab4:
    st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
