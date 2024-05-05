@@ -197,44 +197,43 @@ with tab6:
     with col1:
             # 스트림릿 페이지 제목 설정
         st.title('야구 기록 설명')
-
-# 타자 데이터 설명
-st.markdown("""
-### 타자(Hitters) 컬럼명 약어:
-| English Term | Korean Term | Description                    |
-|--------------|-------------|--------------------------------|
-| Name         | 성명        | Player's name                  |
-| No           | 배번        | Jersey number                  |
-| BA           | 타율        | Batting average                |
-| G            | 경기        | Games played                   |
-| PA           | 타석        | Plate appearances              |
-| AB           | 타수        | At bats                        |
-| R            | 득점        | Runs                           |
-| H            | 총안타      | Hits                           |
-| 1B           | 1루타       | Singles                        |
-| 2B           | 2루타       | Doubles                        |
-| 3B           | 3루타       | Triples                        |
-| HR           | 홈런        | Home runs                      |
-| TB           | 루타        | Total bases                    |
-| RBI          | 타점        | Runs batted in                 |
-| SB           | 도루        | Stolen bases                   |
-| CS           | 도실(도루자)| Caught stealing                |
-| SH           | 희타        | Sacrifice hits                 |
-| SF           | 희비        | Sacrifice flies                |
-| BB           | 볼넷        | Walks                          |
-| IBB          | 고의4구     | Intentional walks              |
-| HBP          | 사구        | Hit by pitch                   |
-| SO           | 삼진        | Strikeouts                     |
-| DP           | 병살        | Double plays                   |
-| SLG          | 장타율      | Slugging percentage            |
-| OBP          | 출루율      | On-base percentage             |
-| SB%          | 도루성공률  | Stolen base percentage         |
-| MHit         | 멀티히트    | Multi-hit games                |
-| OPS          | OPS         | On-base plus slugging          |
-| BB/K         | BB/K       | Walks per strikeout            |
-| XBH/H        | 장타/안타   | Extra base hits per hit        |
-| Team         | 팀          | Team name                      |
-""")
+        # 타자 데이터 설명
+        st.markdown("""
+        ### 타자(Hitters) 컬럼명 약어:
+        | English Term | Korean Term | Description                    |
+        |--------------|-------------|--------------------------------|
+        | Name         | 성명        | Player's name                  |
+        | No           | 배번        | Jersey number                  |
+        | BA           | 타율        | Batting average                |
+        | G            | 경기        | Games played                   |
+        | PA           | 타석        | Plate appearances              |
+        | AB           | 타수        | At bats                        |
+        | R            | 득점        | Runs                           |
+        | H            | 총안타      | Hits                           |
+        | 1B           | 1루타       | Singles                        |
+        | 2B           | 2루타       | Doubles                        |
+        | 3B           | 3루타       | Triples                        |
+        | HR           | 홈런        | Home runs                      |
+        | TB           | 루타        | Total bases                    |
+        | RBI          | 타점        | Runs batted in                 |
+        | SB           | 도루        | Stolen bases                   |
+        | CS           | 도실(도루자)| Caught stealing                |
+        | SH           | 희타        | Sacrifice hits                 |
+        | SF           | 희비        | Sacrifice flies                |
+        | BB           | 볼넷        | Walks                          |
+        | IBB          | 고의4구     | Intentional walks              |
+        | HBP          | 사구        | Hit by pitch                   |
+        | SO           | 삼진        | Strikeouts                     |
+        | DP           | 병살        | Double plays                   |
+        | SLG          | 장타율      | Slugging percentage            |
+        | OBP          | 출루율      | On-base percentage             |
+        | SB%          | 도루성공률  | Stolen base percentage         |
+        | MHit         | 멀티히트    | Multi-hit games                |
+        | OPS          | OPS         | On-base plus slugging          |
+        | BB/K         | BB/K       | Walks per strikeout            |
+        | XBH/H        | 장타/안타   | Extra base hits per hit        |
+        | Team         | 팀          | Team name                      |
+        """)
     with col2:
         # 투수 데이터 설명
         st.markdown("""
