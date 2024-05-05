@@ -92,7 +92,8 @@ hitter_data_types = {
 # 데이터프레임 df의 컬럼 자료형 설정
 df_hitter = final_hitters_data.astype(hitter_data_types)
 # 타자 데이터프레임 컬럼명 영어로
-df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 'SB%', 'MH', 'OPS', 'BB/K', 'XBH/H', 'Team']
+df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 
+                     'SB%', 'MH', 'OPS', 'BB/K', 'XBH/H', 'Team']
 
 # 투수 데이터프레임 df_pitcher에 적용할 자료형 매핑
 pitcher_data_types = {
@@ -107,8 +108,8 @@ final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.
 # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
 df_pitcher = final_pitchers_data.astype(pitcher_data_types)
 # 투수 데이터프레임 컬럼명 영어로
-df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
-
+df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
+                      'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
 
 # 팀명을 기준으로 데이터 프레임 필터링
 team_id = team_id_dict[team_name]
@@ -120,13 +121,13 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs(["성남:팀별타자", "성남:팀별투
                                                                             "성남:전체타자", "성남:전체투수", "성남:시각화"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
-    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('팀', axis = 1)
+    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
 
 with tab2:
-    df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('팀', axis = 1)
+    df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
     st.dataframe(df_pitcher_team) 
     st.write(DATA_URL_P)
