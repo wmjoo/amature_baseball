@@ -109,21 +109,23 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs(["성남:팀별타자", "성�
                                                                             "성남:전체타자", "성남:전체투수", "투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
-    st.subheader('타자 : {}'.format(team_name))
-    st.dataframe(df_hitter.loc[df_hitter.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)) #)
+    df_hitter_team = df_hitter.loc[df_hitter.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)
+    st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
+    st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
 
 with tab2:
-    st.subheader('투수 : {}'.format(team_name))
-    st.dataframe(df_pitcher.loc[df_pitcher.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)) 
+    df_pitcher_team = df_pitcher.loc[df_pitcher.팀 == team_name].reset_index(drop=True).drop('팀', axis = 1)
+    st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
+    st.dataframe(df_pitcher_team) 
     st.write(DATA_URL_P)
 
 with tab3:
-   st.subheader('성남 : 전체타자')
+   st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0])
    st.dataframe(df_hitter)
 
 with tab4:
-   st.subheader('성남 : 전체투수')
+   st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0])
    st.dataframe(df_pitcher)
 
 with tab5:
