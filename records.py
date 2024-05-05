@@ -182,7 +182,7 @@ with tab5:
 
     # 빈 서브플롯 숨기기
     for i in range(i + 1, rows * colsNo):
-        axs[i // cols, i % colsNo].set_visible(False)
+        axs[i // colsNo, i % colsNo].set_visible(False)
 
     plt.tight_layout()
     st.pyplot(fig)
