@@ -4,6 +4,6 @@ pandas
 numpy
 matplotlib
 seaborn
-bs4
+beautifulsoup4
 concurrent
 warnings
