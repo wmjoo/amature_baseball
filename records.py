@@ -112,36 +112,10 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 ## 탭 설정
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:팀별타자", "성남:팀별투수",
-                                                                            "성남:전체타자", "성남:전체투수", "성남:시각화", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체타자", "성남:전체투수", "성남:팀별타자", "성남:팀별투수", 
+                                              "성남:시각화", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
-    team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
-    # 팀명을 기준으로 데이터 프레임 필터링
-    team_id = team_id_dict[team_name_B]
-    DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
-    
-    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name_B].reset_index(drop=True).drop('Team', axis = 1)
-    st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
-    st.dataframe(df_hitter_team)
-    st.write(DATA_URL_B)
-    try:
-        st.write(hitter_grpby)
-    except:
-        st.write()
-
-with tab2:
-    team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
-    # 팀명을 기준으로 데이터 프레임 필터링
-    team_id = team_id_dict[team_name_P]
-    DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
-
-    df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
-    st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
-    st.dataframe(df_pitcher_team) 
-    st.write(DATA_URL_P)
-
-with tab3:
     st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
     st.dataframe(df_hitter)
     st.subheader('팀별 기록')
@@ -161,7 +135,7 @@ with tab3:
         
     st.dataframe(hitter_grpby)
 
-with tab4:
+with tab2:
     st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
     st.dataframe(df_pitcher)
     st.subheader('팀별 기록')
@@ -192,6 +166,35 @@ with tab4:
     
     # 결과 확인
     st.write(grouped_df)
+
+
+with tab3:
+    team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+    # 팀명을 기준으로 데이터 프레임 필터링
+    team_id = team_id_dict[team_name_B]
+    DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
+    
+    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name_B].reset_index(drop=True).drop('Team', axis = 1)
+    st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
+    st.dataframe(df_hitter_team)
+    st.write(DATA_URL_B)
+    # try:
+    #     st.write(hitter_grpby)
+    # except:
+    #     st.write()
+
+
+
+with tab4:
+    team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
+    # 팀명을 기준으로 데이터 프레임 필터링
+    team_id = team_id_dict[team_name_P]
+    DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
+
+    df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
+    st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
+    st.dataframe(df_pitcher_team) 
+    st.write(DATA_URL_P) 
 
 # Tab5 내용 구성 (시각화)
 with tab5:
