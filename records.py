@@ -111,17 +111,17 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 # IP 컬럼을 올바른 소수 형태로 변환
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
-# 팀명을 기준으로 데이터 프레임 필터링
-team_id = team_id_dict[team_name]
-DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
-DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
-
 ## 탭 설정
 tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:팀별타자", "성남:팀별투수",
                                                                             "성남:전체타자", "성남:전체투수", "성남:시각화", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()))
+    # 팀명을 기준으로 데이터 프레임 필터링
+    team_id = team_id_dict[team_name]
+    DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
+    # DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
+
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
     st.dataframe(df_hitter_team)
@@ -129,6 +129,11 @@ with tab1:
 
 with tab2:
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()))    
+    # 팀명을 기준으로 데이터 프레임 필터링
+    team_id = team_id_dict[team_name]
+# DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
+    DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
+
     df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
     st.dataframe(df_pitcher_team) 
