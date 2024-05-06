@@ -179,7 +179,7 @@ with tab3:
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
     # try:
-    #     st.write(hitter_grpby)
+    st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B])
     # except:
     #     st.write()
 
