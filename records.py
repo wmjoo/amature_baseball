@@ -224,12 +224,12 @@ with tab5:
     # rows 수 결정
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
 
+    # 선택된 그래프 유형에 따라 그래프 생성
+    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
+    axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
+        
    # "Plotting" 버튼 추가
     if st.button('Plotting'):
-        # 선택된 그래프 유형에 따라 그래프 생성
-        fig, axs = plt.subplots(rows, colsNo, figsize=(15, 5 * rows))
-        axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
-
         for i, var in enumerate(numeric_columns):
             ax = axs[i // colsNo, i % colsNo]
             if graph_type == '히스토그램':
