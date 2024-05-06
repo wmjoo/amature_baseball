@@ -29,10 +29,6 @@ team_id_dict = {
     "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207,
 }
 
-team_name = st.selectbox(
-    '팀 선택',
-    (team_id_dict.keys()))
-
 # st.write('You selected TEAM:', option)
 
 ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
@@ -125,12 +121,14 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:팀별타자", "성남:팀
                                                                             "성남:전체타자", "성남:전체투수", "성남:시각화", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()))
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
 
 with tab2:
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()))    
     df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
     st.dataframe(df_pitcher_team) 
