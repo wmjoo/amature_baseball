@@ -126,6 +126,8 @@ with tab1:
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
 
+    st,write(hitter_grpby)
+
 with tab2:
     team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
     # 팀명을 기준으로 데이터 프레임 필터링
