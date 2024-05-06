@@ -194,7 +194,7 @@ with tab4:
 
 # Tab5 내용 구성
 with tab5:
-    df = df_hitter    
+    df_plot = df_hitter    
     st.subheader('야구 통계 시각화')
     col1, col2, col3 = st.columns(3)
 
