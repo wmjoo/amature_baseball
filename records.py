@@ -225,8 +225,10 @@ with tab5:
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
 
     # 선택된 그래프 유형에 따라 그래프 생성
+    #rowsNo = len(numeric_columns) // colsNo + (len(numeric_columns) % colsNo > 0)  # 행의 수 계산
+    axs = np.array(axs).reshape((rows, colsNo))
     fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
-    axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
+    #axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
         
    # "Plotting" 버튼 추가
     if st.button('Plotting'):
