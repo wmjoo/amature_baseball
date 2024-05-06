@@ -161,13 +161,10 @@ with tab4:
     st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
     st.dataframe(df_pitcher)
     st.subheader('팀별 기록')
-    # df = df_pitcher.copy() #pd.read_csv(file_path)
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
     grouped_df = df_pitcher.groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
-    # st.write(grouped_df)
     # 파생 변수 추가
-    # st.write(pitcher_sumcols.columns.tolist())
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
     if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
         grouped_df['ERA'] = ((grouped_df['ER'] / grouped_df['IP']) * 9).round(3)
