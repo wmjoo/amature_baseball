@@ -178,12 +178,7 @@ with tab3:
     st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
-    # try:
     st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B])
-    # except:
-    #     st.write()
-
-
 
 with tab4:
     team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
@@ -195,6 +190,7 @@ with tab4:
     st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
     st.dataframe(df_pitcher_team) 
     st.write(DATA_URL_P) 
+    st.write(grouped_df.loc[grouped_df.Team == team_name_P])
 
 # Tab5 내용 구성 (시각화)
 with tab5:
