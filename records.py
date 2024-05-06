@@ -191,7 +191,7 @@ with tab4:
     # 결과 확인
     st.write(grouped_df)
 
-# Tab5 내용 구성
+# Tab5 내용 구성 (시각화)
 with tab5:
     df_plot = df_hitter    
     st.subheader('야구 통계 시각화')
