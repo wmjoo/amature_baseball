@@ -125,8 +125,8 @@ with tab1:
     st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
-
-    st,write(hitter_grpby)
+    try:
+        st.write(hitter_grpby)
 
 with tab2:
     team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
