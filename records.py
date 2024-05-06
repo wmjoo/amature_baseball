@@ -158,7 +158,7 @@ with tab2:
         grouped_df['WHIP'] = ((grouped_df['BB'] + grouped_df['HA']) / grouped_df['IP']).round(3)
     
     # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-    new_cols = ['ERA', 'K/IP', 'BB/IP', 'H/IP', 'WHIP']
+    new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA']
     for col in new_cols:
         if col in grouped_df.columns:
             team_idx = grouped_df.columns.get_loc('Team') + 1
