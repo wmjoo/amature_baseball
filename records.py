@@ -121,8 +121,8 @@ with tab1:
     team_id = team_id_dict[team_name_B]
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
     
-    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-    st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
+    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name_B].reset_index(drop=True).drop('Team', axis = 1)
+    st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
     st.dataframe(df_hitter_team)
     st.write(DATA_URL_B)
 
@@ -132,8 +132,8 @@ with tab2:
     team_id = team_id_dict[team_name_P]
     DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
 
-    df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-    st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
+    df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
+    st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
     st.dataframe(df_pitcher_team) 
     st.write(DATA_URL_P)
 
