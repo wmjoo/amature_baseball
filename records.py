@@ -127,6 +127,8 @@ with tab1:
     st.write(DATA_URL_B)
     try:
         st.write(hitter_grpby)
+    except:
+        st.write()
 
 with tab2:
     team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
