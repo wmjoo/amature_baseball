@@ -191,7 +191,6 @@ with tab4:
     # 결과 확인
     st.write(grouped_df)
 
-
 # Tab5 내용 구성
 with tab5:
     df_plot = df_hitter    
@@ -199,29 +198,27 @@ with tab5:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-            # 데이터셋 선택을 위한 토글 버튼
-            dataset_choice = '타자'
-            dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
+        # 데이터셋 선택을 위한 토글 버튼
+        dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
 
     with col2:
-            # 그래프 유형 선택을 위한 토글 버튼
-            graph_type = '히스토그램'
-            graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
+        # 그래프 유형 선택을 위한 토글 버튼
+        graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
 
     with col3:
-            colsNo = st.selectbox( '1부터 4 사이의 숫자를 선택하세요:',
-                                    options=[1, 2, 3, 4], index=2  # 'options' 리스트에서 '3'이 위치한 인덱스는 2 (0부터 시작)
-                                )
+        colsNo = st.selectbox('1부터 4 사이의 숫자를 선택하세요:',
+                              options=[1, 2, 3, 4], index=2)
+
     # 선택된 데이터셋에 따라 데이터 프레임 설정
-    if dataset_choice == '타자':
-        df_plot = df_hitter.copy()
-    else:
+    if dataset_choice == '투수':
         df_plot = df_pitcher.copy()
+    else:
+        df_plot = df_hitter.copy()
 
     numeric_columns = df_plot.select_dtypes(include=['float', 'int']).columns
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
     fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
-    
+
     # axs가 1차원 배열일 경우 처리
     if rows * colsNo == 1:
         axs = [axs]
@@ -230,11 +227,10 @@ with tab5:
     else:
         axs = axs.reshape(-1)
 
-        
-   # "Plotting" 버튼 추가
+    # "Plotting" 버튼 추가
     if st.button('Plotting'):
         for i, var in enumerate(numeric_columns):
-            ax = axs[i // colsNo, i % colsNo]
+            ax = axs[i]
             if graph_type == '히스토그램':
                 sns.histplot(df_plot[var].dropna(), kde=False, ax=ax)
                 ax.set_title(f'{var}')
@@ -242,12 +238,13 @@ with tab5:
                 sns.boxplot(x=df_plot[var].dropna(), ax=ax)
                 ax.set_title(f'{var}')
 
-            # 빈 서브플롯 숨기기
-            for j in range(len(numeric_columns), rows * colsNo):
-                axs[j].set_visible(False)
+        # 빈 서브플롯 숨기기
+        for j in range(len(numeric_columns), rows * colsNo):
+            axs[j].set_visible(False)
 
         plt.tight_layout()
         st.pyplot(fig)
+
 
 with tab6:
     st.subheader('야구 기록 설명')
