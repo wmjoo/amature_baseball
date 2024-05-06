@@ -218,17 +218,18 @@ with tab5:
     else:
         df_plot = df_pitcher.copy()
 
-   # 수치형 데이터만 필터링
     numeric_columns = df_plot.select_dtypes(include=['float', 'int']).columns
-
-    # rows 수 결정
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
-
-    # 선택된 그래프 유형에 따라 그래프 생성
-    #rowsNo = len(numeric_columns) // colsNo + (len(numeric_columns) % colsNo > 0)  # 행의 수 계산
-    axs = np.array(axs).reshape((rows, colsNo))
     fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
-    #axs = np.array(axs).reshape(-1)  # 차원을 일정하게 유지
+    
+    # axs가 1차원 배열일 경우 처리
+    if rows * colsNo == 1:
+        axs = [axs]
+    elif rows == 1 or colsNo == 1:
+        axs = axs.flatten()
+    else:
+        axs = axs.reshape(-1)
+
         
    # "Plotting" 버튼 추가
     if st.button('Plotting'):
