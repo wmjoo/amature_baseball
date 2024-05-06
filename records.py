@@ -214,12 +214,12 @@ with tab5:
                                 )
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '타자':
-        df = df_hitter
+        df_plot = df_hitter.copy()
     else:
-        df = df_pitcher
+        df_plot = df_pitcher.copy()
 
    # 수치형 데이터만 필터링
-    numeric_columns = df.select_dtypes(include=['float', 'int']).columns
+    numeric_columns = df_plot.select_dtypes(include=['float', 'int']).columns
 
     # rows 수 결정
     rows = (len(numeric_columns) + colsNo - 1) // colsNo
@@ -233,10 +233,10 @@ with tab5:
         for i, var in enumerate(numeric_columns):
             ax = axs[i // colsNo, i % colsNo]
             if graph_type == '히스토그램':
-                sns.histplot(df[var].dropna(), kde=False, ax=ax)
+                sns.histplot(df_plot[var].dropna(), kde=False, ax=ax)
                 ax.set_title(f'{var}')
             elif graph_type == '박스플롯':
-                sns.boxplot(x=df[var].dropna(), ax=ax)
+                sns.boxplot(x=df_plot[var].dropna(), ax=ax)
                 ax.set_title(f'{var}')
 
             # 빈 서브플롯 숨기기
