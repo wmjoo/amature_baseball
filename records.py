@@ -134,7 +134,7 @@ with tab1:
         hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
         
     st.dataframe(hitter_grpby)
-    st.dataframe(pd.concat[hitter_grpby.Name, 
+    st.dataframe(pd.concat[hitter_grpby.Team, 
                            hitter_grpby.rank(ascending=False).drop('Team',axis=1)], axis = 1)
 
 with tab2:
