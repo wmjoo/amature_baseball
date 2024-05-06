@@ -135,7 +135,7 @@ with tab1:
         
     st.dataframe(hitter_grpby)
     st.dataframe(pd.concat[hitter_grpby.Team, 
-                           hitter_grpby.rank(ascending=False).drop('Team',axis=1)], axis = 1)
+                           hitter_grpby.rank(ascending=False)], axis = 1)
 
 with tab2:
     st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
