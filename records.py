@@ -11,13 +11,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 warnings.filterwarnings('ignore')
 
-# 한글 폰트 설정
-# plt.rc('font', family='NanumGothic') # or the name of the font you have installed
-
-st.set_page_config(
-        page_title="Baseball Data",
-)
-st.title('성남(토요)리그 DATA')
+st.set_page_config(page_title="Baseball Data",)
+st.title('Sat League Data')
 
 # DATE_COLUMN = 'date/time'
 team_id_dict = {
