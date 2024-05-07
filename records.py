@@ -117,10 +117,10 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체타자", "성남:전
 
 with tab1:
     tab1_1, tab1_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
-        with tab1_1:
-            st.write('Tab In Tab #1-1')
-        with tab1_2:
-            st.write('Tab In Tab #1-2')
+    with tab1_1:
+        st.write('Tab In Tab #1-1')
+    with tab1_2:
+        st.write('Tab In Tab #1-2')
 
     st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
     st.dataframe(df_hitter)
