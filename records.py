@@ -201,9 +201,9 @@ with tab3:
     df_plot = df_hitter
     col1, col2, col3 = st.columns(3)
     with col1:        # 데이터셋 선택을 위한 토글 버튼
-        dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
+        dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice')
     with col2:         # 그래프 유형 선택을 위한 토글 버튼
-        graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
+        graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'), key = 'graph_type')
     with col3:
         colsNo = st.selectbox('한 줄에 몇개의 그래프를 표시할까요? (1~4열):', options=[1, 2, 3, 4], index=2)
 
@@ -246,9 +246,9 @@ with tab3:
 with tab4:
     col4_1, col4_2 = st.columns(2)
     with col4_1:        # 데이터셋 선택을 위한 토글 버튼
-        dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
+        dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
     with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
-        team_selection = st.radio('팀 선택', ('전체', 'VS'))
+        team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
 
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '투수':
