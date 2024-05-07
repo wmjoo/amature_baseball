@@ -257,9 +257,9 @@ with tab_sn_vs:
         if team_selection_rader == 'VS':
             # 팀 목록 가져오기
             teams = df_vs['Team'].unique()
-            st.write(teams)
+            # st.write(teams)
             # 스트림릿 셀렉트박스로 팀 선택
-            team1 = st.selectbox('Select Team 1:', options = teams, index=11)
+            team1 = st.selectbox('Select Team 1:', options = teams, index=14)
             team2 = st.selectbox('Select Team 2:', options = teams)
 
     # "Plotting" 버튼 추가
