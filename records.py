@@ -274,6 +274,7 @@ with tab_sn_vs:
             filtered_data = df_vs.copy()
             # 레이더 차트 데이터 준비
             radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            st.write(radar_data)
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
@@ -283,6 +284,7 @@ with tab_sn_vs:
             filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
             # 레이더 차트 데이터 준비
             radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            st.write(radar_data)
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
