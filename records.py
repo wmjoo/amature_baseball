@@ -248,6 +248,10 @@ with tab_sn_vs:
     col4_1, col4_2 = st.columns(2)
     with col4_1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
+        df_vs = hitter_grpby.copy()
+        if dataset_choice_rader == '투수': 
+            df_vs = pitcher_grpby.copy()
+
     with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
         if team_selection_rader == 'VS':
@@ -261,10 +265,8 @@ with tab_sn_vs:
     if st.button('Plotting', key = 'vs_rader_btn'):
         # 선택된 데이터셋에 따라 데이터 프레임 설정
         if dataset_choice_rader == '투수':
-            df_vs = pitcher_grpby.copy()
             selected_cols = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']
         else:
-            df_vs = hitter_grpby.copy()
             selected_cols = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
 
         if team_selection_rader == '전체':
