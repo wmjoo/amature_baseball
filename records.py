@@ -171,6 +171,7 @@ with tab1:
         ) 
 
 with tab2:
+    tab2_1, tab2_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
     with tab2_1:
         team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
         # 팀명을 기준으로 데이터 프레임 필터링
