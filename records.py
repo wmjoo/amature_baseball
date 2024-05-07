@@ -226,7 +226,7 @@ with tab3:
         axs = axs.reshape(-1)
 
     # "Plotting" 버튼 추가
-    if st.button('Plotting'):
+    if st.button('Plotting', key = 'dist_btn'):
         for i, var in enumerate(numeric_columns):
             ax = axs[i]
             if graph_type == '히스토그램':
@@ -252,7 +252,7 @@ with tab_sn_vs:
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
 
     # "Plotting" 버튼 추가
-    if st.button('Plotting'):
+    if st.button('Plotting', key = 'vs_rader_btn'):
         # 선택된 데이터셋에 따라 데이터 프레임 설정
         if dataset_choice_rader == '투수':
             df_vs = pitcher_grpby.copy()
