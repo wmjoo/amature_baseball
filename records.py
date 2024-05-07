@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
@@ -251,7 +252,24 @@ with tab4:
         st.pyplot(fig)
 
 with tab5:
-    st.subheader('팀 별 기록 비교')  
+    # 데이터 생성
+    data = {
+        'Team': ['Team1'] * 6 + ['Team2'] * 6 + ['Team3'] * 6 + ['Team4'] * 6 + ['Team5'] * 6 + ['Team6'] * 6 + ['Team7'] * 6 + ['Team8'] * 6 + ['Team9'] * 6 + ['Team10'] * 6 + ['Team11'] * 6 + ['Team12'] * 6,
+        'Stat': ['Speed', 'Strength', 'Agility', 'Endurance', 'Intelligence', 'Luck']*12,
+        'Value': [65, 70, 60, 85, 55, 75, 80, 90, 75, 60, 70, 50, 45, 55, 65, 70, 80, 60, 55, 50, 65, 80, 90, 60, 70, 65, 55, 60, 70, 80, 85, 95, 75, 85, 60, 65, 80, 60, 70, 50, 75, 90, 85, 70, 65, 80, 55, 65, 70, 75, 65, 85, 70, 90, 60, 80, 70, 55, 65, 60, 80, 85, 60, 70, 90, 95, 80]
+    }
+
+    df = pd.DataFrame(data)
+
+    # 레이더 차트 생성
+    fig = px.line_polar(df, r='Value', theta='Stat', color='Team', line_close=True,
+                        color_discrete_sequence=px.colors.sequential.Plasma_r,
+                        template='plotly_dark', title='Team Performance Comparison')
+
+    # 차트 보기
+    # fig.show()
+    st.pyplot(fig)
+
 
 with tab6:
     st.subheader('야구 기록 설명')
