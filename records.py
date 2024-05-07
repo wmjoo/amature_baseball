@@ -251,14 +251,14 @@ with tab4:
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
 
     # 선택된 데이터셋에 따라 데이터 프레임 설정
-    if dataset_choice == '투수':
+    if dataset_choice_rader == '투수':
         df_vs = pitcher_grpby.copy()
     else:
         df_vs = hitter_grpby.copy()
-    if team_selection == '전체':
-        filtered_data = df_vs.copy()
 
-    else: # versus
+    if team_selection_rader == '전체':
+        filtered_data = df_vs.copy()
+    else: # team_selection_rader == 'VS'
         # 팀 목록 가져오기
         teams = df_vs['Team'].unique()
 
