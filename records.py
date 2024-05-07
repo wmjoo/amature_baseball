@@ -4,11 +4,9 @@ import pandas as pd
 import numpy as np
 import requests
 from bs4 import BeautifulSoup
-
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 warnings.filterwarnings('ignore')
