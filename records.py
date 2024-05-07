@@ -112,7 +112,6 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체선수", "성남:팀
 with tab1:
     tab1_1, tab1_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
     with tab1_1:
-        st.write('Tab In Tab #1-1')
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter)
         st.subheader('팀별 기록')
@@ -136,7 +135,6 @@ with tab1:
                             #    ], axis = 1
         )        
     with tab1_2:
-        st.write('Tab In Tab #1-2')
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         st.dataframe(df_pitcher)
         st.subheader('팀별 기록')
@@ -252,16 +250,16 @@ with tab5:
         'Value': [65, 70, 60, 85, 55, 75, 80, 90, 75, 60, 70, 50, 45, 55, 65, 70, 80, 60, 55, 50, 65, 80, 90, 60, 70, 65, 55, 60, 70, 80, 85, 95, 75, 85, 60, 65, 80, 60, 70, 50, 75, 90, 85, 70, 65, 80, 55, 65, 70, 75, 65, 85, 70, 90, 60, 80, 70, 55, 65, 60, 80, 85, 60, 70, 90, 95, 80]
     }
 
-    df = pd.DataFrame(data)
+    df5 = pd.DataFrame(data)
 
     # 레이더 차트 생성
-    fig = px.line_polar(df, r='Value', theta='Stat', color='Team', line_close=True,
+    fig5 = px.line_polar(df5, r='Value', theta='Stat', color='Team', line_close=True,
                         color_discrete_sequence=px.colors.sequential.Plasma_r,
                         template='plotly_dark', title='Team Performance Comparison')
 
     # 차트 보기
     # fig.show()
-    st.pyplot(fig)
+    st.plotly_chart(fig5)
 
 
 with tab6:
