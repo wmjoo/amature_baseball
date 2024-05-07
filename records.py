@@ -287,7 +287,7 @@ with tab_sn_vs:
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
                                 template='plotly_dark', title=f'Team Performance Comparison: {team1} vs {team2}')
-            st.dataframe(pd.concat([df_vs.loc[df_vs.Team == team1, selected_cols].reset_index(drop=True), 
+            st.dataframe(pd.concat([df_vs.loc[df_vs.Team == team1, selected_cols], 
                                     df_vs.loc[df_vs.Team == team2, selected_cols]], axis = 0, reset_index(drop=True)))
         # 차트 보기
         st.plotly_chart(fig, use_container_width=True)
