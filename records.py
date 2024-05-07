@@ -116,10 +116,15 @@ tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체타자", "성남:전
                                               "성남:시각화", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
+    tab1_1, tab1_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
+        with tab1_1:
+            st.write('Tab In Tab #1-1')
+        with tab1_2:
+            st.write('Tab In Tab #1-2')
     st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
     st.dataframe(df_hitter)
     st.subheader('팀별 기록')
-    hitter_sumcols = [    'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
+    hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
     hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
     # 타율(BA), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
@@ -198,21 +203,15 @@ with tab4:
 
 # Tab5 내용 구성 (시각화)
 with tab5:
-    df_plot = df_hitter    
-    st.subheader('야구 통계 시각화')
+    st.subheader('야구 통계 시각화')    
+    df_plot = df_hitter
     col1, col2, col3 = st.columns(3)
-
-    with col1:
-        # 데이터셋 선택을 위한 토글 버튼
+    with col1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
-
-    with col2:
-        # 그래프 유형 선택을 위한 토글 버튼
+    with col2:         # 그래프 유형 선택을 위한 토글 버튼
         graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
-
     with col3:
-        colsNo = st.selectbox('1부터 4 사이의 숫자를 선택하세요:',
-                              options=[1, 2, 3, 4], index=2)
+        colsNo = st.selectbox('1부터 4 사이의 숫자를 선택하세요:', options=[1, 2, 3, 4], index=2)
 
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '투수':
