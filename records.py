@@ -247,23 +247,26 @@ with tab4:
     with col4_1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
     with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
-        graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
+        team_selection = st.radio('팀 선택', ('전체', 'VS'))
 
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '투수':
         df_vs = pitcher_grpby.copy()
     else:
         df_vs = hitter_grpby.copy()
+    if team_selection == '전체':
+        filtered_data = df_vs.copy()
 
-    # 팀 목록 가져오기
-    teams = df_vs['Team'].unique()
+    else: # versus
+        # 팀 목록 가져오기
+        teams = df_vs['Team'].unique()
 
-    # 스트림릿 셀렉트박스로 팀 선택
-    team1 = st.selectbox('Select Team 1:', teams)
-    team2 = st.selectbox('Select Team 2:', teams)
+        # 스트림릿 셀렉트박스로 팀 선택
+        team1 = st.selectbox('Select Team 1:', teams)
+        team2 = st.selectbox('Select Team 2:', teams)
 
-    # 선택된 팀 데이터 필터링
-    filtered_data = df_vs[df_vs['Team'].isin([team1, team2])]
+        # 선택된 팀 데이터 필터링
+        filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
 
     # 레이더 차트 데이터 준비
     radar_data = filtered_data[['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
