@@ -106,8 +106,8 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 ## 탭 설정
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:ㅇㅇ", 
-                                              "성남:시각화", "성남:팀비교", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "성남:팀비교", 
+                                                "성남:ㅇㅇ", , "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
     tab1_1, tab1_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -196,9 +196,6 @@ with tab2:
         st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P])
 
 with tab3:
-    st.subheader('빈 칸')    
-
-with tab4:
     st.subheader('야구 통계 시각화')    
     df_plot = df_hitter
     col1, col2, col3 = st.columns(3)
@@ -245,20 +242,44 @@ with tab4:
         plt.tight_layout()
         st.pyplot(fig)
 
-with tab5:
-    # 데이터 생성
-    df5 = pitcher_grpby #pd.DataFrame(data)
+with tab4:
+    col4_1, col4_2 = st.columns(2)
+    with col4_1:        # 데이터셋 선택을 위한 토글 버튼
+        dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
+    with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
+        graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
+with col3:
+    colsNo = st.selectbox('한 줄에 몇개의 그래프를 표시할까요? (1~4열):', options=[1, 2, 3, 4], index=2)
+
+    # 선택된 데이터셋에 따라 데이터 프레임 설정
+    if dataset_choice == '투수':
+        df_vs = pitcher_grpby.copy()
+    else:
+        df_vs = hitter_grpby.copy()
+
+    # 팀 목록 가져오기
+    teams = df_vs['Team'].unique()
+
+    # 스트림릿 셀렉트박스로 팀 선택
+    team1 = st.selectbox('Select Team 1:', teams)
+    team2 = st.selectbox('Select Team 2:', teams)
+
+    # 선택된 팀 데이터 필터링
+    filtered_data = df_vs[df_vs['Team'].isin([team1, team2])]
+
+    # 레이더 차트 데이터 준비
+    radar_data = filtered_data[['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
 
     # 레이더 차트 생성
-    fig5 = px.line_polar(df5, r='Value', theta='Stat', color='Team', line_close=True,
+    fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                         color_discrete_sequence=px.colors.sequential.Plasma_r,
-                        template='plotly_dark', title='Team Performance Comparison')
+                        template='plotly_dark', title=f'Team Performance Comparison: {team1} vs {team2}')
 
     # 차트 보기
-    st.write(df5)
-    # fig.show()
-    st.plotly_chart(fig5, use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
+with tab5:
+    st.subheader('빈 칸')    
 
 with tab6:
     st.subheader('야구 기록 설명')
