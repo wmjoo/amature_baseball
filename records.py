@@ -258,8 +258,9 @@ with tab5:
                         template='plotly_dark', title='Team Performance Comparison')
 
     # 차트 보기
+    st.write(df5)
     # fig.show()
-    st.plotly_chart(fig5)
+    st.plotly_chart(fig5, use_container_width=True)
 
 
 with tab6:
