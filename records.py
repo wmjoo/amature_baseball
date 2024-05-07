@@ -106,7 +106,7 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 ## 탭 설정
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "성남:팀비교", 
+tab1, tab2, tab3, tab_sn_vs, tab5, tab6 = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "성남:팀비교", 
                                                 "성남:ㅇㅇ", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
 with tab1:
@@ -243,7 +243,7 @@ with tab3:
         plt.tight_layout()
         st.pyplot(fig)
 
-with tab4:
+with tab_sn_vs:
     col4_1, col4_2 = st.columns(2)
     with col4_1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
@@ -255,29 +255,33 @@ with tab4:
         # 선택된 데이터셋에 따라 데이터 프레임 설정
         if dataset_choice_rader == '투수':
             df_vs = pitcher_grpby.copy()
+            selected_cols = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']
         else:
             df_vs = hitter_grpby.copy()
+            selected_cols = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
 
         if team_selection_rader == '전체':
             filtered_data = df_vs.copy()
-        else: # team_selection_rader == 'VS'
+            # 레이더 차트 데이터 준비
+            radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            # 레이더 차트 생성
+            fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
+                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                template='plotly_dark', title=f'Team Performance Comparison')            
+        else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 팀 목록 가져오기
             teams = df_vs['Team'].unique()
-
             # 스트림릿 셀렉트박스로 팀 선택
             team1 = st.selectbox('Select Team 1:', teams)
             team2 = st.selectbox('Select Team 2:', teams)
-
             # 선택된 팀 데이터 필터링
             filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
-
-        # 레이더 차트 데이터 준비
-        radar_data = filtered_data[['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-
-        # 레이더 차트 생성
-        fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
-                            color_discrete_sequence=px.colors.sequential.Plasma_r,
-                            template='plotly_dark', title=f'Team Performance Comparison: {team1} vs {team2}')
+            # 레이더 차트 데이터 준비
+            radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            # 레이더 차트 생성
+            fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
+                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                template='plotly_dark', title=f'Team Performance Comparison: {team1} vs {team2}')
 
         # 차트 보기
         st.plotly_chart(fig, use_container_width=True)
