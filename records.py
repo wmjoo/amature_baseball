@@ -250,6 +250,12 @@ with tab_sn_vs:
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
     with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
+        if team_selection_rader == 'VS':
+            # 팀 목록 가져오기
+            teams = df_vs['Team'].unique()
+            # 스트림릿 셀렉트박스로 팀 선택
+            team1 = st.selectbox('Select Team 1:', teams)
+            team2 = st.selectbox('Select Team 2:', teams)
 
     # "Plotting" 버튼 추가
     if st.button('Plotting', key = 'vs_rader_btn'):
@@ -270,11 +276,6 @@ with tab_sn_vs:
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
                                 template='plotly_dark', title=f'Team Performance Comparison')            
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
-            # 팀 목록 가져오기
-            teams = df_vs['Team'].unique()
-            # 스트림릿 셀렉트박스로 팀 선택
-            team1 = st.selectbox('Select Team 1:', teams)
-            team2 = st.selectbox('Select Team 2:', teams)
             # 선택된 팀 데이터 필터링
             filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
             # 레이더 차트 데이터 준비
