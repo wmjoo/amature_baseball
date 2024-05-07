@@ -244,6 +244,7 @@ with tab3:
         st.pyplot(fig)
 
 with tab_sn_vs:
+    st.subheader('팀 간 전력 비교')      
     col4_1, col4_2 = st.columns(2)
     with col4_1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
