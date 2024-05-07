@@ -248,8 +248,6 @@ with tab4:
         dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'))
     with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
         graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'))
-with col3:
-    colsNo = st.selectbox('한 줄에 몇개의 그래프를 표시할까요? (1~4열):', options=[1, 2, 3, 4], index=2)
 
     # 선택된 데이터셋에 따라 데이터 프레임 설정
     if dataset_choice == '투수':
