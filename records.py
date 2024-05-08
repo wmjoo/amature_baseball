@@ -259,7 +259,7 @@ with tab_sn_viz:
 # [0:"Team"1:"ERA"2:"WHIP"3:"H/IP"4:"BB/IP"5:"GS"6:"W"7:"L"8:"SV"9:"HLD"10:"BF"11:"AB"12:"P"13:"HA"
 # 14:"HR"15:"SH"16:"SF"17:"BB"18:"IBB"19:"HBP"20:"SO"21:"WP"22:"BK"23:"R"24:"ER"25:"IP"26:"SO/IP"]
 with tab_sn_vs:
-    template_input = 'ggplot2'    
+    template_input = 'plotly_white'    
     st.subheader('팀 간 전력 비교')      
     
     tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
