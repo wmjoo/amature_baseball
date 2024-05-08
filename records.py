@@ -167,15 +167,16 @@ with tab_sn_players:
         rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_p = ['IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
-        st.write(list(rank_by_descending_cols_p + rank_by_ascending_cols_p))
-        st.write(pitcher_grpby.loc[:, ['Team'] + rank_by_descending_cols_p + rank_by_ascending_cols_p])
+        # 출력시 열 순서 변경
+        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] 
+        st.write(pitcher_grpby.loc[:, rank_by_cols_p_sorted])
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
                                         pitcher_grpby[rank_by_descending_cols_p].rank(method = 'min', ascending=False),
                                         pitcher_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
                                     ], axis = 1)
         st.write('Ranking')
-        st.dataframe(pitcher_grpby_rank)
+        st.dataframe(pitcher_grpby_rank.loc[:, rank_by_cols_p_sorted])
 
 with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
