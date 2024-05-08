@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 st.set_page_config(page_title="Baseball Data",)
-st.title('Sat League Data')
+st.title('Saturday League Data')
 
 # DATE_COLUMN = 'date/time'
 team_id_dict = {
@@ -105,9 +105,8 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 # IP 컬럼을 올바른 소수 형태로 변환
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
-## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_vs, tab5, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "성남:팀비교", 
-                                                "성남:ㅇㅇ", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
+## 탭 설정 ]]]]]]]]]
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_void, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "용어", "void"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -198,133 +197,131 @@ with tab_sn_teamwise:
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
 
 with tab_sn_viz:
-    st.subheader('시각화')    
-    df_plot = df_hitter
-    tab_sn_viz_col1, tab_sn_viz_col2, tab_sn_viz_col3 = st.columns(3)
-    with tab_sn_viz_col1:        # 데이터셋 선택을 위한 토글 버튼
-        dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice')
-    with tab_sn_viz_col2:         # 그래프 유형 선택을 위한 토글 버튼
-        graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'), key = 'graph_type')
-    with tab_sn_viz_col3:
-        colsNo = st.selectbox('한 줄에 몇개의 그래프를 표시할까요? (1~4열):', options=[1, 2, 3, 4], index=2)
+    tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "성남:팀별투수"])
+    with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
+        st.subheader('선수별 기록 분포 시각화')    
+        df_plot = df_hitter
+        tab_sn_viz_col1, tab_sn_viz_col2, tab_sn_viz_col3 = st.columns(3)
+        with tab_sn_viz_col1:        # 데이터셋 선택을 위한 토글 버튼
+            dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice')
+        with tab_sn_viz_col2:         # 그래프 유형 선택을 위한 토글 버튼
+            graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'), key = 'graph_type')
+        with tab_sn_viz_col3:
+            colsNo = st.selectbox('한 줄에 몇개의 그래프를 표시할까요? (1~4열):', options=[1, 2, 3, 4], index=2)
 
-    # 선택된 데이터셋에 따라 데이터 프레임 설정
-    if dataset_choice == '투수':
-        df_plot = df_pitcher.copy()
-    else:
-        df_plot = df_hitter.copy()
-
-    numeric_columns = df_plot.select_dtypes(include=['float', 'int']).columns
-    rows = (len(numeric_columns) + colsNo - 1) // colsNo
-    fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
-
-    # axs가 1차원 배열일 경우 처리
-    if rows * colsNo == 1:
-        axs = [axs]
-    elif rows == 1 or colsNo == 1:
-        axs = axs.flatten()
-    else:
-        axs = axs.reshape(-1)
-
-    # "Plotting" 버튼 추가
-    if st.button('Plotting', key = 'dist_btn'):
-        for i, var in enumerate(numeric_columns):
-            ax = axs[i]
-            if graph_type == '히스토그램':
-                sns.histplot(df_plot[var].dropna(), kde=False, ax=ax)
-                ax.set_title(f'{var}')
-            elif graph_type == '박스플롯':
-                sns.boxplot(x=df_plot[var].dropna(), ax=ax)
-                ax.set_title(f'{var}')
-
-        # 빈 서브플롯 숨기기
-        for j in range(len(numeric_columns), rows * colsNo):
-            axs[j].set_visible(False)
-
-        plt.tight_layout()
-        st.pyplot(fig)
-
-### template_input 
-# plotly - Plotly의 기본 템플릿.
-# plotly_white - 배경이 하얀색인 깔끔한 템플릿.
-# plotly_dark - 배경이 어두운색인 템플릿.
-# ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.
-# seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.
-# simple_white - 매우 단순하고 깨끗한 템플릿.
-# none - 최소한의 스타일로, 사용자가 자신만의 스타일을 쉽게 추가할 수 있게 해줍니다
-
-# [0:"Team"1:"BA"2:"OBP"3:"SLG"4:"OPS"5:"PA"6:"AB"7:"R"8:"H"9:"1B"10:"2B"11:"3B"12:"HR"13:"TB"
-# 14:"RBI"15:"SB"16:"CS"17:"SH"18:"SF"19:"BB"20:"IBB"21:"HBP"22:"SO"23:"DP"24:"MHit"]
-
-# [0:"Team"1:"ERA"2:"WHIP"3:"H/IP"4:"BB/IP"5:"GS"6:"W"7:"L"8:"SV"9:"HLD"10:"BF"11:"AB"12:"P"13:"HA"
-# 14:"HR"15:"SH"16:"SF"17:"BB"18:"IBB"19:"HBP"20:"SO"21:"WP"22:"BK"23:"R"24:"ER"25:"IP"26:"SO/IP"]
-with tab_sn_vs:
-    template_input = 'plotly_white'    
-    st.subheader('팀 간 전력 비교')      
-    
-    tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
-    with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
-        team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')        
-    teams = hitter_grpby['Team'].unique()
-    with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
-        if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
-            team1 = st.selectbox('Select Team 1:', options = teams, index=14)
-    with tab_sn_vs_col3:  
-        if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
-            team2 = st.selectbox('Select Team 2:', options = teams, index=12)
-
-    # "Plotting" 버튼 추가
-    if st.button('Plotting', key = 'vs_rader_btn'):
         # 선택된 데이터셋에 따라 데이터 프레임 설정
-        selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
-        selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
+        if dataset_choice == '투수':
+            df_plot = df_pitcher.copy()
+        else:
+            df_plot = df_hitter.copy()
 
-        if team_selection_rader == '전체':
-            filtered_data_h = hitter_grpby.copy()
-            radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                template=template_input, title=f'공격력 : [ALL]')   
+        numeric_columns = df_plot.select_dtypes(include=['float', 'int']).columns
+        rows = (len(numeric_columns) + colsNo - 1) // colsNo
+        fig, axs = plt.subplots(rows, colsNo, figsize=(15, 3 * rows))
 
-            filtered_data_p = pitcher_grpby.copy()
-            radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                template=template_input, title=f'수비력 : [ALL]')  
+        # axs가 1차원 배열일 경우 처리
+        if rows * colsNo == 1:
+            axs = [axs]
+        elif rows == 1 or colsNo == 1:
+            axs = axs.flatten()
+        else:
+            axs = axs.reshape(-1)
 
-        else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
-            # 선택된 팀 데이터 필터링
-            filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
-            # st.write(filtered_data_h)
-            # 레이더 차트 데이터 준비
-            radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            # 레이더 차트 생성
-            fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                template=template_input, title=f'공격력 : {team1} vs {team2}')
-            # 선택된 팀 데이터 필터링
-            filtered_data_p = pitcher_grpby[pitcher_grpby['Team'].isin([team1, team2])].copy()
-            # st.write(filtered_data_p)
-            # 레이더 차트 데이터 준비
-            radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            # 레이더 차트 생성
-            fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                template=template_input, title=f'수비력 : {team1} vs {team2}')
-        tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
-        with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
-            if team_selection_rader == 'VS':        
-                st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
-                                    filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
-            st.plotly_chart(fig_h, use_container_width=True)
-        with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
-            if team_selection_rader == 'VS':                
-                st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
-                                    filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
-            st.plotly_chart(fig_p, use_container_width=True)
+        # "Plotting" 버튼 추가
+        if st.button('Plotting', key = 'dist_btn'):
+            for i, var in enumerate(numeric_columns):
+                ax = axs[i]
+                if graph_type == '히스토그램':
+                    sns.histplot(df_plot[var].dropna(), kde=False, ax=ax)
+                    ax.set_title(f'{var}')
+                elif graph_type == '박스플롯':
+                    sns.boxplot(x=df_plot[var].dropna(), ax=ax)
+                    ax.set_title(f'{var}')
 
-with tab5:
-    st.subheader('빈 칸')    
+            # 빈 서브플롯 숨기기
+            for j in range(len(numeric_columns), rows * colsNo):
+                axs[j].set_visible(False)
+
+            plt.tight_layout()
+            st.pyplot(fig)
+
+    ### template_input 
+    # plotly - Plotly의 기본 템플릿.
+    # plotly_white - 배경이 하얀색인 깔끔한 템플릿.
+    # plotly_dark - 배경이 어두운색인 템플릿.
+    # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.
+    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.
+    # simple_white - 매우 단순하고 깨끗한 템플릿.
+    # none - 최소한의 스타일로, 사용자가 자신만의 스타일을 쉽게 추가할 수 있게 해줍니다
+
+    # [0:"Team"1:"BA"2:"OBP"3:"SLG"4:"OPS"5:"PA"6:"AB"7:"R"8:"H"9:"1B"10:"2B"11:"3B"12:"HR"13:"TB"
+    # 14:"RBI"15:"SB"16:"CS"17:"SH"18:"SF"19:"BB"20:"IBB"21:"HBP"22:"SO"23:"DP"24:"MHit"]
+
+    # [0:"Team"1:"ERA"2:"WHIP"3:"H/IP"4:"BB/IP"5:"GS"6:"W"7:"L"8:"SV"9:"HLD"10:"BF"11:"AB"12:"P"13:"HA"
+    # 14:"HR"15:"SH"16:"SF"17:"BB"18:"IBB"19:"HBP"20:"SO"21:"WP"22:"BK"23:"R"24:"ER"25:"IP"26:"SO/IP"]
+    with tab_sn_viz_2: # tab_sn_vs
+        template_input = 'plotly_white'    
+        st.subheader('팀 간 전력 비교')      
+        tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
+        with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
+            team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')        
+        teams = hitter_grpby['Team'].unique()
+        with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
+            if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
+                team1 = st.selectbox('Select Team 1:', options = teams, index=14)
+        with tab_sn_vs_col3:  
+            if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
+                team2 = st.selectbox('Select Team 2:', options = teams, index=12)
+
+        # "Plotting" 버튼 추가
+        if st.button('Plotting', key = 'vs_rader_btn'):
+            # 선택된 데이터셋에 따라 데이터 프레임 설정
+            selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+            selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
+
+            if team_selection_rader == '전체':
+                filtered_data_h = hitter_grpby.copy()
+                radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+                fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
+                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+                                    template=template_input, title=f'공격력 : [ALL]')   
+
+                filtered_data_p = pitcher_grpby.copy()
+                radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+                fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+                                    template=template_input, title=f'수비력 : [ALL]')  
+
+            else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
+                # 선택된 팀 데이터 필터링
+                filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
+                # st.write(filtered_data_h)
+                # 레이더 차트 데이터 준비
+                radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+                # 레이더 차트 생성
+                fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
+                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+                                    template=template_input, title=f'공격력 : {team1} vs {team2}')
+                # 선택된 팀 데이터 필터링
+                filtered_data_p = pitcher_grpby[pitcher_grpby['Team'].isin([team1, team2])].copy()
+                # st.write(filtered_data_p)
+                # 레이더 차트 데이터 준비
+                radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+                # 레이더 차트 생성
+                fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+                                    template=template_input, title=f'수비력 : {team1} vs {team2}')
+            tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
+            with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
+                if team_selection_rader == 'VS':        
+                    st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
+                                        filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
+                st.plotly_chart(fig_h, use_container_width=True)
+            with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
+                if team_selection_rader == 'VS':                
+                    st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
+                                        filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
+                st.plotly_chart(fig_p, use_container_width=True)
 
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
@@ -404,3 +401,7 @@ with tab_sn_terms:
         | K9           | 탈삼진율    | Strikeouts per nine innings    |
         | Team         | 팀          | Team name                      |
         """)
+
+
+with tab_sn_void:
+    st.subheader('빈 칸')    
