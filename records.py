@@ -194,12 +194,12 @@ with tab_sn_teamwise:
 with tab_sn_viz:
     st.subheader('시각화')    
     df_plot = df_hitter
-    col1, col2, col3 = st.columns(3)
-    with col1:        # 데이터셋 선택을 위한 토글 버튼
+    tab_sn_viz_col1, tab_sn_viz_col2, tab_sn_viz_col3 = st.columns(3)
+    with tab_sn_viz_col1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice')
-    with col2:         # 그래프 유형 선택을 위한 토글 버튼
+    with tab_sn_viz_col2:         # 그래프 유형 선택을 위한 토글 버튼
         graph_type = st.radio('그래프 유형', ('히스토그램', '박스플롯'), key = 'graph_type')
-    with col3:
+    with tab_sn_viz_col3:
         colsNo = st.selectbox('한 줄에 몇개의 그래프를 표시할까요? (1~4열):', options=[1, 2, 3, 4], index=2)
 
     # 선택된 데이터셋에 따라 데이터 프레임 설정
