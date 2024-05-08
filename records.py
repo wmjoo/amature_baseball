@@ -326,81 +326,113 @@ with tab_sn_viz:
         if st.button('Plotting', key = 'vs_rader_btn'):
             # 선택된 데이터셋에 따라 데이터 프레임 설정
             selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
-            selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
+            selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']     
+
+            ########################
+            # # 데이터 스케일링(구)   
+            # hitter_grpby_scaled = hitter_grpby.copy()
+            # scaler_h = MinMaxScaler()             # 스케일러 초기화
+            # hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+
+            # pitcher_grpby_scaled = pitcher_grpby.copy()
+            # scaler_p = MinMaxScaler()             # 스케일러 초기화
+            # pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+
+            # if team_all: #if team_selection_rader == '전체':
+            #     filtered_data_h = hitter_grpby_scaled
+            #     radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            #     fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
+            #                         color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+            #                         template=template_input, title=f'공격력')   
+
+            #     filtered_data_p = pitcher_grpby_scaled
+            #     radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            #     fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+            #                         color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+            #                         template=template_input, title=f'수비력')  
+
+            # else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
+            #     # 선택된 팀 데이터 필터링
+            #     filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['Team'].isin([team1, team2])].copy()
+            #     # 레이더 차트 데이터 준비
+            #     radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            #     # 레이더 차트 생성
+            #     fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
+            #                         color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+            #                         template=template_input, title=f'공격력 : {team1} vs {team2}')
+            #     # 선택된 팀 데이터 필터링
+            #     filtered_data_p = pitcher_grpby_scaled[pitcher_grpby_scaled['Team'].isin([team1, team2])].copy()
+            #     # 레이더 차트 데이터 준비
+            #     radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            #     # 레이더 차트 생성
+            #     fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+            #                         color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
+            #                         template=template_input, title=f'수비력 : {team1} vs {team2}')
+            ########################
+
+            # 데이터 스케ㅇ일링
             hitter_grpby_scaled = hitter_grpby.copy()
             scaler_h = MinMaxScaler()             # 스케일러 초기화
             hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
-            pitcher_grpby_scaled = pitcher_grpby_rank.copy()
+            pitcher_grpby_scaled = pitcher_grpby.copy()
             scaler_p = MinMaxScaler()             # 스케일러 초기화
             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
-#             # 스케일링 전 데이터 프레임과 스케일링 후 데이터 프레임을 합칩니다.
-#             hitter_merged = pd.concat([hitter_grpby[selected_cols_h], hitter_grpby_scaled[selected_cols_h]], axis=1)
-#             pitcher_merged = pd.concat([pitcher_grpby[selected_cols_p], pitcher_grpby_scaled[selected_cols_p]], axis=1)
+            # 스케일링 전 데이터 프레임과 스케일링 후 데이터 프레임을 합칩니다.
+            hitter_merged = pd.concat([hitter_grpby[selected_cols_h], hitter_grpby_scaled[selected_cols_h[1:]]], axis=1) # 2th df에서는 Team col 제외하기 위해서 처리
+            pitcher_merged = pd.concat([pitcher_grpby[selected_cols_p], pitcher_grpby_scaled[selected_cols_p[1:]]], axis=1)
 
-#             # 원본 데이터와 스케일된 데이터를 구분할 새로운 컬럼 이름 리스트 생성
-#             new_columns_h_raw = [f'{col}_raw' for col in selected_cols_h[1:]]  # 원본 데이터 컬럼
-#             new_columns_h_scaled = [f'{col}_scaled' for col in selected_cols_h[1:]]  # 스케일된 데이터 컬럼
+            # 원본 데이터와 스케일된 데이터를 구분할 새로운 컬럼 이름 리스트 생성
+            new_columns_h_raw = [f'{col}_raw' for col in selected_cols_h[1:]]  # 원본 데이터 컬럼
+            new_columns_h_scaled = [f'{col}_scaled' for col in selected_cols_h[1:]]  # 스케일된 데이터 컬럼
 
-#             new_columns_p_raw = [f'{col}_raw' for col in selected_cols_p[1:]]  # 원본 데이터 컬럼
-#             new_columns_p_scaled = [f'{col}_scaled' for col in selected_cols_p[1:]]  # 스케일된 데이터 컬럼
+            new_columns_p_raw = [f'{col}_raw' for col in selected_cols_p[1:]]  # 원본 데이터 컬럼
+            new_columns_p_scaled = [f'{col}_scaled' for col in selected_cols_p[1:]]  # 스케일된 데이터 컬럼
 
-#             # 원본 데이터프레임에 새로운 컬럼 이름 적용
-#             hitter_merged.columns = ['Team'] + new_columns_h_raw + new_columns_h_scaled
-#             pitcher_merged.columns = ['Team'] + new_columns_p_raw + new_columns_p_scaled
+            # 원본 데이터프레임에 새로운 컬럼 이름 적용
+            hitter_merged.columns = ['Team'] + new_columns_h_raw + new_columns_h_scaled
+            pitcher_merged.columns = ['Team'] + new_columns_p_raw + new_columns_p_scaled
 
-#             # 레이더 차트 생성 부분 개선
-#             for df, title, team_comparison, cols in zip([hitter_merged, pitcher_merged], ['공격력', '수비력'], [team1, team2], [selected_cols_h, selected_cols_p]):
-#                 if not team_all:
-#                     filtered_data = df[df['Team'].isin([team1, team2])]
-#                 else:
-#                     filtered_data = df
+            # 타자 데이터에 대한 레이더 차트 생성
+            if not team_all:
+                filtered_data_h = hitter_merged[hitter_merged['Team'].isin([team1, team2])]
+            else:
+                filtered_data_h = hitter_merged
 
-#                 # melt 함수 사용 시, 적절한 컬럼 참조
-#                 radar_data = filtered_data.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
-#                 radar_data['Stat'] = radar_data['Stat'].apply(lambda x: x.replace('_raw', '').replace('_scaled', ''))
+            # melt 함수 사용 시, 적절한 컬럼 참조
+            radar_data_h = filtered_data_h.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
+            radar_data_h['Stat'] = radar_data_h['Stat'].apply(lambda x: x.replace('_raw', '').replace('_scaled', ''))
 
-#                 fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
-#                                     color_discrete_sequence=px.colors.qualitative.D3,
-#                                     template=template_input, title=title)
+            fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
+                                color_discrete_sequence=px.colors.qualitative.D3,
+                                template=template_input, title='공격력')
 
-#                 # 호버 데이터 수정
-#                 fig.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
-                
-#                 # 차트 표시
-#                 st.plotly_chart(fig, use_container_width=True)
+            # 호버 데이터 수정
+            fig_h.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
 
-            if team_all: #if team_selection_rader == '전체':
-                filtered_data_h = hitter_grpby_scaled
-                radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-                fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                    template=template_input, title=f'공격력')   
+            # 차트 표시
+            # st.plotly_chart(fig_h, use_container_width=True)
 
-                filtered_data_p = pitcher_grpby_scaled
-                radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-                fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                    template=template_input, title=f'수비력')  
+            # 투수 데이터에 대한 레이더 차트 생성
+            if not team_all:
+                filtered_data_p = pitcher_merged[pitcher_merged['Team'].isin([team1, team2])]
+            else:
+                filtered_data_p = pitcher_merged
 
-            else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
-                # 선택된 팀 데이터 필터링
-                filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['Team'].isin([team1, team2])].copy()
-                # 레이더 차트 데이터 준비
-                radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-                # 레이더 차트 생성
-                fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                    template=template_input, title=f'공격력 : {team1} vs {team2}')
-                # 선택된 팀 데이터 필터링
-                filtered_data_p = pitcher_grpby_scaled[pitcher_grpby_scaled['Team'].isin([team1, team2])].copy()
-                # 레이더 차트 데이터 준비
-                radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-                # 레이더 차트 생성
-                fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                    color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                    template=template_input, title=f'수비력 : {team1} vs {team2}')
+            # melt 함수 사용 시, 적절한 컬럼 참조
+            radar_data_p = filtered_data_p.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
+            radar_data_p['Stat'] = radar_data_p['Stat'].apply(lambda x: x.replace('_raw', '').replace('_scaled', ''))
+
+            fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+                                color_discrete_sequence=px.colors.qualitative.D3,
+                                template=template_input, title='수비력')
+
+            # 호버 데이터 수정
+            fig_p.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
+
+            # 차트 표시
+            # st.plotly_chart(fig_p, use_container_width=True)
 
             ## Chart AND Dataframe display Area
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
