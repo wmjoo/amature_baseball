@@ -341,33 +341,38 @@ with tab_sn_viz:
             hitter_merged = pd.concat([hitter_grpby[selected_cols_h], hitter_grpby_scaled[selected_cols_h]], axis=1)
             pitcher_merged = pd.concat([pitcher_grpby[selected_cols_p], pitcher_grpby_scaled[selected_cols_p]], axis=1)
 
-            # 컬럼 이름을 재정의하여 구분을 쉽게 합니다.
-            new_columns_h = [f'{col}_raw' for col in selected_cols_h[1:]] + [f'{col}_scaled' for col in selected_cols_h[1:]]
-            new_columns_p = [f'{col}_raw' for col in selected_cols_p[1:]] + [f'{col}_scaled' for col in selected_cols_p[1:]]
+            # 원본 데이터와 스케일된 데이터를 구분할 새로운 컬럼 이름 리스트 생성
+            new_columns_h_raw = [f'{col}_raw' for col in selected_cols_h[1:]]  # 원본 데이터 컬럼
+            new_columns_h_scaled = [f'{col}_scaled' for col in selected_cols_h[1:]]  # 스케일된 데이터 컬럼
 
-            hitter_merged.columns = ['Team'] + new_columns_h
-            pitcher_merged.columns = ['Team'] + new_columns_p
+            new_columns_p_raw = [f'{col}_raw' for col in selected_cols_p[1:]]  # 원본 데이터 컬럼
+            new_columns_p_scaled = [f'{col}_scaled' for col in selected_cols_p[1:]]  # 스케일된 데이터 컬럼
 
-            # 레이더 차트를 그립니다.
+            # 원본 데이터프레임에 새로운 컬럼 이름 적용
+            hitter_merged.columns = ['Team'] + new_columns_h_raw + new_columns_h_scaled
+            pitcher_merged.columns = ['Team'] + new_columns_p_raw + new_columns_p_scaled
+
+            # 레이더 차트 생성 부분 개선
             for df, title, team_comparison, cols in zip([hitter_merged, pitcher_merged], ['공격력', '수비력'], [team1, team2], [selected_cols_h, selected_cols_p]):
-                if not team_all: # 2개팀을 비교할 경우
+                if not team_all:
                     filtered_data = df[df['Team'].isin([team1, team2])]
-                else: # 전체 팀 데이터
+                else:
                     filtered_data = df
 
+                # melt 함수 사용 시, 적절한 컬럼 참조
                 radar_data = filtered_data.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
-                radar_data['Stat'] = radar_data['Stat'].apply(lambda x: x.split('_')[0])
-                radar_data['Type'] = radar_data['Stat'].apply(lambda x: 'Raw' if 'raw' in x else 'Scaled')
+                radar_data['Stat'] = radar_data['Stat'].apply(lambda x: x.replace('_raw', '').replace('_scaled', ''))
 
                 fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3,
                                     template=template_input, title=title)
-                
-                # 호버 데이터 추가
+
+                # 호버 데이터 수정
                 fig.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
                 
                 # 차트 표시
                 st.plotly_chart(fig, use_container_width=True)
+
 
 # '''
 
