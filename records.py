@@ -142,7 +142,20 @@ with tab_sn_players:
                                         hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
                                     ], axis = 1)
         st.write('Ranking')
-        st.dataframe(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted])            
+        st.dataframe(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted])    
+        # 히트맵 시각화 팀별 랭킹        
+        st.title("Heatmap")
+        # 커스텀 컬러맵 생성
+        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # 히트맵 생성
+        plt.figure(figsize=(10, 8))
+        plt = sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
+        plt.tight_layout()
+        plt = create_heatmap(hitter_grpby_rank, cmap)
+        # Streamlit에 표시
+        st.pyplot(plt)
+
 
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
