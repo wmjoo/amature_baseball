@@ -130,7 +130,7 @@ with tab_sn_players:
             hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
             
         st.dataframe(hitter_grpby)
-        st.dataframe(pd.concat[hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1)
+        st.dataframe(pd.concat([hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
 
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
@@ -163,7 +163,7 @@ with tab_sn_players:
         
         # 결과 확인
         st.write(pitcher_grpby)
-        st.dataframe(pd.concat[pitcher_grpby.Team, pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1)
+        st.dataframe(pd.concat([pitcher_grpby.Team, pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
 
 with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
@@ -272,7 +272,7 @@ with tab_sn_vs:
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template='seaborn', title=f'Team Performance Comparison')            
+                                template='seaborn', title=f'Team Performance Comparison [ALL Temas]')            
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
             filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
