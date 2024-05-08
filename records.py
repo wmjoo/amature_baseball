@@ -133,8 +133,8 @@ with tab_sn_players:
         rank_by_descending_cols_h = ['BA', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
                     '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
         # 출력시 열 순서 변경
-        rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 
-                                'BA', 'R', 'H', 'MHit', '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB'] 
+        rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
+                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB'] 
         st.write(hitter_grpby.loc[:, rank_by_cols_h_sorted])
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
