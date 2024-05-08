@@ -420,7 +420,7 @@ with tab_sn_viz:
                     name=team,
                     customdata=team_data[['RawValue', 'Team']],
                     hovertemplate='<b>%{theta}</b>: %{customdata[0]}<br><b>Team</b>: %{customdata[1]}<extra></extra>',
-                    line_close=True
+                    # line_close=True
                 ))
 
             # 그래프 스타일 설정
@@ -473,7 +473,7 @@ with tab_sn_viz:
                     name=team,
                     customdata=team_data[['RawValue', 'Team']],
                     hovertemplate='<b>%{theta}</b>: %{customdata[0]}<br><b>Team</b>: %{customdata[1]}<extra></extra>',
-                    line_close=True
+                    # line_close=True
                 ))
 
             # 그래프 스타일 설정
