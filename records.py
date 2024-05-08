@@ -223,6 +223,7 @@ with tab_sn_players:
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)        
 
+
 with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
     with tab_sn_teamwise_1:
@@ -250,6 +251,7 @@ with tab_sn_teamwise:
         st.write(DATA_URL_P) 
         st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, ['Team']+rank_by_cols_p_sorted])
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
+
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
