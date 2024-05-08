@@ -425,11 +425,11 @@ with tab_sn_viz:
 
             # 스케일된 값으로 레이더 데이터 준비
             radar_data_p = filtered_data_p.melt(id_vars=['Team'], value_vars=[col for col in filtered_data_p.columns if 'scaled' in col], var_name='Stat', value_name='Value')
-            st.write(radar_data_p)
             # 원본 값 데이터 추가
             radar_data_p['RawValue'] = filtered_data_p.melt(value_vars=[col for col in filtered_data_p.columns if 'raw' in col])['value']
             radar_data_p['Stat'] = radar_data_p['Stat'].apply(lambda x: x.replace('_scaled', ''))
-
+            st.write(radar_data_p)
+            
             fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.qualitative.D3,
                                 template=template_input, title='수비력')
