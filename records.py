@@ -134,13 +134,12 @@ with tab_sn_players:
                     '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 
-                                'BA', 'OBP', 'SLG', 'OPS', 'R', 'H', 'MHit', 
-                                '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB'] 
+                                'BA', 'R', 'H', 'MHit', '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB'] 
         st.write(hitter_grpby.loc[:, rank_by_cols_h_sorted])
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
-                                        hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=False),
-                                        hitter_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
+                                        hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
+                                        hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
                                     ], axis = 1)
         st.write('Ranking')
         st.dataframe(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted])            
