@@ -106,7 +106,7 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 ## 탭 설정 ]]]]]]]]]
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_void, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "용어", "void"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_sn_void = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "용어", "void"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -161,10 +161,18 @@ with tab_sn_players:
             if col in pitcher_grpby.columns:
                 team_idx = pitcher_grpby.columns.get_loc('Team') + 1
                 pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
-        
+        ,  , , , 
         # 결과 확인
         st.write(pitcher_grpby)
-        pitcher_grpby_rank = pd.concat([pitcher_grpby.Team, pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1)
+        # rank_by_ascending, rank_by_descending columns 
+        rank_by_ascending_cols = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BF', 'AB', 'P', 'HA', 'HR', 
+                                    'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
+        rank_by_descending_cols = ['IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
+        pitcher_grpby_rank = pd.concat([
+                                        pitcher_grpby.Team, 
+                                        pitcher_grpby[rank_by_descending_cols].rank(method = 'min', ascending=False),
+                                        pitcher_grpby[rank_by_ascending_cols].rank(method = 'min', ascending=True)
+                                    ], axis = 1)
         st.write('Ranking')
         st.dataframe(pitcher_grpby_rank)
 
@@ -197,7 +205,7 @@ with tab_sn_teamwise:
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
 
 with tab_sn_viz:
-    tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "성남:팀별투수"])
+    tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
         st.subheader('선수별 기록 분포 시각화')    
         df_plot = df_hitter
@@ -284,13 +292,13 @@ with tab_sn_viz:
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                    template=template_input, title=f'공격력 : [ALL]')   
+                                    template=template_input, title=f'공격력')   
 
                 filtered_data_p = pitcher_grpby.copy()
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
-                                    template=template_input, title=f'수비력 : [ALL]')  
+                                    template=template_input, title=f'수비력')  
 
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
@@ -316,11 +324,15 @@ with tab_sn_viz:
                 if team_selection_rader == 'VS':        
                     st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
                                         filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
+                else :
+                    st.dataframe(filtered_data_h[selected_cols_h])
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
                 if team_selection_rader == 'VS':                
                     st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
                                         filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
+                else :
+                    st.dataframe(filtered_data_p[selected_cols_p])
                 st.plotly_chart(fig_p, use_container_width=True)
 
 with tab_sn_terms:
@@ -374,20 +386,20 @@ with tab_sn_terms:
         | Name         | 성명        | Player's name                  |
         | No           | 배번        | Jersey number                  |
         | ERA          | 방어율      | Earned run average             |
+        | WHIP         | WHIP        | Walks plus hits per inning    |
+        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         | GS           | 경기수      | Games started                  |
         | W            | 승          | Wins                           |
         | L            | 패          | Losses                         |
         | SV           | 세          | Saves                          |
         | HLD          | 홀드        | Holds                          |
-        | WPCT         | 승률        | Winning percentage             |
         | BF           | 타자        | Batters faced                  |
         | AB           | 타수        | At bats against                |
         | P            | 투구수      | Pitches thrown                 |
-        | IP           | 이닝        | Innings pitched                |
         | HA           | 피안타      | Hits allowed                   |
         | HR           | 피홈런      | Home runs allowed              |
-        | SH           | 희타        | Sacrifice hits allowed         |
-        | SF           | 희비        | Sacrifice flies allowed        |
+        | SH           | 희생타        | Sacrifice hits allowed         |
+        | SF           | 희생플라이     | Sacrifice flies allowed        |
         | BB           | 볼넷        | Walks allowed                  |
         | IBB          | 고의4구     | Intentional walks allowed      |
         | HBP          | 사구        | Hit by pitch allowed           |
@@ -396,10 +408,8 @@ with tab_sn_terms:
         | BK           | 보크        | Balks                          |
         | R            | 실점        | Runs allowed                   |
         | ER           | 자책점      | Earned runs allowed            |
-        | WHIP         | WHIP        | Walks plus hits per inning     |
-        | BAA          | 피안타율    | Batting average against        |
-        | K9           | 탈삼진율    | Strikeouts per nine innings    |
-        | Team         | 팀          | Team name                      |
+        | IP           | 이닝        | Innings pitched                |    
+        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
 
 
