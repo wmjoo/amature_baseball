@@ -155,8 +155,9 @@ with tab_sn_players:
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
         df = hitter_grpby_rank.drop('Team', axis = 1).copy()
-        team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
-        df.set_index(team_englist, inplace=True)
+        # team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
+        df['team_eng'] = team_englist
+        df.set_index('team_eng', inplace=True)
         # 커스텀 컬러맵 생성
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
