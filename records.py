@@ -151,9 +151,9 @@ with tab_sn_players:
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
         # 히트맵 생성
         plt.figure(figsize=(10, 8))
-        plt = sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
+        plt = sns.heatmap(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted], 
+                            annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
         plt.tight_layout()
-        plt = create_heatmap(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted], cmap)
         # Streamlit에 표시
         st.pyplot(plt)
 
