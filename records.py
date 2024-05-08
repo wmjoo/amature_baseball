@@ -167,7 +167,7 @@ with tab_sn_players:
         rank_by_ascending_cols = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
         rank_by_descending_cols = ['IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
-        st.write(pitcher_grpby.loc[['Team'] + rank_by_descending_cols + rank_by_descending_cols])
+        st.write(pitcher_grpby.loc[:, ['Team'] + rank_by_descending_cols + rank_by_descending_cols])
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
                                         pitcher_grpby[rank_by_descending_cols].rank(method = 'min', ascending=False),
