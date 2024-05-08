@@ -127,12 +127,7 @@ with tab_sn_players:
         for col in ['OPS', 'SLG', 'OBP', 'BA']:
             team_idx = hitter_grpby.columns.get_loc('Team') + 1
             hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
-            
-        # st.dataframe(hitter_grpby)
-        # hitter_grpby_rank = (pd.concat([hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
-        # st.write('Ranking')
-        st.dataframe(hitter_grpby_rank)    
-
+  
         # rank_by_ascending, rank_by_descending columns 
         rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_h = ['BA', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
@@ -141,7 +136,7 @@ with tab_sn_players:
         rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 
                                 'BA', 'OBP', 'SLG', 'OPS', 'R', 'H', 'MHit', 
                                 '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB'] 
-        st.write(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted])
+        st.write(hitter_grpby.loc[:, rank_by_cols_h_sorted])
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
                                         hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=False),
