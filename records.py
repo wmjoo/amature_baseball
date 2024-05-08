@@ -322,18 +322,18 @@ with tab_sn_viz:
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
 
 # ##########
-#         # "Plotting" 버튼 추가
-#         if st.button('Plotting', key = 'vs_rader_btn'):
-#             # 선택된 데이터셋에 따라 데이터 프레임 설정
-#             selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
-#             selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
-#             hitter_grpby_scaled = hitter_grpby.copy()
-#             scaler_h = MinMaxScaler()             # 스케일러 초기화
-#             hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+        # "Plotting" 버튼 추가
+        if st.button('Plotting', key = 'vs_rader_btn'):
+            # 선택된 데이터셋에 따라 데이터 프레임 설정
+            selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+            selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
+            hitter_grpby_scaled = hitter_grpby.copy()
+            scaler_h = MinMaxScaler()             # 스케일러 초기화
+            hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
-#             pitcher_grpby_scaled = pitcher_grpby_rank.copy()
-#             scaler_p = MinMaxScaler()             # 스케일러 초기화
-#             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+            pitcher_grpby_scaled = pitcher_grpby_rank.copy()
+            scaler_p = MinMaxScaler()             # 스케일러 초기화
+            pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
 #             # 스케일링 전 데이터 프레임과 스케일링 후 데이터 프레임을 합칩니다.
 #             hitter_merged = pd.concat([hitter_grpby[selected_cols_h], hitter_grpby_scaled[selected_cols_h]], axis=1)
