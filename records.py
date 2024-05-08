@@ -285,13 +285,17 @@ with tab_sn_vs:
 
         if team_selection_rader == '전체':
             filtered_data_h = hitter_grpby.copy()
-            # 레이더 차트 데이터 준비
             radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            # st.write(radar_data)
-            # 레이더 차트 생성
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template=template_input, title=f'Team Performance Comparison [ALL Temas]')            
+                                template=template_input, title=f'공격력 : [ALL]')   
+
+            filtered_data_p = pitcher_grpby.copy()
+            radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                template=template_input, title=f'수비력 : [ALL]')  
+
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
             filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
@@ -313,11 +317,13 @@ with tab_sn_vs:
                                 template=template_input, title=f'수비력 : {team1} vs {team2}')
         tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
         with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
-            st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
+            if team_selection_rader == 'VS':        
+                st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
                                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
             st.plotly_chart(fig_h, use_container_width=True)
         with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
-            st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
+            if team_selection_rader == 'VS':                
+                st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
                                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
             st.plotly_chart(fig_p, use_container_width=True)
 
