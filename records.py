@@ -376,10 +376,11 @@ with tab_sn_viz:
                 if not team_all: #if team_selection_rader == 'VS':  
                     df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
                                         hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0).sort_values('Team').T      
-                    st.dataframe(df_rader_vs_h)   
+                    # st.dataframe(df_rader_vs_h)   
                     # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
                     #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
-                    st.markdown(df_rader_vs_h.to_html(index=False), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력
+                    st.markdown(df_rader_vs_h.T.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
+                    st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [세로]
                 else :
                     st.dataframe(hitter_grpby[selected_cols_h].sort_values('Team').T)
                     # st.dataframe(filtered_data_h[selected_cols_h])
