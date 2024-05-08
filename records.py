@@ -400,16 +400,19 @@ with tab_sn_viz:
             else:
                 filtered_data_h = hitter_merged
 
-            # melt 함수 사용 시, 적절한 컬럼 참조
-            radar_data_h = filtered_data_h.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
-            radar_data_h['Stat'] = radar_data_h['Stat'].apply(lambda x: x.replace('_raw', '').replace('_scaled', ''))
+            # 스케일된 값으로 레이더 데이터 준비
+            radar_data_h = filtered_data_h.melt(id_vars=['Team'], value_vars=[col for col in filtered_data_h.columns if 'scaled' in col], var_name='Stat', value_name='Value')
+            # 원본 값 데이터 추가
+            radar_data_h['RawValue'] = filtered_data_h.melt(value_vars=[col for col in filtered_data_h.columns if 'raw' in col])['value']
+            radar_data_h['Stat'] = radar_data_h['Stat'].apply(lambda x: x.replace('_scaled', ''))
 
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.qualitative.D3,
                                 template=template_input, title='공격력')
 
-            # 호버 데이터 수정
-            fig_h.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
+            # 호버 데이터 추가 및 호버 템플릿 설정
+            fig_h.update_traces(customdata=radar_data_h['RawValue'],
+                                hovertemplate="<b>%{theta}</b>: %{customdata}<extra></extra>")
 
             # 차트 표시
             # st.plotly_chart(fig_h, use_container_width=True)
@@ -420,16 +423,19 @@ with tab_sn_viz:
             else:
                 filtered_data_p = pitcher_merged
 
-            # melt 함수 사용 시, 적절한 컬럼 참조
-            radar_data_p = filtered_data_p.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
-            radar_data_p['Stat'] = radar_data_p['Stat'].apply(lambda x: x.replace('_raw', '').replace('_scaled', ''))
+            # 스케일된 값으로 레이더 데이터 준비
+            radar_data_p = filtered_data_p.melt(id_vars=['Team'], value_vars=[col for col in filtered_data_p.columns if 'scaled' in col], var_name='Stat', value_name='Value')
+            # 원본 값 데이터 추가
+            radar_data_p['RawValue'] = filtered_data_p.melt(value_vars=[col for col in filtered_data_p.columns if 'raw' in col])['value']
+            radar_data_p['Stat'] = radar_data_p['Stat'].apply(lambda x: x.replace('_scaled', ''))
 
             fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.qualitative.D3,
                                 template=template_input, title='수비력')
 
-            # 호버 데이터 수정
-            fig_p.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
+            # 호버 데이터 추가 및 호버 템플릿 설정
+            fig_p.update_traces(customdata=radar_data_p['RawValue'],
+                                hovertemplate="<b>%{theta}</b>: %{customdata}<extra></extra>")
 
             # 차트 표시
             # st.plotly_chart(fig_p, use_container_width=True)
