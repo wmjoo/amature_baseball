@@ -131,7 +131,7 @@ with tab_sn_players:
         # st.dataframe(hitter_grpby)
         # hitter_grpby_rank = (pd.concat([hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
         # st.write('Ranking')
-        # st.dataframe(hitter_grpby_rank)    
+        st.dataframe(hitter_grpby_rank)    
 
         # rank_by_ascending, rank_by_descending columns 
         rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
