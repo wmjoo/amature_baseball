@@ -331,13 +331,13 @@ with tab_sn_viz:
             selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
 
             if team_selection_rader == '전체':
-                filtered_data_h = hitter_grpby.copy()
+                filtered_data_h = hitter_grpby_rank.copy()
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력')   
 
-                filtered_data_p = pitcher_grpby.copy()
+                filtered_data_p = pitcher_grpby_rank.copy()
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
@@ -345,7 +345,7 @@ with tab_sn_viz:
 
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
-                filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
+                filtered_data_h = hitter_grpby_rank[hitter_grpby_rank['Team'].isin([team1, team2])].copy()
                 # st.write(filtered_data_h)
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
@@ -354,7 +354,7 @@ with tab_sn_viz:
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력 : {team1} vs {team2}')
                 # 선택된 팀 데이터 필터링
-                filtered_data_p = pitcher_grpby[pitcher_grpby['Team'].isin([team1, team2])].copy()
+                filtered_data_p = pitcher_grpby_rank[pitcher_grpby_rank['Team'].isin([team1, team2])].copy()
                 # st.write(filtered_data_p)
                 # 레이더 차트 데이터 준비
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
@@ -362,6 +362,7 @@ with tab_sn_viz:
                 fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'수비력 : {team1} vs {team2}')
+
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
                 if team_selection_rader == 'VS':        
