@@ -169,8 +169,7 @@ with tab_sn_players:
         # st.pyplot(plt)
 
         st.title("Heatmap Visualization in Streamlit with Team Names")
-        data = # np.random.rand(10, 10) * 100
-        df = hitter_grpby_rank
+        df = hitter_grpby_rank.copy()
         df.set_index('Team', inplace=True)
 
         # 커스텀 컬러맵 생성
