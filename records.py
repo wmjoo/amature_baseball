@@ -164,9 +164,6 @@ with tab_sn_players:
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
-
-
-
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         st.dataframe(df_pitcher)
@@ -238,7 +235,7 @@ with tab_sn_teamwise:
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team)
         st.write(DATA_URL_B)
-        st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B])
+        st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B, ['Team']+rank_by_cols_h_sorted ]) # .loc[:, rank_by_cols_h_sorted]
         st.write(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B])
         
     with tab_sn_teamwise_2:
@@ -251,7 +248,7 @@ with tab_sn_teamwise:
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team) 
         st.write(DATA_URL_P) 
-        st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P])
+        st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, ['Team']+rank_by_cols_p_sorted])
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
 
 with tab_sn_viz:
