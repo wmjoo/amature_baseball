@@ -308,17 +308,19 @@ with tab_sn_viz:
     # plotly - Plotly의 기본 템플릿.     # plotly_white - 배경이 하얀색인 깔끔한 템플릿.     # plotly_dark - 배경이 어두운색인 템플릿.
     # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.    # simple_white - 매우 단순하고 깨끗한 템플릿.
     with tab_sn_viz_2: # tab_sn_vs
+        teams = hitter_grpby['Team'].unique()    
         template_input = 'plotly_white'    
         st.subheader('팀 간 전력 비교')      
         tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
         with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
-            team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')        
-        teams = hitter_grpby['Team'].unique()
+            # team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader') 
+            team_all = st.toggle("Select All Teams")
+
         with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
-            if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
+            if !team_all: #team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
                 team1 = st.selectbox('Select Team 1:', options = teams, index=14)
         with tab_sn_vs_col3:  
-            if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
+            if !team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
 
         # "Plotting" 버튼 추가
@@ -334,7 +336,7 @@ with tab_sn_viz:
             scaler_p = MinMaxScaler()             # 스케일러 초기화
             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
-            if team_selection_rader == '전체':
+            if team_all: #if team_selection_rader == '전체':
                 filtered_data_h = hitter_grpby_scaled
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
@@ -368,7 +370,7 @@ with tab_sn_viz:
             ## Chart AND Dataframe display Area
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
-                if team_selection_rader == 'VS':        
+                if !team_all: #if team_selection_rader == 'VS':        
                     st.dataframe(pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
                                         hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0))   
                     # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
@@ -378,7 +380,7 @@ with tab_sn_viz:
                     # st.dataframe(filtered_data_h[selected_cols_h])
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
-                if team_selection_rader == 'VS':                
+                if !team_all: #if team_selection_rader == 'VS':                
                     st.dataframe(pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
                                         pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0))   
                     # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
