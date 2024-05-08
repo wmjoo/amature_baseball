@@ -323,6 +323,7 @@ with tab_sn_viz:
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
 
+##########
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
             # 선택된 데이터셋에 따라 데이터 프레임 설정
@@ -335,6 +336,40 @@ with tab_sn_viz:
             pitcher_grpby_scaled = pitcher_grpby_rank.copy()
             scaler_p = MinMaxScaler()             # 스케일러 초기화
             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+
+            # 스케일링 전 데이터 프레임과 스케일링 후 데이터 프레임을 합칩니다.
+            hitter_merged = pd.concat([hitter_grpby[selected_cols_h], hitter_grpby_scaled[selected_cols_h]], axis=1)
+            pitcher_merged = pd.concat([pitcher_grpby[selected_cols_p], pitcher_grpby_scaled[selected_cols_p]], axis=1)
+
+            # 컬럼 이름을 재정의하여 구분을 쉽게 합니다.
+            new_columns_h = [f'{col}_raw' for col in selected_cols_h[1:]] + [f'{col}_scaled' for col in selected_cols_h[1:]]
+            new_columns_p = [f'{col}_raw' for col in selected_cols_p[1:]] + [f'{col}_scaled' for col in selected_cols_p[1:]]
+
+            hitter_merged.columns = ['Team'] + new_columns_h
+            pitcher_merged.columns = ['Team'] + new_columns_p
+
+            # 레이더 차트를 그립니다.
+            for df, title, team_comparison, cols in zip([hitter_merged, pitcher_merged], ['공격력', '수비력'], [team1, team2], [selected_cols_h, selected_cols_p]):
+                if not team_all: # 2개팀을 비교할 경우
+                    filtered_data = df[df['Team'].isin([team1, team2])]
+                else: # 전체 팀 데이터
+                    filtered_data = df
+
+                radar_data = filtered_data.melt(id_vars=['Team'], var_name='Stat', value_name='Value', ignore_index=False)
+                radar_data['Stat'] = radar_data['Stat'].apply(lambda x: x.split('_')[0])
+                radar_data['Type'] = radar_data['Stat'].apply(lambda x: 'Raw' if 'raw' in x else 'Scaled')
+
+                fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
+                                    color_discrete_sequence=px.colors.qualitative.D3,
+                                    template=template_input, title=title)
+                
+                # 호버 데이터 추가
+                fig.update_traces(hoverinfo='all', hovertemplate="<b>%{theta}</b>: %{r}<extra></extra>")
+                
+                # 차트 표시
+                st.plotly_chart(fig, use_container_width=True)
+
+'''
 
             if team_all: #if team_selection_rader == '전체':
                 filtered_data_h = hitter_grpby_scaled
@@ -389,7 +424,7 @@ with tab_sn_viz:
                     st.dataframe(pitcher_grpby[selected_cols_p].T)                    
                     # st.dataframe(filtered_data_p[selected_cols_p])
                 st.plotly_chart(fig_p, use_container_width=True)
-
+'''
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
