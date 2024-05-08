@@ -281,13 +281,13 @@ with tab_sn_vs:
     # "Plotting" 버튼 추가
     if st.button('Plotting', key = 'vs_rader_btn'):
         # 선택된 데이터셋에 따라 데이터 프레임 설정
-        selected_cols_h = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']
-        selected_cols_p = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+        selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+        selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'W']        
 
         if team_selection_rader == '전체':
             filtered_data_h = hitter_grpby.copy()
             # 레이더 차트 데이터 준비
-            radar_data_h = filtered_data_h[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             # st.write(radar_data)
             # 레이더 차트 생성
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
@@ -297,14 +297,14 @@ with tab_sn_vs:
             # 선택된 팀 데이터 필터링
             filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
             # 레이더 차트 데이터 준비
-            radar_data_h = filtered_data_h[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             st.write(radar_data_h)
             # 레이더 차트 생성
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'Team Performance Comparison: {team1} vs {team2}')
-            st.dataframe(pd.concat([radar_data_h.loc[radar_data_h.Team == team1, selected_cols], 
-                                    radar_data_h.loc[radar_data_h.Team == team2, selected_cols]], axis = 0))
+            st.dataframe(pd.concat([radar_data_h.loc[radar_data_h.Team == team1, selected_cols_h], 
+                                    radar_data_h.loc[radar_data_h.Team == team2, selected_cols_h]], axis = 0))
 
         tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
         with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
