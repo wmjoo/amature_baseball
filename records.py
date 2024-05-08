@@ -130,7 +130,9 @@ with tab_sn_players:
             hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
             
         st.dataframe(hitter_grpby)
-        st.dataframe(pd.concat([hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
+        hitter_grpby_rank = (pd.concat([hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
+        st.write('Ranking')
+        st.dataframe(hitter_grpby_rank)        
 
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
@@ -163,7 +165,9 @@ with tab_sn_players:
         
         # 결과 확인
         st.write(pitcher_grpby)
-        st.dataframe(pd.concat([pitcher_grpby.Team, pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1))
+        pitcher_grpby_rank = pd.concat([pitcher_grpby.Team, pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1)
+        st.write('Ranking')
+        st.dataframe(pitcher_grpby_rank)
 
 with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
@@ -178,6 +182,7 @@ with tab_sn_teamwise:
         st.dataframe(df_hitter_team)
         st.write(DATA_URL_B)
         st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B])
+        st.write(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B])
         
     with tab_sn_teamwise_2:
         team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
@@ -190,6 +195,7 @@ with tab_sn_teamwise:
         st.dataframe(df_pitcher_team) 
         st.write(DATA_URL_P) 
         st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P])
+        st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
 
 with tab_sn_viz:
     st.subheader('시각화')    
