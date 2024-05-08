@@ -259,16 +259,12 @@ with tab_sn_viz:
 # [0:"Team"1:"ERA"2:"WHIP"3:"H/IP"4:"BB/IP"5:"GS"6:"W"7:"L"8:"SV"9:"HLD"10:"BF"11:"AB"12:"P"13:"HA"
 # 14:"HR"15:"SH"16:"SF"17:"BB"18:"IBB"19:"HBP"20:"SO"21:"WP"22:"BK"23:"R"24:"ER"25:"IP"26:"SO/IP"]
 with tab_sn_vs:
-    template_input = 'plotly_white'    
+    template_input = 'ggplot2'    
     st.subheader('팀 간 전력 비교')      
     
     tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
     with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
-        # dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')        
-        # df_vs = hitter_grpby.copy()
-        # if dataset_choice_rader == '투수': 
-        #     df_vs = pitcher_grpby.copy()
     teams = hitter_grpby['Team'].unique()
     with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
         if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
@@ -287,13 +283,13 @@ with tab_sn_vs:
             filtered_data_h = hitter_grpby.copy()
             radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'공격력 : [ALL]')   
 
             filtered_data_p = pitcher_grpby.copy()
             radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'수비력 : [ALL]')  
 
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
@@ -304,7 +300,7 @@ with tab_sn_vs:
             radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             # 레이더 차트 생성
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'공격력 : {team1} vs {team2}')
             # 선택된 팀 데이터 필터링
             filtered_data_p = pitcher_grpby[pitcher_grpby['Team'].isin([team1, team2])].copy()
@@ -313,7 +309,7 @@ with tab_sn_vs:
             radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             # 레이더 차트 생성
             fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.sequential.Plasma_r,
+                                color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'수비력 : {team1} vs {team2}')
         tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
         with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
