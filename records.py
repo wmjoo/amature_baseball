@@ -372,21 +372,21 @@ with tab_sn_viz:
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
                 if not team_all: #if team_selection_rader == 'VS':        
                     st.dataframe(pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
-                                        hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0))   
+                                        hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0).T)   
                     # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
                     #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
                 else :
-                    st.dataframe(hitter_grpby[selected_cols_h])
+                    st.dataframe(hitter_grpby[selected_cols_h].T)
                     # st.dataframe(filtered_data_h[selected_cols_h])
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
                 if not team_all: #if team_selection_rader == 'VS':                
                     st.dataframe(pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
-                                        pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0))   
+                                        pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0).T)   
                     # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
                     #                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
                 else :
-                    st.dataframe(pitcher_grpby[selected_cols_p])                    
+                    st.dataframe(pitcher_grpby[selected_cols_p].T)                    
                     # st.dataframe(filtered_data_p[selected_cols_p])
                 st.plotly_chart(fig_p, use_container_width=True)
 
