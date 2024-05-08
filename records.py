@@ -10,6 +10,8 @@ import seaborn as sns
 import plotly.express as px
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
+from sklearn.preprocessing import MinMaxScaler
+
 warnings.filterwarnings('ignore')
 
 ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
@@ -303,13 +305,8 @@ with tab_sn_viz:
             st.pyplot(fig)
 
     ### template_input 
-    # plotly - Plotly의 기본 템플릿.
-    # plotly_white - 배경이 하얀색인 깔끔한 템플릿.
-    # plotly_dark - 배경이 어두운색인 템플릿.
-    # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.
-    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.
-    # simple_white - 매우 단순하고 깨끗한 템플릿.
-    # none - 최소한의 스타일로, 사용자가 자신만의 스타일을 쉽게 추가할 수 있게 해줍니다
+    # plotly - Plotly의 기본 템플릿.     # plotly_white - 배경이 하얀색인 깔끔한 템플릿.     # plotly_dark - 배경이 어두운색인 템플릿.
+    # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.    # simple_white - 매우 단순하고 깨끗한 템플릿.
     with tab_sn_viz_2: # tab_sn_vs
         template_input = 'plotly_white'    
         st.subheader('팀 간 전력 비교')      
@@ -329,15 +326,22 @@ with tab_sn_viz:
             # 선택된 데이터셋에 따라 데이터 프레임 설정
             selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
             selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']        
+            hitter_grpby_rank_scaled = hitter_grpby_rank.copy()
+            scaler_h = MinMaxScaler()             # 스케일러 초기화
+            hitter_grpby_rank_scaled[hitter_grpby_rank_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_rank_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+            
+            pitcher_grpby_rank_scaled = pitcher_grpby_rank.copy()
+            scaler_p = MinMaxScaler()             # 스케일러 초기화
+            pitcher_grpby_rank_scaled[pitcher_grpby_rank_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_rank_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
             if team_selection_rader == '전체':
-                filtered_data_h = hitter_grpby_rank.copy()
+                filtered_data_h = hitter_grpby_rank_scaled
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력')   
 
-                filtered_data_p = pitcher_grpby_rank.copy()
+                filtered_data_p = pitcher_grpby_rank_scaled
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
@@ -345,7 +349,7 @@ with tab_sn_viz:
 
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
-                filtered_data_h = hitter_grpby_rank[hitter_grpby_rank['Team'].isin([team1, team2])].copy()
+                filtered_data_h = hitter_grpby_rank_scaled[hitter_grpby_rank_scaled['Team'].isin([team1, team2])].copy()
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
@@ -353,8 +357,7 @@ with tab_sn_viz:
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력 : {team1} vs {team2}')
                 # 선택된 팀 데이터 필터링
-                filtered_data_p = pitcher_grpby_rank[pitcher_grpby_rank['Team'].isin([team1, team2])].copy()
-                # st.write(filtered_data_p)
+                filtered_data_p = pitcher_grpby_rank_scaled[pitcher_grpby_rank_scaled['Team'].isin([team1, team2])].copy()
                 # 레이더 차트 데이터 준비
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
