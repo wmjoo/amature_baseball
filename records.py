@@ -236,7 +236,7 @@ with tab_sn_teamwise:
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team)
         st.write(DATA_URL_B)
-        st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B, ['Team']+rank_by_cols_h_sorted ]) # .loc[:, rank_by_cols_h_sorted]
+        st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted ]) # .loc[:, rank_by_cols_h_sorted]
         st.write(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B])
         
     with tab_sn_teamwise_2:
@@ -249,7 +249,7 @@ with tab_sn_teamwise:
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team) 
         st.write(DATA_URL_P) 
-        st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, ['Team']+rank_by_cols_p_sorted])
+        st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted])
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
 
 
