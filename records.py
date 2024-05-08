@@ -253,12 +253,14 @@ with tab_sn_viz:
 # simple_white - 매우 단순하고 깨끗한 템플릿.
 # none - 최소한의 스타일로, 사용자가 자신만의 스타일을 쉽게 추가할 수 있게 해줍니다
 
+# [0:"Team"1:"BA"2:"OBP"3:"SLG"4:"OPS"5:"PA"6:"AB"7:"R"8:"H"9:"1B"10:"2B"11:"3B"12:"HR"13:"TB"
+# 14:"RBI"15:"SB"16:"CS"17:"SH"18:"SF"19:"BB"20:"IBB"21:"HBP"22:"SO"23:"DP"24:"MHit"]
 
+# [0:"Team"1:"ERA"2:"WHIP"3:"H/IP"4:"BB/IP"5:"GS"6:"W"7:"L"8:"SV"9:"HLD"10:"BF"11:"AB"12:"P"13:"HA"
+# 14:"HR"15:"SH"16:"SF"17:"BB"18:"IBB"19:"HBP"20:"SO"21:"WP"22:"BK"23:"R"24:"ER"25:"IP"26:"SO/IP"]
 with tab_sn_vs:
     template_input = 'plotly_white'    
     st.subheader('팀 간 전력 비교')      
-    st.write(hitter_grpby.columns.tolist())
-    st.write(pitcher_grpby.columns.tolist())
     
     tab_sn_vs_col1, tab_sn_vs_col2 = st.columns(2)
     with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
