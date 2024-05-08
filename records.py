@@ -317,10 +317,10 @@ with tab_sn_viz:
             team_all = st.toggle("Select All Teams")
 
         with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
-            if !team_all: #team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
+            if not team_all: #team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
                 team1 = st.selectbox('Select Team 1:', options = teams, index=14)
         with tab_sn_vs_col3:  
-            if !team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
+            if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
 
         # "Plotting" 버튼 추가
@@ -370,7 +370,7 @@ with tab_sn_viz:
             ## Chart AND Dataframe display Area
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
-                if !team_all: #if team_selection_rader == 'VS':        
+                if not team_all: #if team_selection_rader == 'VS':        
                     st.dataframe(pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
                                         hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0))   
                     # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
@@ -380,7 +380,7 @@ with tab_sn_viz:
                     # st.dataframe(filtered_data_h[selected_cols_h])
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
-                if !team_all: #if team_selection_rader == 'VS':                
+                if not team_all: #if team_selection_rader == 'VS':                
                     st.dataframe(pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
                                         pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0))   
                     # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
