@@ -257,8 +257,8 @@ with tab_sn_viz:
 with tab_sn_vs:
     template_input = 'plotly_white'    
     st.subheader('팀 간 전력 비교')      
-    st.write(hitter_grpby.columns)
-    st.write(pitcher_grpby.columns)
+    st.write(hitter_grpby.columns.tolist())
+    st.write(pitcher_grpby.columns.tolist())
     
     tab_sn_vs_col1, tab_sn_vs_col2 = st.columns(2)
     with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
