@@ -265,15 +265,15 @@ with tab_sn_vs:
     tab_sn_vs_col1, tab_sn_vs_col2 = st.columns(2)
     with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
-        df_vs = hitter_grpby.copy()
-        if dataset_choice_rader == '투수': 
-            df_vs = pitcher_grpby.copy()
+        # df_vs = hitter_grpby.copy()
+        # if dataset_choice_rader == '투수': 
+        #     df_vs = pitcher_grpby.copy()
 
     with tab_sn_vs_col2:         # 그래프 유형 선택을 위한 토글 버튼
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
         if team_selection_rader == 'VS':
             # 팀 목록 가져오기
-            teams = df_vs['Team'].unique()
+            teams = hitter_grpby['Team'].unique()
             # 스트림릿 셀렉트박스로 팀 선택
             team1 = st.selectbox('Select Team 1:', options = teams, index=14)
             team2 = st.selectbox('Select Team 2:', options = teams, index=12)
@@ -281,34 +281,36 @@ with tab_sn_vs:
     # "Plotting" 버튼 추가
     if st.button('Plotting', key = 'vs_rader_btn'):
         # 선택된 데이터셋에 따라 데이터 프레임 설정
-        if dataset_choice_rader == '투수':
-            selected_cols = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']
-        else:
-            selected_cols = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+        selected_cols_h = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'GS', 'W']
+        selected_cols_p = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
 
         if team_selection_rader == '전체':
-            filtered_data = df_vs.copy()
+            filtered_data_h = hitter_grpby.copy()
             # 레이더 차트 데이터 준비
-            radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            radar_data_h = filtered_data_h[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             # st.write(radar_data)
             # 레이더 차트 생성
-            fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
+            fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'Team Performance Comparison [ALL Temas]')            
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
-            filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
+            filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
             # 레이더 차트 데이터 준비
-            radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            st.write(radar_data)
+            radar_data_h = filtered_data_h[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
+            st.write(radar_data_h)
             # 레이더 차트 생성
-            fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
+            fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
                                 template=template_input, title=f'Team Performance Comparison: {team1} vs {team2}')
-            st.dataframe(pd.concat([df_vs.loc[df_vs.Team == team1, selected_cols], 
-                                    df_vs.loc[df_vs.Team == team2, selected_cols]], axis = 0))
-        # 차트 보기
-        st.plotly_chart(fig, use_container_width=True)
+            st.dataframe(pd.concat([radar_data_h.loc[radar_data_h.Team == team1, selected_cols], 
+                                    radar_data_h.loc[radar_data_h.Team == team2, selected_cols]], axis = 0))
+
+        tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
+        with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
+            st.plotly_chart(fig_h, use_container_width=True)
+        with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
+            st.plotly_chart(fig_h, use_container_width=True)
 
 with tab5:
     st.subheader('빈 칸')    
