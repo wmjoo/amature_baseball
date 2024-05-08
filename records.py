@@ -407,13 +407,43 @@ with tab_sn_viz:
             radar_data_h['RawValue'] = filtered_data_h.melt(value_vars=[col for col in filtered_data_h.columns if 'raw' in col])['value']
             radar_data_h['Stat'] = radar_data_h['Stat'].apply(lambda x: x.replace('_scaled', ''))
             st.write(radar_data_h)
-            fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.qualitative.D3,
-                                template=template_input, title='공격력')
+            # 레이더 차트 생성을 위한 기본 설정
+            fig_h = go.Figure()
 
-            # 호버 데이터 추가 및 호버 템플릿 설정
-            fig_h.update_traces(customdata=radar_data_h['RawValue'],
-                                hovertemplate="<b>%{theta}</b>: %{customdata}<extra></extra>")
+            # 각 팀별로 데이터 처리 및 트레이스 추가
+            for team in radar_data_h['Team'].unique():
+                team_data = radar_data_h[radar_data_h['Team'] == team]
+                fig_h.add_trace(go.Scatterpolar(
+                    r=team_data['Value'],
+                    theta=team_data['Stat'],
+                    fill='toself',
+                    name=team,
+                    customdata=team_data[['RawValue', 'Team']],
+                    hovertemplate='<b>%{theta}</b>: %{customdata[0]}<br><b>Team</b>: %{customdata[1]}<extra></extra>',
+                    line_close=True
+                ))
+
+            # 그래프 스타일 설정
+            fig_h.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, 1]
+                    )),
+                title='공격력',
+                colorway=px.colors.qualitative.D3,
+                template=template_input
+            )
+
+            # 차트 표시
+            st.plotly_chart(fig_h, use_container_width=True)
+            # fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
+            #                     color_discrete_sequence=px.colors.qualitative.D3,
+            #                     template=template_input, title='공격력')
+
+            # # 호버 데이터 추가 및 호버 템플릿 설정
+            # fig_h.update_traces(customdata=radar_data_h['RawValue'],
+            #                     hovertemplate="<b>%{theta}</b>: %{customdata}<extra></extra>")
 
             # 차트 표시
             # st.plotly_chart(fig_h, use_container_width=True)
@@ -430,7 +460,6 @@ with tab_sn_viz:
             radar_data_p['RawValue'] = filtered_data_p.melt(value_vars=[col for col in filtered_data_p.columns if 'raw' in col])['value']
             radar_data_p['Stat'] = radar_data_p['Stat'].apply(lambda x: x.replace('_scaled', ''))
             st.write(radar_data_p)
-
             # 레이더 차트 생성을 위한 기본 설정
             fig_p = go.Figure()
 
