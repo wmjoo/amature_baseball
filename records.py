@@ -161,7 +161,7 @@ with tab_sn_players:
             if col in pitcher_grpby.columns:
                 team_idx = pitcher_grpby.columns.get_loc('Team') + 1
                 pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
-        ,  , , , 
+
         # 결과 확인
         st.write(pitcher_grpby)
         # rank_by_ascending, rank_by_descending columns 
