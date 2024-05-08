@@ -12,10 +12,11 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 warnings.filterwarnings('ignore')
 
+ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
 st.set_page_config(page_title="Baseball Data",)
 st.title('Saturday League Data')
 
-# DATE_COLUMN = 'date/time'
+## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
 team_id_dict = {
     "코메츠 호시탐탐": 7984, "Big Hits": 36636,    "FA Members": 13621,
     "RedStorm": 17375,    "unknown`s": 33848, "그냥하자": 10318,
@@ -23,10 +24,7 @@ team_id_dict = {
     "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
     "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207,
 }
-
-# st.write('You selected TEAM:', option)
-
-ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
+team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamonster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
 
 def load_data(team_name, team_id):
     urls = {
@@ -156,14 +154,16 @@ with tab_sn_players:
         
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
-        df = hitter_grpby_rank.copy()
-        df.set_index('Team', inplace=True)
+        df = hitter_grpby_rank.drop('Team', axis = 1).copy()
+        # team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s",    "GNHJ",
+        #     "Gideons", "Diamondster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"
+        # ]
+        df.set_index(team_englist, inplace=True)
         # 커스텀 컬러맵 생성
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        # Streamlit에 표시
         st.pyplot(plt)
 
 
@@ -298,12 +298,6 @@ with tab_sn_viz:
     # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.
     # simple_white - 매우 단순하고 깨끗한 템플릿.
     # none - 최소한의 스타일로, 사용자가 자신만의 스타일을 쉽게 추가할 수 있게 해줍니다
-
-    # [0:"Team"1:"BA"2:"OBP"3:"SLG"4:"OPS"5:"PA"6:"AB"7:"R"8:"H"9:"1B"10:"2B"11:"3B"12:"HR"13:"TB"
-    # 14:"RBI"15:"SB"16:"CS"17:"SH"18:"SF"19:"BB"20:"IBB"21:"HBP"22:"SO"23:"DP"24:"MHit"]
-
-    # [0:"Team"1:"ERA"2:"WHIP"3:"H/IP"4:"BB/IP"5:"GS"6:"W"7:"L"8:"SV"9:"HLD"10:"BF"11:"AB"12:"P"13:"HA"
-    # 14:"HR"15:"SH"16:"SF"17:"BB"18:"IBB"19:"HBP"20:"SO"21:"WP"22:"BK"23:"R"24:"ER"25:"IP"26:"SO/IP"]
     with tab_sn_viz_2: # tab_sn_vs
         template_input = 'plotly_white'    
         st.subheader('팀 간 전력 비교')      
