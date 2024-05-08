@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
 import plotly.express as px
+import plotly.graph_objects as go
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 from sklearn.preprocessing import MinMaxScaler
@@ -429,14 +430,42 @@ with tab_sn_viz:
             radar_data_p['RawValue'] = filtered_data_p.melt(value_vars=[col for col in filtered_data_p.columns if 'raw' in col])['value']
             radar_data_p['Stat'] = radar_data_p['Stat'].apply(lambda x: x.replace('_scaled', ''))
             st.write(radar_data_p)
-            
-            fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
-                                color_discrete_sequence=px.colors.qualitative.D3,
-                                template=template_input, title='수비력')
 
-            # 호버 데이터 추가 및 호버 템플릿 설정
-            fig_p.update_traces(customdata=radar_data_p['RawValue'],
-                                hovertemplate="<b>%{theta}</b>: %{customdata}<extra></extra>")
+            # 레이더 차트 생성을 위한 기본 설정
+            fig_p = go.Figure()
+
+            # 각 팀별로 데이터 처리 및 트레이스 추가
+            for team in radar_data_p['Team'].unique():
+                team_data = radar_data_p[radar_data_p['Team'] == team]
+                fig_p.add_trace(go.Scatterpolar(
+                    r=team_data['Value'],
+                    theta=team_data['Stat'],
+                    fill='toself',
+                    name=team,
+                    customdata=team_data[['RawValue', 'Team']],
+                    hovertemplate='<b>%{theta}</b>: %{customdata[0]}<br><b>Team</b>: %{customdata[1]}<extra></extra>',
+                    line_close=True
+                ))
+
+            # 그래프 스타일 설정
+            fig_p.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, 1]
+                    )),
+                title='수비력',
+                colorway=px.colors.qualitative.D3,
+                template=template_input
+            )
+
+            # fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
+            #                     color_discrete_sequence=px.colors.qualitative.D3,
+            #                     template=template_input, title='수비력')
+
+            # # 호버 데이터 추가 및 호버 템플릿 설정
+            # fig_p.update_traces(customdata=radar_data_p['RawValue'],
+            #                     hovertemplate="<b>%{theta}</b>: %{customdata}<extra></extra>")
 
             # 차트 표시
             # st.plotly_chart(fig_p, use_container_width=True)
