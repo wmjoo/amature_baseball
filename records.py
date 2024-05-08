@@ -296,9 +296,9 @@ with tab_sn_vs:
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
             filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
+            st.write(filtered_data_h)
             # 레이더 차트 데이터 준비
             radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            st.write(radar_data_h)
             # 레이더 차트 생성
             fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
