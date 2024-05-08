@@ -24,7 +24,7 @@ team_id_dict = {
     "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
     "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207,
 }
-team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamonster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
+team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
 
 def load_data(team_name, team_id):
     urls = {
@@ -155,9 +155,7 @@ with tab_sn_players:
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
         df = hitter_grpby_rank.drop('Team', axis = 1).copy()
-        # team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s",    "GNHJ",
-        #     "Gideons", "Diamondster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"
-        # ]
+        team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
         df.set_index(team_englist, inplace=True)
         # 커스텀 컬러맵 생성
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
