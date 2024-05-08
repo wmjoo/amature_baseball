@@ -109,6 +109,14 @@ df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).r
 ## 탭 설정 ]]]]]]]]]
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_sn_void = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "용어", "void"])
 
+def create_heatmap(data, cmap, input_figsize = (10, 7)):
+    plt.figure(figsize=input_figsize)
+    sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index)
+    plt.xticks(rotation=45)  # x축 레이블 회전
+    plt.yticks(rotation=0)   # y축 레이블 회전
+    plt.tight_layout()
+    return plt
+
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
     with tab_sn_players_1:
@@ -142,20 +150,39 @@ with tab_sn_players:
                                         hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
                                         hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
                                     ], axis = 1)
+        hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
         st.write('Ranking')
-        st.dataframe(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted])    
-        # 히트맵 시각화 팀별 랭킹        
-        st.title("Heatmap")
+        st.dataframe(hitter_grpby_rank)
+        
+        ## 히트맵 시각화 팀별 랭킹        
+
+        # st.title("Heatmap")
+        # # 커스텀 컬러맵 생성
+        # colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        # cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # # 히트맵 생성
+        # plt.figure(figsize=(10, 8))
+        # plt.tight_layout()        
+        # plt = sns.heatmap(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted[1:]], 
+        #                     annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
+        # # Streamlit에 표시
+        # st.pyplot(plt)
+
+        st.title("Heatmap Visualization in Streamlit with Team Names")
+        data = # np.random.rand(10, 10) * 100
+        df = hitter_grpby_rank
+        df.set_index('Team', inplace=True)
+
         # 커스텀 컬러맵 생성
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=256)
+
         # 히트맵 생성
-        plt.figure(figsize=(10, 8))
-        plt = sns.heatmap(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted[1:]], 
-                            annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
-        plt.tight_layout()
+        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+
         # Streamlit에 표시
         st.pyplot(plt)
+
 
 
     with tab_sn_players_2:
