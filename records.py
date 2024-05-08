@@ -210,7 +210,21 @@ with tab_sn_players:
                                         pitcher_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
                                     ], axis = 1)
         st.write('Ranking')
-        st.dataframe(pitcher_grpby_rank.loc[:, rank_by_cols_p_sorted])
+        pitcher_grpby_rank = pitcher_grpby_rank.loc[:, rank_by_cols_p_sorted]
+        st.dataframe(pitcher_grpby_rank)
+
+        ## 히트맵 시각화 팀별 랭킹        
+        st.write("Heatmap")
+        df = pitcher_grpby_rank.drop('Team', axis = 1).copy()
+        # team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
+        df['team_eng'] = team_englist
+        df.set_index('team_eng', inplace=True)
+        # 커스텀 컬러맵 생성
+        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # 히트맵 생성
+        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+        st.pyplot(plt)        
 
 with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
