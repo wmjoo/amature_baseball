@@ -264,13 +264,13 @@ with tab_sn_vs:
     
     tab_sn_vs_col1, tab_sn_vs_col2 = st.columns(2)
     with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
-        dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
+        # dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
+        team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')        
         # df_vs = hitter_grpby.copy()
         # if dataset_choice_rader == '투수': 
         #     df_vs = pitcher_grpby.copy()
 
     with tab_sn_vs_col2:         # 그래프 유형 선택을 위한 토글 버튼
-        team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
         if team_selection_rader == 'VS':
             # 팀 목록 가져오기
             teams = hitter_grpby['Team'].unique()
@@ -296,7 +296,7 @@ with tab_sn_vs:
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
             filtered_data_h = hitter_grpby[hitter_grpby['Team'].isin([team1, team2])].copy()
-            st.write(filtered_data_h)
+            st.write()
             # 레이더 차트 데이터 준비
             radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
             # 레이더 차트 생성
