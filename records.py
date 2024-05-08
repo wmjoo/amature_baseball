@@ -155,30 +155,14 @@ with tab_sn_players:
         st.dataframe(hitter_grpby_rank)
         
         ## 히트맵 시각화 팀별 랭킹        
-
-        # st.title("Heatmap")
-        # # 커스텀 컬러맵 생성
-        # colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        # cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-        # # 히트맵 생성
-        # plt.figure(figsize=(10, 8))
-        # plt.tight_layout()        
-        # plt = sns.heatmap(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted[1:]], 
-        #                     annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
-        # # Streamlit에 표시
-        # st.pyplot(plt)
-
-        st.title("Heatmap Visualization in Streamlit with Team Names")
+        st.write("Heatmap")
         df = hitter_grpby_rank.copy()
         df.set_index('Team', inplace=True)
-
         # 커스텀 컬러맵 생성
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=256)
-
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-
         # Streamlit에 표시
         st.pyplot(plt)
 
