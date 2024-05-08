@@ -282,7 +282,7 @@ with tab_sn_vs:
     if st.button('Plotting', key = 'vs_rader_btn'):
         # 선택된 데이터셋에 따라 데이터 프레임 설정
         selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
-        selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'W']        
+        selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA']        
 
         if team_selection_rader == '전체':
             filtered_data_h = hitter_grpby.copy()
