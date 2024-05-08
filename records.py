@@ -111,7 +111,7 @@ tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_sn_void = st.tabs
 
 def create_heatmap(data, cmap, input_figsize = (10, 7)):
     plt.figure(figsize=input_figsize)
-    sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index)
+    sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
     plt.xticks(rotation=45)  # x축 레이블 회전
     plt.yticks(rotation=0)   # y축 레이블 회전
     plt.tight_layout()
