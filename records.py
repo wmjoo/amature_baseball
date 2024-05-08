@@ -141,7 +141,7 @@ with tab_sn_players:
                     '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
-                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB'] 
+                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
         st.write(hitter_grpby.loc[:, rank_by_cols_h_sorted])
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
@@ -346,7 +346,6 @@ with tab_sn_viz:
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
                 filtered_data_h = hitter_grpby_rank[hitter_grpby_rank['Team'].isin([team1, team2])].copy()
-                st.write(filtered_data_h)
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
