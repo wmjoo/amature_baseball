@@ -272,7 +272,7 @@ with tab_sn_vs:
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template='plotly_dark', title=f'Team Performance Comparison')            
+                                template='seaborn', title=f'Team Performance Comparison')            
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
             filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
@@ -282,7 +282,7 @@ with tab_sn_vs:
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template='plotly_dark', title=f'Team Performance Comparison: {team1} vs {team2}')
+                                template='seaborn', title=f'Team Performance Comparison: {team1} vs {team2}')
             st.dataframe(pd.concat([df_vs.loc[df_vs.Team == team1, selected_cols], 
                                     df_vs.loc[df_vs.Team == team2, selected_cols]], axis = 0))
         # 차트 보기
