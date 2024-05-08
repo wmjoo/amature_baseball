@@ -106,12 +106,12 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 ## 탭 설정
-tab1, tab2, tab3, tab_sn_vs, tab5, tab6 = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "성남:팀비교", 
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_vs, tab5, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "성남:팀비교", 
                                                 "성남:ㅇㅇ", "용어"]) #"투수:규정이상", "투수:규정미달", "안양_일정"])
 
-with tab1:
-    tab1_1, tab1_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
-    with tab1_1:
+with tab_sn_players:
+    tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
+    with tab_sn_players_1:
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter)
         st.subheader('팀별 기록')
@@ -130,11 +130,9 @@ with tab1:
             hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
             
         st.dataframe(hitter_grpby)
-        st.dataframe(#pd.concat[hitter_grpby.Team, 
-                            hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)
-                            #    ], axis = 1
-        )        
-    with tab1_2:
+        st.dataframe(pd.concat[hitter_grpby.Team, hitter_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1)
+
+    with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         st.dataframe(df_pitcher)
         st.subheader('팀별 기록')
@@ -165,14 +163,11 @@ with tab1:
         
         # 결과 확인
         st.write(pitcher_grpby)
-        st.dataframe(#pd.concat[hitter_grpby.Team, 
-                    pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)
-                    #    ], axis = 1
-        ) 
+        st.dataframe(pd.concat[pitcher_grpby.Team, pitcher_grpby.rank(method = 'min', ascending=False).drop('Team', axis= 1)], axis = 1)
 
-with tab2:
-    tab2_1, tab2_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
-    with tab2_1:
+with tab_sn_teamwise:
+    tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
+    with tab_sn_teamwise_1:
         team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_B]
@@ -184,7 +179,7 @@ with tab2:
         st.write(DATA_URL_B)
         st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B])
         
-    with tab2_2:
+    with tab_sn_teamwise_2:
         team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_P]
@@ -196,8 +191,8 @@ with tab2:
         st.write(DATA_URL_P) 
         st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P])
 
-with tab3:
-    st.subheader('야구 통계 시각화')    
+with tab_sn_viz:
+    st.subheader('시각화')    
     df_plot = df_hitter
     col1, col2, col3 = st.columns(3)
     with col1:        # 데이터셋 선택을 위한 토글 버튼
@@ -245,19 +240,18 @@ with tab3:
 
 with tab_sn_vs:
     st.subheader('팀 간 전력 비교')      
-    col4_1, col4_2 = st.columns(2)
-    with col4_1:        # 데이터셋 선택을 위한 토글 버튼
+    tab_sn_vs_col1, tab_sn_vs_col2 = st.columns(2)
+    with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
         df_vs = hitter_grpby.copy()
         if dataset_choice_rader == '투수': 
             df_vs = pitcher_grpby.copy()
 
-    with col4_2:         # 그래프 유형 선택을 위한 토글 버튼
+    with tab_sn_vs_col2:         # 그래프 유형 선택을 위한 토글 버튼
         team_selection_rader = st.radio('팀 선택', ('전체', 'VS'), key = 'team_selection_rader')
         if team_selection_rader == 'VS':
             # 팀 목록 가져오기
             teams = df_vs['Team'].unique()
-            # st.write(teams)
             # 스트림릿 셀렉트박스로 팀 선택
             team1 = st.selectbox('Select Team 1:', options = teams, index=14)
             team2 = st.selectbox('Select Team 2:', options = teams)
@@ -297,11 +291,11 @@ with tab_sn_vs:
 with tab5:
     st.subheader('빈 칸')    
 
-with tab6:
+with tab_sn_terms:
     st.subheader('야구 기록 설명')
-    col1, col2 = st.columns(2)
+    tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
-    with col1:
+    with tab_sn_terms_col1:
         # 타자 데이터 설명
         st.markdown("""
         ### 타자(Hitters) 컬럼명 약어:
@@ -339,7 +333,7 @@ with tab6:
         | XBH/H        | 장타/안타   | Extra base hits per hit        |
         | Team         | 팀          | Team name                      |
         """)
-    with col2:
+    with tab_sn_terms_col2:
         # 투수 데이터 설명
         st.markdown("""
         ### 투수(Pitchers) 컬럼명 약어:
