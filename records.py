@@ -385,7 +385,7 @@ with tab_sn_viz:
                     # st.dataframe(df_rader_vs_h)   
                     # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
                     #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
-                    st.markdown(style + df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
+                    st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
                 else :
                     st.dataframe(hitter_grpby[selected_cols_h].sort_values('Team').T)
                     # st.dataframe(filtered_data_h[selected_cols_h])
@@ -397,12 +397,13 @@ with tab_sn_viz:
                     # st.dataframe(df_rader_vs_p)   
                     # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
                     #                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
-                    st.markdown(style + df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
+                    st.markdown(df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
                 else :
                     st.dataframe(pitcher_grpby[selected_cols_p].sort_values('Team').T)                    
                     # st.dataframe(filtered_data_p[selected_cols_p])
                 st.plotly_chart(fig_p, use_container_width=True)
 
+            st.write(df_rader_vs_h.to_html(index=True))
 
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
