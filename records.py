@@ -5,6 +5,7 @@ import numpy as np
 import requests
 from bs4 import BeautifulSoup
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
 import plotly.express as px
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -152,7 +153,7 @@ with tab_sn_players:
         plt.figure(figsize=(10, 8))
         plt = sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'})
         plt.tight_layout()
-        plt = create_heatmap(hitter_grpby_rank, cmap)
+        plt = create_heatmap(hitter_grpby_rank.loc[:, rank_by_cols_h_sorted], cmap)
         # Streamlit에 표시
         st.pyplot(plt)
 
