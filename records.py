@@ -244,8 +244,22 @@ with tab_sn_viz:
         plt.tight_layout()
         st.pyplot(fig)
 
+### template_input 
+# plotly - Plotly의 기본 템플릿.
+# plotly_white - 배경이 하얀색인 깔끔한 템플릿.
+# plotly_dark - 배경이 어두운색인 템플릿.
+# ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.
+# seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.
+# simple_white - 매우 단순하고 깨끗한 템플릿.
+# none - 최소한의 스타일로, 사용자가 자신만의 스타일을 쉽게 추가할 수 있게 해줍니다
+
+
 with tab_sn_vs:
+    template_input = 'plotly_white'    
     st.subheader('팀 간 전력 비교')      
+    st.write(hitter_grpby.columns)
+    st.write(pitcher_grpby.columns)
+    
     tab_sn_vs_col1, tab_sn_vs_col2 = st.columns(2)
     with tab_sn_vs_col1:        # 데이터셋 선택을 위한 토글 버튼
         dataset_choice_rader = st.radio('데이터셋 선택', ('타자', '투수'), key = 'dataset_choice_rader')
@@ -260,7 +274,7 @@ with tab_sn_vs:
             teams = df_vs['Team'].unique()
             # 스트림릿 셀렉트박스로 팀 선택
             team1 = st.selectbox('Select Team 1:', options = teams, index=14)
-            team2 = st.selectbox('Select Team 2:', options = teams)
+            team2 = st.selectbox('Select Team 2:', options = teams, index=12)
 
     # "Plotting" 버튼 추가
     if st.button('Plotting', key = 'vs_rader_btn'):
@@ -274,11 +288,11 @@ with tab_sn_vs:
             filtered_data = df_vs.copy()
             # 레이더 차트 데이터 준비
             radar_data = filtered_data[selected_cols].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
-            st.write(radar_data)
+            # st.write(radar_data)
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template='seaborn', title=f'Team Performance Comparison [ALL Temas]')            
+                                template=template_input, title=f'Team Performance Comparison [ALL Temas]')            
         else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
             # 선택된 팀 데이터 필터링
             filtered_data = df_vs[df_vs['Team'].isin([team1, team2])].copy()
@@ -288,7 +302,7 @@ with tab_sn_vs:
             # 레이더 차트 생성
             fig = px.line_polar(radar_data, r='Value', theta='Stat', color='Team', line_close=True,
                                 color_discrete_sequence=px.colors.sequential.Plasma_r,
-                                template='seaborn', title=f'Team Performance Comparison: {team1} vs {team2}')
+                                template=template_input, title=f'Team Performance Comparison: {team1} vs {team2}')
             st.dataframe(pd.concat([df_vs.loc[df_vs.Team == team1, selected_cols], 
                                     df_vs.loc[df_vs.Team == team2, selected_cols]], axis = 0))
         # 차트 보기
