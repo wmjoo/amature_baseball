@@ -136,7 +136,7 @@ with tab_sn_players:
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         st.dataframe(df_pitcher)
-        st.subheader('팀별 기록')
+        st.subheader('팀별 기록 : 투수')
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
         pitcher_grpby = df_pitcher.groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
