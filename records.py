@@ -239,9 +239,13 @@ with tab_sn_teamwise:
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
-        st.dataframe(hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted ], use_container_width = True, hide_index = True)
-        st.dataframe(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B], use_container_width = True, hide_index = True)
-        
+        st.dataframe(
+        df1 = hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+        df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B].drop('Team', axis = 1)
+        df1.insert(1, 'Type', 'Records')
+        df2.insert(1, 'Type', 'Rank')
+        st.dataframe(pd.concat([df1, df2], axis = 0), 
+                     use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
         team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
         # 팀명을 기준으로 데이터 프레임 필터링
