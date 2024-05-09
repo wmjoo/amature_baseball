@@ -321,10 +321,10 @@ with tab_sn_viz:
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
         multisel_h = st.multiselect('공격(타자) 지표 선택',
-            rank_by_cols_h_sorted, ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+            rank_by_cols_h_sorted, ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB'], max_selections = 12
         )
         multisel_p = st.multiselect('수비(투수) 지표 선택',
-            rank_by_cols_p_sorted, ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']
+            rank_by_cols_p_sorted, ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP'], max_selections = 12
         )        
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
