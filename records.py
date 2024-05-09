@@ -267,7 +267,7 @@ with tab_sn_teamwise:
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
-        st.subheader('선수별 기록 분포 시각화')    
+        #st.subheader('선수별 기록 분포 시각화')    
         df_plot = df_hitter
         tab_sn_viz_col1, tab_sn_viz_col2, tab_sn_viz_col3 = st.columns(3)
         with tab_sn_viz_col1:        # 데이터셋 선택을 위한 토글 버튼
