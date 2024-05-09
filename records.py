@@ -319,7 +319,7 @@ with tab_sn_viz:
     with tab_sn_viz_2: # tab_sn_vs
         teams = hitter_grpby['Team'].unique()    
         template_input = 'plotly_white'    
-        st.subheader('팀 간 전력 비교')      
+        # st.subheader('팀 간 전력 비교')      
         tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
         with tab_sn_vs_col1:        # 2개 팀을 비교할지 / 전체 팀을 한판에 그릴지 선택하는 토글 버튼
             team_all = st.toggle("Select All Teams")
