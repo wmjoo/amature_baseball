@@ -45,4 +45,4 @@ try:
     st.dataframe(df_schd, use_container_width = True, hide_index = True)
 except Exception as e:
     st.write('🚧 Under Construction ... 🚧')
-    # st.write(f"An error occurred: {e}")
+    # st.write(f"An error occurred: {e}") An error occurred: HTTPConnectionPool(host='alb.or.kr', port=80): Max retries exceeded with url: /s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024 (Caused by NameResolutionError("<urllib3.connection.HTTPConnection object at 0x7fa9bca30460>: Failed to resolve 'alb.or.kr' ([Errno -3] Temporary failure in name resolution)"))
