@@ -381,7 +381,7 @@ with tab_sn_viz:
             if not team_all:    #if team_selection_rader == 'VS':    
                 df_rader_vs_p = pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
                                     pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0).sort_values('Team')           
-                st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True) \         
+                st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True)      
             else :
                 st.dataframe(pitcher_grpby[selected_cols_p].sort_values('Team').T, use_container_width = True)  
 
