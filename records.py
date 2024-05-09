@@ -239,7 +239,7 @@ with tab_sn_teamwise:
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
-        st.dataframe(
+        # st.dataframe(
         df1 = hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B].drop('Team', axis = 1)
         df1.insert(1, 'Type', 'Records')
