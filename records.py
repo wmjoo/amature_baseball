@@ -320,16 +320,16 @@ with tab_sn_viz:
         with tab_sn_vs_col3:  
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
-        multisel_h = st.multiselect(            '공격(타자) 지표 선택',
-            rank_by_cols_h_sorted, 
-            ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+        multisel_h = st.multiselect('공격(타자) 지표 선택',
+            rank_by_cols_h_sorted, ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
         )
-        st.write('공격(타자) 지표:', multisel_h)
+        multisel_p = st.multiselect('수비(투수) 지표 선택',
+            rank_by_cols_p_sorted, ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']
+        )        
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
-
             selected_cols_h = ['Team'] + multisel_h # ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
-            selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']     
+            selected_cols_p = ['Team'] + multisel_p
 
             ########################
             # 데이터 스케일링(구)   
@@ -374,20 +374,14 @@ with tab_sn_viz:
             ########################
             ## Chart AND Dataframe display Area
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
-            # 글씨 크기를 조정하는 CSS 추가
-            style = """
-                <style>
-                    table, th, td {font-size: 10px; /* 글씨 크기 조정 */}
-                </style>
-            """
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
                 if not team_all:    #if team_selection_rader == 'VS':  
                     df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
                                         hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0).sort_values('Team')      
-                    # st.dataframe(df_rader_vs_h)   
+                    st.dataframe(df_rader_vs_h)   
                     # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
                     #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
-                    st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
+                    # st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
                 else :
                     st.dataframe(hitter_grpby[selected_cols_h].sort_values('Team').T)
                     # st.dataframe(filtered_data_h[selected_cols_h])
@@ -396,10 +390,10 @@ with tab_sn_viz:
                 if not team_all:    #if team_selection_rader == 'VS':    
                     df_rader_vs_p = pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
                                         pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0).sort_values('Team')           
-                    # st.dataframe(df_rader_vs_p)   
+                    st.dataframe(df_rader_vs_p)   
                     # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
                     #                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
-                    st.markdown(df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
+                    # st.markdown(df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
                 else :
                     st.dataframe(pitcher_grpby[selected_cols_p].sort_values('Team').T)                    
                     # st.dataframe(filtered_data_p[selected_cols_p])
