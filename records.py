@@ -53,7 +53,6 @@ def load_data(team_name, team_id):
             results[key].append(table)
     return {'hitter': pd.concat(results['hitter'], ignore_index=True), 
             'pitcher': pd.concat(results['pitcher'], ignore_index=True)}
-
 # 병렬로 데이터 로딩
 hitters = []
 pitchers = []
@@ -66,7 +65,6 @@ with ThreadPoolExecutor(max_workers=10) as executor:
             pitchers.append(result['pitcher'])
         except Exception as exc:
             print(f'Team {futures[future]} generated an exception: {exc}')
-
 # 모든 데이터를 각각의 데이터프레임으로 합침
 final_hitters_data = pd.concat(hitters, ignore_index=True)
 final_pitchers_data = pd.concat(pitchers, ignore_index=True)
@@ -85,7 +83,6 @@ df_hitter = final_hitters_data.astype(hitter_data_types)
 # 타자 데이터프레임 컬럼명 영어로
 df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
                      'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP',  'SB%', 'MHit', 'OPS', 'BB/K', 'XBH/H', 'Team']
-
 # 투수 데이터프레임 df_pitcher에 적용할 자료형 매핑
 pitcher_data_types = {
     '성명': 'str', '배번': 'str', '방어율': 'float', '경기수': 'int', '승': 'int', '패': 'int', '세': 'int',
@@ -94,7 +91,6 @@ pitcher_data_types = {
     '사구': 'int', '탈삼진': 'int', '폭투': 'int', '보크': 'int', '실점': 'int', '자책점': 'int',
     'WHIP': 'float', '피안타율': 'float', '탈삼진율': 'float', '팀': 'str'
 }
-
 final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
 # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
 df_pitcher = final_pitchers_data.astype(pitcher_data_types)
@@ -103,10 +99,8 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
                       'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
 # IP 컬럼을 올바른 소수 형태로 변환
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
-
-## 탭 설정 ]]]]]]]]]
+## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
-
 def create_heatmap(data, cmap, input_figsize = (10, 7)):
     plt.figure(figsize=input_figsize)
     sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
