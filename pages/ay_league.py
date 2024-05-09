@@ -43,5 +43,6 @@ try:
     # df_schd2
     st.subheader('안양리그 경기 일정')
     st.dataframe(df_schd, use_container_width = True, hide_index = True)
-except:
+except Exception as e:
     st.write('🚧 Under Construction ... 🚧')
+    st.write(f"An error occurred: {e}")
