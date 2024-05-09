@@ -122,7 +122,7 @@ with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
     with tab_sn_players_1:
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
-        st.dataframe(df_hitter)
+        st.dataframe(df_hitter, use_container_width = True, hide_index = True)
         st.subheader('팀별 기록')
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
         hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
@@ -169,7 +169,7 @@ with tab_sn_players:
         st.pyplot(plt)
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
-        st.dataframe(df_pitcher)
+        st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
         st.subheader('팀별 기록 : 투수')
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
@@ -203,7 +203,7 @@ with tab_sn_players:
         rank_by_descending_cols_p = ['IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
         # 출력시 열 순서 변경
         rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] 
-        st.write(pitcher_grpby.loc[:, rank_by_cols_p_sorted])
+        st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
                                         pitcher_grpby[rank_by_descending_cols_p].rank(method = 'min', ascending=False),
@@ -211,7 +211,7 @@ with tab_sn_players:
                                     ], axis = 1)
         st.write('Ranking')
         pitcher_grpby_rank = pitcher_grpby_rank.loc[:, rank_by_cols_p_sorted]
-        st.dataframe(pitcher_grpby_rank)
+        st.dataframe(pitcher_grpby_rank, use_container_width = True, hide_index = True)
 
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
@@ -237,10 +237,10 @@ with tab_sn_teamwise:
         
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name_B].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
-        st.dataframe(df_hitter_team)
+        st.dataframe(df_hitter_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
-        st.write(hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted ]) # .loc[:, rank_by_cols_h_sorted]
-        st.write(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B])
+        st.dataframe(hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted ]) # .loc[:, rank_by_cols_h_sorted]
+        st.dataframe(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B], use_container_width = True, hide_index = True)
         
     with tab_sn_teamwise_2:
         team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
@@ -250,7 +250,7 @@ with tab_sn_teamwise:
 
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
-        st.dataframe(df_pitcher_team) 
+        st.dataframe(df_pitcher_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
         st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted])
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
