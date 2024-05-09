@@ -255,7 +255,6 @@ with tab_sn_teamwise:
         st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted])
         st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
 
-
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
@@ -322,11 +321,17 @@ with tab_sn_viz:
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
 
+
 # ##########
+        multisel_h = st.multiselect(            '공격(타자) 지표 선택',
+            rank_by_cols_h_sorted, 
+            ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+        )
+        st.write('공격(타자) 지표:', multisel_h)
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
-            # 선택된 데이터셋에 따라 데이터 프레임 설정
-            selected_cols_h = ['Team', 'BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+
+            selected_cols_h = ['Team'] + multisel_h # ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
             selected_cols_p = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP']     
 
             ########################
