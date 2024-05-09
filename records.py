@@ -14,8 +14,7 @@ import warnings
 from sklearn.preprocessing import MinMaxScaler
 
 warnings.filterwarnings('ignore')
-
-st.set_page_config(page_title="Baseball Data",)
+st.set_page_config(page_title="Baseball Data")
 st.title('Saturday League Data')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
@@ -165,7 +164,6 @@ with tab_sn_players:
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
-
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
@@ -224,7 +222,6 @@ with tab_sn_players:
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)        
-
 
 with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
@@ -338,7 +335,6 @@ with tab_sn_viz:
         if st.button('Plotting', key = 'vs_rader_btn'):
             selected_cols_h = ['Team'] + multisel_h # ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
             selected_cols_p = ['Team'] + multisel_p
-
             ########################
             # 데이터 스케일링(구)   
             hitter_grpby_scaled = hitter_grpby.copy()
@@ -385,30 +381,21 @@ with tab_sn_viz:
                 df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
                                     hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0).sort_values('Team')      
                 st.dataframe(df_rader_vs_h, use_container_width = True, hide_index = True) 
-                # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
-                #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
-                # st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
             else :
                 st.dataframe(hitter_grpby[selected_cols_h].sort_values('Team').T, use_container_width = True)    
 
             if not team_all:    #if team_selection_rader == 'VS':    
                 df_rader_vs_p = pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
                                     pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0).sort_values('Team')           
-                st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True) 
-                # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
-                #                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
-                # st.markdown(df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
+                st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True) \         
             else :
                 st.dataframe(pitcher_grpby[selected_cols_p].sort_values('Team').T, use_container_width = True)  
 
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
-                    # st.dataframe(filtered_data_h[selected_cols_h])
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
-                    # st.dataframe(filtered_data_p[selected_cols_p])
                 st.plotly_chart(fig_p, use_container_width=True)
-            # st.write(df_rader_vs_h.to_html(index=True))
 
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
