@@ -29,6 +29,7 @@ team_id_dict = {
 }
 team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
 
+@st.cache_data
 def load_data(team_name, team_id):
     urls = {
         'hitter': f"http://www.gameone.kr/club/info/ranking/hitter?club_idx={team_id}",
