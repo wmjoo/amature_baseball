@@ -256,8 +256,9 @@ with tab_sn_teamwise:
         df1.insert(1, 'Type', 'Records')
         df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P]
         df2.insert(1, 'Type', 'Rank')
-        st.dataframe(df1, use_container_width = True, hide_index = True)
-        st.dataframe(df2, use_container_width = True, hide_index = True)
+        st.dataframe(pd.concat([df1, df2], axis = 0), 
+                     use_container_width = True, hide_index = True)
+        # st.dataframe(df2, use_container_width = True, hide_index = True)
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
