@@ -373,33 +373,34 @@ with tab_sn_viz:
                                     template=template_input, title=f'수비력 : {team1} vs {team2}')
             ########################
             ## Chart AND Dataframe display Area
+            if not team_all:    #if team_selection_rader == 'VS':  
+                df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
+                                    hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0).sort_values('Team')      
+                st.dataframe(df_rader_vs_h)   
+                # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
+                #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
+                # st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
+            else :
+                st.dataframe(hitter_grpby[selected_cols_h].sort_values('Team').T)    
+
+            if not team_all:    #if team_selection_rader == 'VS':    
+                df_rader_vs_p = pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
+                                    pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0).sort_values('Team')           
+                st.dataframe(df_rader_vs_p)   
+                # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
+                #                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
+                # st.markdown(df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
+            else :
+                st.dataframe(pitcher_grpby[selected_cols_p].sort_values('Team').T) 
+
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
-                if not team_all:    #if team_selection_rader == 'VS':  
-                    df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby.Team == team1, selected_cols_h], 
-                                        hitter_grpby.loc[hitter_grpby.Team == team2, selected_cols_h]], axis = 0).sort_values('Team')      
-                    st.dataframe(df_rader_vs_h)   
-                    # st.dataframe(pd.concat([filtered_data_h.loc[filtered_data_h.Team == team1, selected_cols_h], 
-                    #                     filtered_data_h.loc[filtered_data_h.Team == team2, selected_cols_h]], axis = 0))        
-                    # st.markdown(df_rader_vs_h.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]
-                else :
-                    st.dataframe(hitter_grpby[selected_cols_h].sort_values('Team').T)
                     # st.dataframe(filtered_data_h[selected_cols_h])
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
-                if not team_all:    #if team_selection_rader == 'VS':    
-                    df_rader_vs_p = pd.concat([pitcher_grpby.loc[pitcher_grpby.Team == team1, selected_cols_p], 
-                                        pitcher_grpby.loc[pitcher_grpby.Team == team2, selected_cols_p]], axis = 0).sort_values('Team')           
-                    st.dataframe(df_rader_vs_p)   
-                    # st.dataframe(pd.concat([filtered_data_p.loc[filtered_data_p.Team == team1, selected_cols_p], 
-                    #                     filtered_data_p.loc[filtered_data_p.Team == team2, selected_cols_p]], axis = 0))     
-                    # st.markdown(df_rader_vs_p.to_html(index=True), unsafe_allow_html=True) # HTML 표 형태로 데이터프레임 출력 [가로]           
-                else :
-                    st.dataframe(pitcher_grpby[selected_cols_p].sort_values('Team').T)                    
                     # st.dataframe(filtered_data_p[selected_cols_p])
                 st.plotly_chart(fig_p, use_container_width=True)
-
-            st.write(df_rader_vs_h.to_html(index=True))
+            # st.write(df_rader_vs_h.to_html(index=True))
 
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
