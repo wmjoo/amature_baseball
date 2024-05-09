@@ -467,3 +467,5 @@ with tab_sn_terms:
         | IP           | 이닝        | Innings pitched                |    
         | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
+
+sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373
