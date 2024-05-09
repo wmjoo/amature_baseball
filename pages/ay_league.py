@@ -37,4 +37,8 @@ def get_table_as_dataframe(url, table_index=7):
 ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
 # 데이터프레임을 가져옵니다.
 df_schd = get_table_as_dataframe(url = ALB_URL_SCHD, table_index = 7)
+df_schd.columns = df_schd.loc[0]
+df_schd = df_schd.iloc[1:].sort_values('날짜,시간').reset_index(drop=True)
+# df_schd2
+st.subheader('안양리그 경기 일정')
 st.dataframe(df_schd, use_container_width = True, hide_index = True)
