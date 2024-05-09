@@ -45,4 +45,4 @@ try:
     st.dataframe(df_schd, use_container_width = True, hide_index = True)
 except Exception as e:
     st.write('🚧 Under Construction ... 🚧')
-    st.write(f"An error occurred: {e}")
+    # st.write(f"An error occurred: {e}")
