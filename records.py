@@ -15,7 +15,6 @@ from sklearn.preprocessing import MinMaxScaler
 
 warnings.filterwarnings('ignore')
 
-ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
 st.set_page_config(page_title="Baseball Data",)
 st.title('Saturday League Data')
 
@@ -109,7 +108,7 @@ df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
 
 ## 탭 설정 ]]]]]]]]]
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_sn_void = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "용어", "void"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
 
 def create_heatmap(data, cmap, input_figsize = (10, 7)):
     plt.figure(figsize=input_figsize)
@@ -146,7 +145,7 @@ with tab_sn_players:
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
-        st.write(hitter_grpby.loc[:, rank_by_cols_h_sorted])
+        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted], use_container_width = True, hide_index = True)
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
                                         hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
@@ -154,7 +153,7 @@ with tab_sn_players:
                                     ], axis = 1)
         hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
         st.write('Ranking')
-        st.dataframe(hitter_grpby_rank)
+        st.dataframe(hitter_grpby_rank, use_container_width = True, hide_index = True)
         
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")

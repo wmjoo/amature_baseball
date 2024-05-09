@@ -15,3 +15,4 @@ from sklearn.preprocessing import MinMaxScaler
 warnings.filterwarnings('ignore')
 
 st.write('🚧 Under Construction ... 🚧')
+ALB_URL_SCHD = "http://alb.or.kr/s/schedule/schedule_team_2019.php?id=schedule_team&sc=2&team=%B7%B9%BE%CB%B7%E7%C5%B0%C1%EE&gyear=2024"
