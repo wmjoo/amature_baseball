@@ -239,7 +239,7 @@ with tab_sn_teamwise:
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
-        st.dataframe(hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted ]) # .loc[:, rank_by_cols_h_sorted]
+        st.dataframe(hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted ], use_container_width = True, hide_index = True)
         st.dataframe(hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B], use_container_width = True, hide_index = True)
         
     with tab_sn_teamwise_2:
@@ -252,8 +252,8 @@ with tab_sn_teamwise:
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
-        st.write(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted])
-        st.write(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P])        
+        st.dataframe(pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted], use_container_width = True, hide_index = True) 
+        st.dataframe(pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P], use_container_width = True, hide_index = True)
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
@@ -478,7 +478,3 @@ with tab_sn_terms:
         | IP           | 이닝        | Innings pitched                |    
         | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
-
-
-with tab_sn_void:
-    st.subheader('빈 칸')    
