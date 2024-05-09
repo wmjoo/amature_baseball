@@ -252,7 +252,7 @@ with tab_sn_teamwise:
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team, use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
-        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted], 
+        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted]
         df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P]
         st.dataframe(df1, use_container_width = True, hide_index = True)
         st.dataframe(df2, use_container_width = True, hide_index = True)
