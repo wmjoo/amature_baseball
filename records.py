@@ -240,7 +240,6 @@ with tab_sn_players:
 with tab_sn_teamwise:
     df_h_meandict = df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict()
     df_h_meandict = {k: round(v, 3) for k, v in df_h_meandict.items()}
-
     df_p_meandict = df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict()
     df_p_meandict = {k: round(v, 3) for k, v in df_p_meandict.items()}
 
