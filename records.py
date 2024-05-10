@@ -243,9 +243,10 @@ with tab_sn_teamwise:
     df_p_meandict = {k: round(v, 3) for k, v in df_p_meandict.items()}
 
     # 작은 글자 크기
-    st.markdown('<span style="font-size: 8px; color: lightgray;">'+ str(df_h_meandict) +'</h1>', unsafe_allow_html=True)
-    st.write(str(df_h_meandict)) #, use_container_width = True)
-    st.write(str(df_p_meandict))#, use_container_width = True)
+    st.markdown('<span style="font-size: 10px; color: lightgray;">'+ str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+    st.markdown('<span style="font-size: 10px; color: lightgray;">'+ str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+    # st.write(str(df_h_meandict)) #, use_container_width = True)
+    # st.write(str(df_p_meandict))#, use_container_width = True)
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
