@@ -95,7 +95,7 @@ final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.
 # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
 df_pitcher = final_pitchers_data.astype(pitcher_data_types)
 # 투수 데이터프레임 컬럼명 영어로
-df_pitcher.columns = ['Name', 'No', 'ERA', 'GS', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
+df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
                       'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
 # IP 컬럼을 올바른 소수 형태로 변환
 df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
@@ -191,9 +191,9 @@ with tab_sn_players:
         # rank_by_ascending, rank_by_descending columns 
         rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
-        rank_by_descending_cols_p = ['IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
+        rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
         # 출력시 열 순서 변경
-        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'GS', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] 
+        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] 
         st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
@@ -218,9 +218,10 @@ with tab_sn_players:
         st.pyplot(plt)        
 
 with tab_sn_teamwise:
+    team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+    team_name_P = team_name_B
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
     with tab_sn_teamwise_1:
-        team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_B]
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
@@ -237,7 +238,7 @@ with tab_sn_teamwise:
         st.dataframe(pd.concat([df1, df2], axis = 0), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
-        team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
+        # team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_P]
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
