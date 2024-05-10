@@ -179,7 +179,7 @@ with tab_sn_players:
             df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
 
         # None, '', '-'를 NaN으로 변환
-        df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}, inplace=True)
+        df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
 
         st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
 
