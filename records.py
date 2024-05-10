@@ -81,7 +81,7 @@ hitter_data_types = {
 # 데이터프레임 df의 컬럼 자료형 설정
 df_hitter = final_hitters_data.astype(hitter_data_types)
 # 타자 데이터프레임 컬럼명 영어로
-df_hitter.columns = ['Name', 'No', 'BA', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
+df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
                      'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP',  'SB%', 'MHit', 'OPS', 'BB/K', 'XBH/H', 'Team']
 # 투수 데이터프레임 df_pitcher에 적용할 자료형 매핑
 pitcher_data_types = {
@@ -118,23 +118,23 @@ with tab_sn_players:
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
         hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
-        # 타율(BA), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
-        hitter_grpby['BA'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
+        # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
+        hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
         hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
         hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
         hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
         
         # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-        for col in ['OPS', 'SLG', 'OBP', 'BA']:
+        for col in ['OPS', 'SLG', 'OBP', 'AVG']:
             team_idx = hitter_grpby.columns.get_loc('Team') + 1
             hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
   
         # rank_by_ascending, rank_by_descending columns 
         rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
-        rank_by_descending_cols_h = ['BA', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
+        rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
                     '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
         # 출력시 열 순서 변경
-        rank_by_cols_h_sorted = ['Team', 'BA', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
+        rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
         st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted], use_container_width = True, hide_index = True)
         hitter_grpby_rank = pd.concat([
@@ -243,7 +243,8 @@ with tab_sn_teamwise:
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
-        st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]], use_container_width = True, hide_index = True)
+        st.dataframe(df_pitcher_team, 
+                     use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
         df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted].drop('Team', axis = 1)
         df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P].drop('Team', axis = 1)
@@ -319,14 +320,14 @@ with tab_sn_viz:
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=12)
         multisel_h = st.multiselect('공격(타자) 지표 선택',
-            rank_by_cols_h_sorted, ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB'], max_selections = 12
+            rank_by_cols_h_sorted, ['AVG', 'OBP', 'OPS', 'BB', 'SO', 'SB'], max_selections = 12
         )
         multisel_p = st.multiselect('수비(투수) 지표 선택',
             rank_by_cols_p_sorted, ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP'], max_selections = 12
         )        
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
-            selected_cols_h = ['Team'] + multisel_h # ['BA', 'OBP', 'OPS', 'BB', 'SO', 'SB']
+            selected_cols_h = ['Team'] + multisel_h # ['AVG', 'OBP', 'OPS', 'BB', 'SO', 'SB']
             selected_cols_p = ['Team'] + multisel_p
             ########################
             # 데이터 스케일링(구)   
@@ -402,7 +403,7 @@ with tab_sn_terms:
         |--------------|-------------|--------------------------------|
         | Name         | 성명        | Player's name                  |
         | No           | 배번        | Jersey number                  |
-        | BA           | 타율        | Batting average                |
+        | AVG           | 타율        | Batting average                |
         | G            | 경기        | Games played                   |
         | PA           | 타석        | Plate appearances              |
         | AB           | 타수        | At bats                        |
