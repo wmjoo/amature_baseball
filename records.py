@@ -237,14 +237,10 @@ with tab_sn_players:
         st.pyplot(plt)
 
 with tab_sn_teamwise:
-    df_h_meandict = df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict()
-    df_h_meandict = {k: round(v, 3) for k, v in df_h_meandict.items()}
-    df_p_meandict = df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict()
-    df_p_meandict = {k: round(v, 3) for k, v in df_p_meandict.items()}
-
-    # 작은 글자 크기
-    st.markdown('<span style="font-size: 10px; color: gray;">'+ str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-    st.markdown('<span style="font-size: 10px; color: gray;">'+ str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+    # HTML display Setting
+    span_stylesetting = '<span style="font-size: 9px; color: black; line-height: 8px;">'
+    df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
+    df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
     # st.write(str(df_h_meandict)) #, use_container_width = True)
     # st.write(str(df_p_meandict))#, use_container_width = True)
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
@@ -258,11 +254,11 @@ with tab_sn_teamwise:
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]], use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
-        # st.dataframe(
         df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
+        st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
         st.dataframe(pd.concat([df1, df2], axis = 0), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
@@ -279,6 +275,7 @@ with tab_sn_teamwise:
         df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
+        st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
         st.dataframe(pd.concat([df1, df2], axis = 0), 
                      use_container_width = True, hide_index = True)
         # st.dataframe(df2, use_container_width = True, hide_index = True)
