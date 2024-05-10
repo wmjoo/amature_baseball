@@ -258,7 +258,7 @@ with tab_sn_teamwise:
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
-        st.dataframe(df_pitcher_team, 
+        st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted], 
                      use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
         df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted].drop('Team', axis = 1)
