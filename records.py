@@ -160,10 +160,25 @@ with tab_sn_players:
         st.pyplot(plt)
     with tab_sn_players_2:
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
-        st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
-        st.subheader('팀별 기록 : 투수')
-        # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+        # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
+        # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
+            # df_pitcher['ERA'] = ((df_pitcher['ER'] / df_pitcher['IP']) * 9).round(3)
         pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
+        
+        # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+        if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            df_pitcher['SO/IP'] = (df_pitcher['SO'] / df_pitcher['IP']).round(2)
+            df_pitcher['BB/IP'] = (df_pitcher['BB'] / df_pitcher['IP']).round(2)
+            df_pitcher['H/IP'] = (df_pitcher['HA'] / df_pitcher['IP']).round(2)
+        
+        # WHIP 계산: (볼넷 + 피안타) / 이닝
+        if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
+
+        st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
+
+        # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+        st.subheader('팀별 기록 : 투수')
         pitcher_grpby = df_pitcher.groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
         # 파생 변수 추가
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
