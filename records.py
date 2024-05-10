@@ -230,12 +230,13 @@ with tab_sn_players:
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(plt)        
+        st.pyplot(plt)
 
 with tab_sn_teamwise:
     team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_name_P = team_name_B
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
+    st.dataframe(df_pitcher[rank_by_cols_h_sorted[1:]].mean())
     with tab_sn_teamwise_1:
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_B]
