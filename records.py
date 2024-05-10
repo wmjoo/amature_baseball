@@ -238,8 +238,14 @@ with tab_sn_players:
 
 
 with tab_sn_teamwise:
-    st.write(str(df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict())) #, use_container_width = True)
-    st.write(str(df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict()))#, use_container_width = True)
+    df_h_meandict = df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict()
+    df_h_meandict = {k: round(v, 3) for k, v in df_h_meandict.items()}
+
+    df_p_meandict = df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict()
+    df_p_meandict = {k: round(v, 3) for k, v in df_p_meandict.items()}
+
+    st.write(str(df_h_meandict)) #, use_container_width = True)
+    st.write(str(df_p_meandict))#, use_container_width = True)
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
