@@ -225,7 +225,6 @@ with tab_sn_teamwise:
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_B]
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
-        
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name_B].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team, use_container_width = True, hide_index = True)
@@ -242,7 +241,6 @@ with tab_sn_teamwise:
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_P]
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
-
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team, use_container_width = True, hide_index = True)
