@@ -112,8 +112,11 @@ def create_heatmap(data, cmap, input_figsize = (10, 7)):
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
     with tab_sn_players_1:
+        # 출력시 열 순서 변경
+        rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
+                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
-        st.dataframe(df_hitter, use_container_width = True, hide_index = True)
+        st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted[1:] + ['Team']], use_container_width = True, hide_index = True)
         st.subheader('팀별 기록')
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
         hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
@@ -133,9 +136,6 @@ with tab_sn_players:
         rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
                     '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
-        # 출력시 열 순서 변경
-        rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
-                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
         st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted], use_container_width = True, hide_index = True)
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
