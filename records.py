@@ -91,7 +91,13 @@ pitcher_data_types = {
     '사구': 'int', '탈삼진': 'int', '폭투': 'int', '보크': 'int', '실점': 'int', '자책점': 'int',
     'WHIP': 'float', '피안타율': 'float', '탈삼진율': 'float', '팀': 'str'
 }
-final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
+# final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
+# None, '', '-'를 NaN으로 변환
+final_pitchers_data.replace({None: np.nan, '': np.nan, '-': np.nan}, inplace=True)
+
+# 숫자형으로 변환
+df = df.apply(pd.to_numeric, errors='coerce')
+
 # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
 df_pitcher = final_pitchers_data.astype(pitcher_data_types)
 # 투수 데이터프레임 컬럼명 영어로
