@@ -116,7 +116,7 @@ with tab_sn_players:
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
-        st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted[1:] + ['Team']], use_container_width = True, hide_index = True)
+        st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted], use_container_width = True, hide_index = True)
         st.subheader('팀별 기록')
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
         hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
@@ -159,6 +159,8 @@ with tab_sn_players:
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
     with tab_sn_players_2:
+        # 출력시 열 순서 변경
+        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER']  
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
         # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
@@ -175,7 +177,7 @@ with tab_sn_players:
         if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
 
-        st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
+        st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
 
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         st.subheader('팀별 기록 : 투수')
@@ -207,8 +209,6 @@ with tab_sn_players:
         rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
-        # 출력시 열 순서 변경
-        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] 
         st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
