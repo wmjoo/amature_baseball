@@ -235,37 +235,36 @@ with tab_sn_players:
 with tab_sn_teamwise:
     st.write(df_hitter.mean(numeric_only=True).T)#, use_container_width = True)
     st.dataframe(df_pitcher.mean(numeric_only=True))#, use_container_width = True)
-    team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
-    team_name_P = team_name_B
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
     with tab_sn_teamwise_1:
         # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict[team_name_B]
+        team_id = team_id_dict[team_name]
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
-        df_hitter_team = df_hitter.loc[df_hitter.Team == team_name_B].reset_index(drop=True).drop('Team', axis = 1)
-        st.subheader('타자 : {} [{}명]'.format(team_name_B, df_hitter_team.shape[0]))
+        df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
+        st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]], use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
         # st.dataframe(
-        df1 = hitter_grpby.loc[hitter_grpby.Team == team_name_B, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
-        df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name_B].drop('Team', axis = 1)
+        df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+        df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
         st.dataframe(pd.concat([df1, df2], axis = 0), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
-        # team_name_P = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
+        # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
         # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict[team_name_P]
+        team_id = team_id_dict[team_name]
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
-        df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name_P].reset_index(drop=True).drop('Team', axis = 1)
-        st.subheader('투수 : {} [{}명]'.format(team_name_P, df_pitcher_team.shape[0]))
+        df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
+        st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]], 
                      use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
-        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name_P, rank_by_cols_p_sorted].drop('Team', axis = 1)
-        df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name_P].drop('Team', axis = 1)
+        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+        df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
         st.dataframe(pd.concat([df1, df2], axis = 0), 
