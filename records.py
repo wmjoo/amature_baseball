@@ -238,7 +238,7 @@ with tab_sn_players:
 
 with tab_sn_teamwise:
     # HTML display Setting
-    span_stylesetting = '<span style="font-size: 9px; color: black; line-height: 8px;">'
+    span_stylesetting = '<span style="font-size: 9px; color: black; line-height: 5px;">'
     df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
     # st.write(str(df_h_meandict)) #, use_container_width = True)
