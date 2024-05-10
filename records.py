@@ -96,7 +96,7 @@ pitcher_data_types = {
 final_pitchers_data.replace({None: np.nan, '': np.nan, '-': np.nan}, inplace=True)
 
 # 숫자형으로 변환
-df = df.apply(pd.to_numeric, errors='coerce')
+# df = df.apply(pd.to_numeric, errors='coerce')
 
 # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
 df_pitcher = final_pitchers_data.astype(pitcher_data_types)
