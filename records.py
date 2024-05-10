@@ -236,7 +236,6 @@ with tab_sn_players:
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
 
-
 with tab_sn_teamwise:
     df_h_meandict = df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict()
     df_h_meandict = {k: round(v, 3) for k, v in df_h_meandict.items()}
@@ -244,7 +243,7 @@ with tab_sn_teamwise:
     df_p_meandict = {k: round(v, 3) for k, v in df_p_meandict.items()}
 
     # 작은 글자 크기
-    st.markdown('<style>h1{font-size: 8px;}</style><h1>'+ str(df_h_meandict) +'</h1>', unsafe_allow_html=True)
+    st.markdown('<span style="font-size: 8px; color: lightgray;">'+ str(df_h_meandict) +'</h1>', unsafe_allow_html=True)
     st.write(str(df_h_meandict)) #, use_container_width = True)
     st.write(str(df_p_meandict))#, use_container_width = True)
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
