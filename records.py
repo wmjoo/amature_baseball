@@ -233,7 +233,7 @@ with tab_sn_players:
         st.pyplot(plt)
 
 with tab_sn_teamwise:
-    st.dataframe(df_hitter.mean(numeric_only=True))#, use_container_width = True)
+    st.write(df_hitter.mean(numeric_only=True).T)#, use_container_width = True)
     st.dataframe(df_pitcher.mean(numeric_only=True))#, use_container_width = True)
     team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_name_P = team_name_B
