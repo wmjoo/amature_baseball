@@ -236,8 +236,8 @@ with tab_sn_teamwise:
     team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_name_P = team_name_B
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
-    st.write(df_pitcher.columns)
-    st.dataframe(df_pitcher[rank_by_cols_h_sorted[1:]])
+    st.dataframe(df_hitter[rank_by_cols_h_sorted[2:]].mean())
+    st.dataframe(df_pitcher[rank_by_cols_p_sorted[2:]].mean())
     with tab_sn_teamwise_1:
         # 팀명을 기준으로 데이터 프레임 필터링
         team_id = team_id_dict[team_name_B]
