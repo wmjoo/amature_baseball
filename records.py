@@ -245,7 +245,7 @@ with tab_sn_teamwise:
     df_p_meandict = {k: round(v, 3) for k, v in df_p_meandict.items()}
 
     # 작은 글자 크기
-    st.write('<style>h1{font-size: 10px;}</style><h1>{}</h1>'.format(df_h_meandict), unsafe_allow_html=True)
+    st.write('<style>h1{font-size: 10px;}</style><h1>{}</h1>'.format(str(df_h_meandict)), unsafe_allow_html=True)
     st.write(str(df_h_meandict)) #, use_container_width = True)
     st.write(str(df_p_meandict))#, use_container_width = True)
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
