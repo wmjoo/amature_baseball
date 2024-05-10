@@ -233,8 +233,8 @@ with tab_sn_players:
         st.pyplot(plt)
 
 with tab_sn_teamwise:
-    st.dataframe(df_hitter.dropna()[rank_by_cols_h_sorted[1:]].mean(), use_container_width = True)
-    st.dataframe(df_pitcher.dropna()[rank_by_cols_p_sorted[2:]].mean(), use_container_width = True)
+    st.dataframe(df_hitter.mean(numeric_only=True), use_container_width = True)
+    st.dataframe(df_pitcher.mean(numeric_only=True), use_container_width = True)
     team_name_B = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_name_P = team_name_B
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
