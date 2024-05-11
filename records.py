@@ -56,7 +56,7 @@ def load_data(team_name, team_id):
 # 병렬로 데이터 로딩
 hitters = []
 pitchers = []
-with ThreadPoolExecutor(max_workers=10) as executor:
+with ThreadPoolExecutor(max_workers=4) as executor:
     futures = {executor.submit(load_data, team_name, team_id): team_name for team_name, team_id in team_id_dict.items()}
     for future in as_completed(futures):
         try:
