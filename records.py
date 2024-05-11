@@ -21,9 +21,9 @@ st.title('Saturday League Data')
 team_id_dict = {
     "코메츠 호시탐탐": 7984, "Big Hits": 36636,    "FA Members": 13621, "RedStorm": 17375,    "unknown`s": 33848, "그냥하자": 10318,
     "기드온스": 27811,    "다이아몬스터": 39783,     "데빌베어스": 19135, "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
-    "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207,
+    "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207,"SKCC Wings": 4653,
 }
-team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
+team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT", "SKCC Wings"]
 
 @st.cache_data
 def load_data(team_name, team_id):
