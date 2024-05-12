@@ -284,11 +284,10 @@ with tab_sn_teamwise:
     df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+    team_id = team_id_dict[team_name]
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
     with tab_sn_teamwise_1:
-        # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict[team_name]
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
@@ -303,14 +302,12 @@ with tab_sn_teamwise:
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
-        # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict[team_name]
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
-        st.write(DATA_URL_P) 
+        st.write(DATA_URL_P)
         df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
         df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
