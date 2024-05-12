@@ -159,7 +159,7 @@ with tab_sn_players:
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
-                                    'HBP', 'PA', 'AB', 'SO', 'DP'] 
+                                    'HBP', 'PA', 'AB', 'SO', 'DP']
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
@@ -371,24 +371,33 @@ with tab_sn_viz:
                 ### template_input 
                 # plotly - Plotly의 기본 템플릿.     # plotly_white - 배경이 하얀색인 깔끔한 템플릿.     # plotly_dark - 배경이 어두운색인 템플릿.
                 # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.    # simple_white - 매우 단순하고 깨끗한 템플릿.
-    with tab_sn_viz_2: # tab_sn_vs
-        teams = hitter_grpby['Team'].unique()    
+    with tab_sn_viz_2: # tab_sn_vs [레이더 차트]
+        teams = list(sorted(team_id_dict.keys())) # Team list applied sorting
         template_input = 'plotly_white'    
+        try:
+            # '호시탐탐'의 인덱스 찾기
+            idx_hstt = teams.index('코메츠 호시탐탐')
+        except ValueError:
+            idx_hstt = 0
+
         # st.subheader('팀 간 전력 비교')      
         tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
         with tab_sn_vs_col1:        # 2개 팀을 비교할지 / 전체 팀을 한판에 그릴지 선택하는 토글 버튼
             team_all = st.toggle("Select All Teams")
         with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
             if not team_all: #team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
-                team1 = st.selectbox('Select Team 1:', options = teams, index=14)
+                team1 = st.selectbox('Select Team 1:', options = teams, index=idx_hstt)
         with tab_sn_vs_col3:  
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
-                team2 = st.selectbox('Select Team 2:', options = teams, index=12)
+                team2 = st.selectbox('Select Team 2:', options = teams, index=2)
         multisel_h = st.multiselect('공격(타자) 지표 선택',
-            rank_by_cols_h_sorted, ['AVG', 'OBP', 'OPS', 'BB', 'SO', 'SB'], max_selections = 12
+            [hitter_data_EnKr.get(col, col) for col in rank_by_cols_h_sorted[1:]], 
+            ['타율', '출루율', 'OPS', '볼넷', '삼진', '도루'], max_selections = 12
         )
         multisel_p = st.multiselect('수비(투수) 지표 선택',
-            rank_by_cols_p_sorted, ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP'], max_selections = 12
+            # rank_by_cols_p_sorted, 
+            [pitcher_data_EnKr.get(col, col) for col in rank_by_cols_p_sorted[1:]],
+            ['방어율', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP'], max_selections = 12
         )        
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
