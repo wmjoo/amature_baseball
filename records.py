@@ -303,9 +303,8 @@ with tab_sn_teamwise:
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
-        # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
         # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict2[team_name]
+        team_id = team_id_dict[team_name]
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
