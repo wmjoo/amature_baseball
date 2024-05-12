@@ -401,23 +401,25 @@ with tab_sn_viz:
         )        
         # "Plotting" 버튼 추가
         if st.button('Plotting', key = 'vs_rader_btn'):
+            hitter_grpby_plt = hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).copy()
+            pitcher_grpby_plt = pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False) .copy()
             selected_cols_h = ['팀'] + multisel_h # ['AVG', 'OBP', 'OPS', 'BB', 'SO', 'SB']
             selected_cols_p = ['팀'] + multisel_p
             # 데이터 스케일링
-            hitter_grpby_scaled = hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).copy()
+            hitter_grpby_plt_scaled = hitter_grpby_plt.rename(columns = hitter_data_EnKr, inplace=False).copy()
             scaler_h = MinMaxScaler()             # 스케일러 초기화
-            hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
-            pitcher_grpby_scaled = pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False).copy()
+            hitter_grpby_plt_scaled[hitter_grpby_plt_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_plt_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+            pitcher_grpby_plt_scaled = pitcher_grpby_plt.rename(columns = pitcher_data_EnKr, inplace=False).copy()
             scaler_p = MinMaxScaler()             # 스케일러 초기화
-            pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
+            pitcher_grpby_plt_scaled[pitcher_grpby_plt_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_plt_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
             if team_all: #if team_selection_rader == '전체':
-                filtered_data_h = hitter_grpby_scaled
+                filtered_data_h = hitter_grpby_plt_scaled
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
                 fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='팀', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력')   
 
-                filtered_data_p = pitcher_grpby_scaled
+                filtered_data_p = pitcher_grpby_plt_scaled
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
                 fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='팀', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
@@ -425,7 +427,7 @@ with tab_sn_viz:
 
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
-                filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['팀'].isin([team1, team2])]#.rename(columns = hitter_data_EnKr, inplace=False).copy()
+                filtered_data_h = hitter_grpby_plt_scaled[hitter_grpby_plt_scaled['팀'].isin([team1, team2])]#.rename(columns = hitter_data_EnKr, inplace=False).copy()
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
@@ -433,7 +435,7 @@ with tab_sn_viz:
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력 : {team1} vs {team2}')
                 # 선택된 팀 데이터 필터링
-                filtered_data_p = pitcher_grpby_scaled[pitcher_grpby_scaled['팀'].isin([team1, team2])]#.rename(columns = pitcher_data_EnKr, inplace=False).copy()
+                filtered_data_p = pitcher_grpby_plt_scaled[pitcher_grpby_plt_scaled['팀'].isin([team1, team2])]#.rename(columns = pitcher_data_EnKr, inplace=False).copy()
                 # 레이더 차트 데이터 준비
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
@@ -443,18 +445,18 @@ with tab_sn_viz:
             ########################
             ## Chart AND Dataframe display Area
             if not team_all:    #if team_selection_rader == 'VS':  
-                df_rader_vs_h = pd.concat([hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).loc[hitter_grpby['팀'] == team1, selected_cols_h], 
-                                    hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).loc[hitter_grpby['팀'] == team2, selected_cols_h]], axis = 0).sort_values('Team')      
+                df_rader_vs_h = pd.concat([hitter_grpby_plt.loc[hitter_grpby_plt['팀'] == team1, selected_cols_h], 
+                                    hitter_grpby_plt.loc[hitter_grpby_plt['팀'] == team2, selected_cols_h]], axis = 0).sort_values('Team')      
                 st.dataframe(df_rader_vs_h, use_container_width = True, hide_index = True) 
             else :
-                st.dataframe(hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False)[selected_cols_h].sort_values('팀').T, use_container_width = True)    
+                st.dataframe(hitter_grpby_plt[selected_cols_h].sort_values('팀').T, use_container_width = True)    
 
             if not team_all:    #if team_selection_rader == 'VS':    
-                df_rader_vs_p = pd.concat([pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False).loc[pitcher_grpby['팀'] == team1, selected_cols_p], 
-                                    pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False).loc[pitcher_grpby['팀'] == team2, selected_cols_p]], axis = 0).sort_values('Team')           
+                df_rader_vs_p = pd.concat([pitcher_grpby_plt.loc[pitcher_grpby_plt['팀'] == team1, selected_cols_p], 
+                                    pitcher_grpby_plt.loc[pitcher_grpby_plt['팀'] == team2, selected_cols_p]], axis = 0).sort_values('Team')           
                 st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True)      
             else :
-                st.dataframe(pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False)[selected_cols_p].sort_values('팀').T, use_container_width = True)  
+                st.dataframe(pitcher_grpby_plt[selected_cols_p].sort_values('팀').T, use_container_width = True)  
 
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
