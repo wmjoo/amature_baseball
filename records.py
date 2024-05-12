@@ -20,14 +20,14 @@ st.set_page_config(page_title="Baseball Data")
 st.title('Saturday League Data')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
-team_id_dict= { # team_id_dict_rookieA
+team_id_dict_rkA = { # team_id_dict_rookieA
     "코메츠 호시탐탐": 7984, "Big Hits": 36636,    "FA Members": 13621, "RedStorm": 17375,    "unknown`s": 33848, "그냥하자": 10318,
     "기드온스": 27811,    "다이아몬스터": 39783,     "데빌베어스": 19135, "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
     "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207, # "SKCC Wings": 4653,
 }
-team_id_dict2 = team_id_dict.copy()
-team_id_dict2.setdefault('SKCC Wings', 4653) 
-rank_calc_except_teams = list(team_id_dict2.keys() - team_id_dict.keys())
+team_id_dict = team_id_dict_rkA.copy()
+team_id_dict.setdefault('SKCC Wings', 4653) 
+rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_rkA.keys())
 
 team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears",
                  "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"] #, "SKCC Wings"]
@@ -193,7 +193,6 @@ with tab_sn_players:
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
         df = hitter_grpby_rank.drop('Team', axis = 1).copy()
-        # team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears", "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"]
         df['team_eng'] = team_englist
         df.set_index('team_eng', inplace=True)
         # 커스텀 컬러맵 생성
@@ -224,12 +223,11 @@ with tab_sn_players:
 
         # None, '', '-'를 NaN으로 변환
         df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
-
         st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         st.subheader('팀별 기록 : 투수')
-        pitcher_grpby = df_pitcher.groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
+        pitcher_grpby = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
         # 파생 변수 추가
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
         if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
@@ -285,10 +283,7 @@ with tab_sn_teamwise:
     span_stylesetting = '<span style="font-size: 9px; color: black; line-height: 5px;">'
     df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
-    # st.write(str(df_h_meandict)) #, use_container_width = True)
-    # st.write(str(df_p_meandict))#, use_container_width = True)
-    # team_id_dict2 = #team_id_dict.setdefault('SKCC Wings', 4653) ## 여기서만 SKCC Wings 출력되도록 (조가 다르니까)
-    team_name = st.selectbox('팀 선택', (team_id_dict2.keys()), key = 'selbox_team_b')
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
     with tab_sn_teamwise_1:
