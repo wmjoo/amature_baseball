@@ -133,9 +133,9 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     
     # 'YYMMDD_HHMMSS' 형식으로 시각 포매팅
     # formatted_time = datetime.now().strftime('%y%m%d_%H%M%S')
-    st.write(os.getcwd())
-    df_hitter.to_csv('sn_df_hitter.csv', index=False)
-    df_pitcher.to_csv('sn_df_pitcher.csv', index=False)
+    # st.write(os.getcwd())
+    # df_hitter.to_csv('sn_df_hitter.csv', index=False)
+    # df_pitcher.to_csv('sn_df_pitcher.csv', index=False)
 
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
