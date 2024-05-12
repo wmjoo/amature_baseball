@@ -224,6 +224,7 @@ with tab_sn_players:
 
         # 피OBP, 피SLG 피OPS
         columns_to_check = ['HA', 'BB', 'HBP', 'AB', 'SF', '2B', '3B', 'HR']
+        st.wrtie(df_pitcher.head())
         if all(column in df_pitcher.columns for column in columns_to_check): #'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
             df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
