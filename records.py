@@ -29,7 +29,7 @@ team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gi
                  "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT", "SKCC Wings"]
 
 
-# 데이터프레임 df에 적용할 자료형 매핑
+# 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
     '성명': 'str', '배번': 'str', '타율': 'float', '경기': 'int', '타석': 'int', '타수': 'int',
     '득점': 'int', '총안타': 'int', '1루타': 'int', '2루타': 'int', '3루타': 'int', '홈런': 'int',
@@ -46,7 +46,8 @@ hitter_data_KrEn = {
     '출루율': 'OBP', '도루성공률': 'SB%', '멀티히트': 'MHit', 'OPS': 'OPS', 'BB/K': 'BB/K',
     '장타/안타': 'XBH/H', '팀': 'Team'
 }
-# 투수 데이터프레임 df_pitcher에 적용할 자료형 매핑
+hitter_data_EnKr = {'Name': '성명', 'No': '배번', 'AVG': '타율', 'G': '경기', 'PA': '타석', 'AB': '타수', 'R': '득점', 'H': '총안타', '1B': '1루타', '2B': '2루타', '3B': '3루타', 'HR': '홈런', 'TB': '루타', 'RBI': '타점', 'SB': '도루', 'CS': '도실(도루자)', 'SH': '희타', 'SF': '희비', 'BB': '볼넷', 'IBB': '고의4구', 'HBP': '사구', 'SO': '삼진', 'DP': '병살', 'SLG': '장타율', 'OBP': '출루율', 'SB%': '도루성공률', 'MHit': '멀티히트', 'OPS': 'OPS', 'BB/K': 'BB/K', 'XBH/H': '장타/안타', 'Team': '팀'}
+# 투수 데이터프레임 df_pitcher에 적용할 자료형 / 컬럼명 딕셔너리 정의
 pitcher_data_types = {
     '성명': 'str', '배번': 'str', '방어율': 'float', '경기수': 'int', '승': 'int', '패': 'int', '세': 'int',
     '홀드': 'int', '승률': 'float', '타자': 'int', '타수': 'int', '투구수': 'int', '이닝': 'float',
@@ -54,6 +55,14 @@ pitcher_data_types = {
     '사구': 'int', '탈삼진': 'int', '폭투': 'int', '보크': 'int', '실점': 'int', '자책점': 'int',
     'WHIP': 'float', '피안타율': 'float', '탈삼진율': 'float', '팀': 'str'
 }
+pitcher_data_KrEn = {
+    '성명': 'Name', '배번': 'No', '방어율': 'ERA', '경기수': 'G', '승': 'W', '패': 'L', '세': 'SV',
+    '홀드': 'HLD', '승률': 'WPCT', '타자': 'BF', '타수': 'AB', '투구수': 'P', '이닝': 'IP',
+    '피안타': 'HA', '피홈런': 'HR', '희타': 'SH', '희비': 'SF', '볼넷': 'BB', '고의4구': 'IBB',
+    '사구': 'HBP', '탈삼진': 'SO', '폭투': 'WP', '보크': 'BK', '실점': 'R', '자책점': 'ER',
+    'WHIP': 'WHIP', '피안타율': 'BAA', '탈삼진율': 'K9', '팀': 'Team'
+}
+pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': '경기수', 'W': '승', 'L': '패', 'SV': '세', 'HLD': '홀드', 'WPCT': '승률', 'BF': '타자', 'AB': '타수', 'P': '투구수', 'IP': '이닝', 'HA': '피안타', 'HR': '피홈런', 'SH': '희타', 'SF': '희비', 'BB': '볼넷', 'IBB': '고의4구', 'HBP': '사구', 'SO': '탈삼진', 'WP': '폭투', 'BK': '보크', 'R': '실점', 'ER': '자책점', 'WHIP': 'WHIP', 'BAA': '피안타율', 'K9': '탈삼진율', 'Team': '팀'}
 
 @st.cache_data
 def load_data(team_name, team_id):
@@ -89,7 +98,6 @@ try:
     df_hitter = pd.read_csv('sn_df_hitter.csv', index=False)
     df_pitcher = pd.read_csv('sn_df_pitcher.csv', index=False)
     st.write('data from csv files ...')
-
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     hitters = []
     pitchers = []
@@ -117,7 +125,8 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
     df_pitcher = final_pitchers_data.astype(pitcher_data_types)
     # 투수 데이터프레임 컬럼명 영어로
-    df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
+    df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 
+                          'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
                         'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
     # IP 컬럼을 올바른 소수 형태로 변환
     df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
@@ -129,8 +138,7 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     df_pitcher.to_csv('sn_df_pitcher.csv', index=False)
 
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_sn_dataload = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어", "데이터로드"])
-
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
 def create_heatmap(data, cmap, input_figsize = (10, 7)):
     plt.figure(figsize=input_figsize)
     sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
@@ -190,7 +198,8 @@ with tab_sn_players:
         st.pyplot(plt)
     with tab_sn_players_2:
         # 출력시 열 순서 변경
-        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER']  
+        rank_by_cols_p_sorted = ['Team', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'IP', 'G', 'W', 'L', 'SV', 'HLD', 
+                                 'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER']  
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
         # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
@@ -525,8 +534,8 @@ with tab_sn_terms:
 
 sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 
-with tab_sn_dataload:
-    st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
-    data_load_yn = st.button('data load')
-    if data_load_yn:
-        st.write('...')
+# with tab_sn_dataload:
+#     st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
+#     data_load_yn = st.button('data load')
+#     if data_load_yn:
+#         st.write('...')
