@@ -126,7 +126,7 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     df_pitcher.to_csv('/data/sn_df_pitcher.csv', index=False)
 
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_sn_dataload = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어", "데이터로드"])
 
 def create_heatmap(data, cmap, input_figsize = (10, 7)):
     plt.figure(figsize=input_figsize)
@@ -521,3 +521,9 @@ with tab_sn_terms:
         """)
 
 sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
+
+with tab_sn_dataload:
+    st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
+    data_load_yn = st.button('data load')
+    if data_load_yn:
+        st.write('...')
