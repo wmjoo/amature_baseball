@@ -46,7 +46,9 @@ hitter_data_KrEn = {
     '출루율': 'OBP', '도루성공률': 'SB%', '멀티히트': 'MHit', 'OPS': 'OPS', 'BB/K': 'BB/K',
     '장타/안타': 'XBH/H', '팀': 'Team'
 }
-hitter_data_EnKr = {'Name': '성명', 'No': '배번', 'AVG': '타율', 'G': '경기', 'PA': '타석', 'AB': '타수', 'R': '득점', 'H': '총안타', '1B': '1루타', '2B': '2루타', '3B': '3루타', 'HR': '홈런', 'TB': '루타', 'RBI': '타점', 'SB': '도루', 'CS': '도실(도루자)', 'SH': '희타', 'SF': '희비', 'BB': '볼넷', 'IBB': '고의4구', 'HBP': '사구', 'SO': '삼진', 'DP': '병살', 'SLG': '장타율', 'OBP': '출루율', 'SB%': '도루성공률', 'MHit': '멀티히트', 'OPS': 'OPS', 'BB/K': 'BB/K', 'XBH/H': '장타/안타', 'Team': '팀'}
+hitter_data_EnKr = {'Name': '성명', 'No': '배번', 'AVG': '타율', 'G': '경기', 'PA': '타석', 'AB': '타수', 'R': '득점', 
+                    'H': '총안타', '1B': '1루타', '2B': '2루타', '3B': '3루타', 'HR': '홈런', 'TB': '루타', 'RBI': '타점', 
+                    'SB': '도루', 'CS': '도실', 'SH': '희타', 'SF': '희비', 'BB': '볼넷', 'IBB': '고의4구', 'HBP': '사구', 'SO': '삼진', 'DP': '병살', 'SLG': '장타율', 'OBP': '출루율', 'SB%': '도루성공률', 'MHit': '멀티히트', 'OPS': 'OPS', 'BB/K': 'BB/K', 'XBH/H': '장타/안타', 'Team': '팀'}
 # 투수 데이터프레임 df_pitcher에 적용할 자료형 / 컬럼명 딕셔너리 정의
 pitcher_data_types = {
     '성명': 'str', '배번': 'str', '방어율': 'float', '경기수': 'int', '승': 'int', '패': 'int', '세': 'int',
@@ -183,7 +185,7 @@ with tab_sn_players:
                                     ], axis = 1)
         hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
         st.write('Ranking')
-        st.dataframe(hitter_grpby_rank, use_container_width = True, hide_index = True)
+        st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
@@ -220,7 +222,7 @@ with tab_sn_players:
         # None, '', '-'를 NaN으로 변환
         df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
 
-        st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
+        st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         st.subheader('팀별 기록 : 투수')
@@ -260,7 +262,7 @@ with tab_sn_players:
                                     ], axis = 1)
         st.write('Ranking')
         pitcher_grpby_rank = pitcher_grpby_rank.loc[:, rank_by_cols_p_sorted]
-        st.dataframe(pitcher_grpby_rank, use_container_width = True, hide_index = True)
+        st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
