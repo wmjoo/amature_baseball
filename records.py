@@ -443,19 +443,18 @@ with tab_sn_viz:
             ########################
             ## Chart AND Dataframe display Area
             if not team_all:    #if team_selection_rader == 'VS':  
-                st.write(hitter_grpby)
-                df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby['팀'] == team1, selected_cols_h], 
-                                    hitter_grpby.loc[hitter_grpby['팀'] == team2, selected_cols_h]], axis = 0).sort_values('Team')      
+                df_rader_vs_h = pd.concat([hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).loc[hitter_grpby['팀'] == team1, selected_cols_h], 
+                                    hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).loc[hitter_grpby['팀'] == team2, selected_cols_h]], axis = 0).sort_values('Team')      
                 st.dataframe(df_rader_vs_h, use_container_width = True, hide_index = True) 
             else :
-                st.dataframe(hitter_grpby[selected_cols_h].sort_values('팀').T, use_container_width = True)    
+                st.dataframe(hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False)[selected_cols_h].sort_values('팀').T, use_container_width = True)    
 
             if not team_all:    #if team_selection_rader == 'VS':    
-                df_rader_vs_p = pd.concat([pitcher_grpby.loc[pitcher_grpby['팀'] == team1, selected_cols_p], 
-                                    pitcher_grpby.loc[pitcher_grpby['팀'] == team2, selected_cols_p]], axis = 0).sort_values('Team')           
+                df_rader_vs_p = pd.concat([pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False).loc[pitcher_grpby['팀'] == team1, selected_cols_p], 
+                                    pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False).loc[pitcher_grpby['팀'] == team2, selected_cols_p]], axis = 0).sort_values('Team')           
                 st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True)      
             else :
-                st.dataframe(pitcher_grpby[selected_cols_p].sort_values('팀').T, use_container_width = True)  
+                st.dataframe(pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False)[selected_cols_p].sort_values('팀').T, use_container_width = True)  
 
             tab_sn_vs_col2_1, tab_sn_vs_col2_2 = st.columns(2)   
             with tab_sn_vs_col2_1:            # 차트 보기 [Hitter]
