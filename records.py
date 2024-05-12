@@ -408,11 +408,9 @@ with tab_sn_viz:
             hitter_grpby_scaled = hitter_grpby.rename(columns = hitter_data_EnKr, inplace=False).copy()
             scaler_h = MinMaxScaler()             # 스케일러 초기화
             hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
-            st.write(hitter_grpby_scaled.head(2))
             pitcher_grpby_scaled = pitcher_grpby.rename(columns = pitcher_data_EnKr, inplace=False).copy()
             scaler_p = MinMaxScaler()             # 스케일러 초기화
             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
-            st.write(pitcher_grpby_scaled.head(2))
             if team_all: #if team_selection_rader == '전체':
                 filtered_data_h = hitter_grpby_scaled
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
@@ -429,7 +427,9 @@ with tab_sn_viz:
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
                 filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['팀'].isin([team1, team2])]#.rename(columns = hitter_data_EnKr, inplace=False).copy()
+                st.write(selected_cols_h)
                 st.write(filtered_data_h)
+                st.write(filtered_data_h[selected_cols_h])
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
