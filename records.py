@@ -429,6 +429,7 @@ with tab_sn_viz:
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
                 filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['팀'].isin([team1, team2])]#.rename(columns = hitter_data_EnKr, inplace=False).copy()
+                st.write(filtered_data_h)
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
