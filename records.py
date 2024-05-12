@@ -86,9 +86,9 @@ def load_data(team_name, team_id):
 
 ## 
 try:
-    st.write('data from csv files ...')
     df_hitter = pd.read_csv('sn_df_hitter.csv', index=False)
     df_pitcher = pd.read_csv('sn_df_pitcher.csv', index=False)
+    st.write('data from csv files ...')
 
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     hitters = []
