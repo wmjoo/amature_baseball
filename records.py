@@ -20,14 +20,17 @@ st.set_page_config(page_title="Baseball Data")
 st.title('Saturday League Data')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
-team_id_dict = {
+team_id_dict= { # team_id_dict_rookieA
     "코메츠 호시탐탐": 7984, "Big Hits": 36636,    "FA Members": 13621, "RedStorm": 17375,    "unknown`s": 33848, "그냥하자": 10318,
     "기드온스": 27811,    "다이아몬스터": 39783,     "데빌베어스": 19135, "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
-    "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207, "SKCC Wings": 4653,
+    "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207, # "SKCC Wings": 4653,
 }
-team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears",
-                 "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT", "SKCC Wings"]
+team_id_dict2 = team_id_dict.copy()
+team_id_dict2.setdefault('SKCC Wings', 4653) 
+rank_calc_except_teams = list(team_id_dict2.keys() - team_id_dict.keys())
 
+team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears",
+                 "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"] #, "SKCC Wings"]
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
@@ -160,7 +163,7 @@ with tab_sn_players:
                      use_container_width = True, hide_index = True)
         st.subheader('팀별 기록')
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
-        hitter_grpby = df_hitter[hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+        hitter_grpby = df_hitter.loc[~df_hitter['Team'].isin(rank_calc_except_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
         # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
         hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
@@ -284,12 +287,13 @@ with tab_sn_teamwise:
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
     # st.write(str(df_h_meandict)) #, use_container_width = True)
     # st.write(str(df_p_meandict))#, use_container_width = True)
-    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+    # team_id_dict2 = #team_id_dict.setdefault('SKCC Wings', 4653) ## 여기서만 SKCC Wings 출력되도록 (조가 다르니까)
+    team_name = st.selectbox('팀 선택', (team_id_dict2.keys()), key = 'selbox_team_b')
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
     with tab_sn_teamwise_1:
         # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict[team_name]
+        team_id = team_id_dict2[team_name]
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
@@ -306,7 +310,7 @@ with tab_sn_teamwise:
     with tab_sn_teamwise_2:
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
         # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict[team_name]
+        team_id = team_id_dict2[team_name]
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
