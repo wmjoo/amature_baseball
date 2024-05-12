@@ -45,8 +45,7 @@ hitter_data_KrEn = {
     '성명': 'Name', '배번': 'No', '타율': 'AVG', '경기': 'G', '타석': 'PA', '타수': 'AB',
     '득점': 'R', '총안타': 'H', '1루타': '1B', '2루타': '2B', '3루타': '3B', '홈런': 'HR',
     '루타': 'TB', '타점': 'RBI', '도루': 'SB', '도실(도루자)': 'CS', '희타': 'SH', '희비': 'SF',
-    '볼넷': 'BB', '고의4구': 'IBB', '사구': 'HBP', '삼진': 'SO', '병살': 'DP', '장타율': 'SLG',
-    '출루율': 'OBP', '도루성공률': 'SB%', '멀티히트': 'MHit', 'OPS': 'OPS', 'BB/K': 'BB/K',
+    '볼넷': 'BB', '고의4구': 'IBB', '사구': 'HBP', '삼진': 'SO', '병살': 'DP', '장타율': 'SLG', '출루율': 'OBP', '도루성공률': 'SB%', '멀티히트': 'MHit', 'OPS': 'OPS', 'BB/K': 'BB/K',
     '장타/안타': 'XBH/H', '팀': 'Team'
 }
 hitter_data_EnKr = {'Name': '성명', 'No': '배번', 'AVG': '타율', 'G': '경기', 'PA': '타석', 'AB': '타수', 'R': '득점', 
@@ -65,9 +64,12 @@ pitcher_data_KrEn = {
     '홀드': 'HLD', '승률': 'WPCT', '타자': 'BF', '타수': 'AB', '투구수': 'P', '이닝': 'IP',
     '피안타': 'HA', '피홈런': 'HR', '희타': 'SH', '희비': 'SF', '볼넷': 'BB', '고의4구': 'IBB',
     '사구': 'HBP', '탈삼진': 'SO', '폭투': 'WP', '보크': 'BK', '실점': 'R', '자책점': 'ER',
-    'WHIP': 'WHIP', '피안타율': 'BAA', '탈삼진율': 'K9', '팀': 'Team'
+    'WHIP': 'WHIP', '피안타율': 'BAA', '피장타율': 'SLG', '피출루율': 'OBP', '피OPS' : 'OPS', '탈삼진율': 'K9', '팀': 'Team'
 }
-pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': '경기수', 'W': '승', 'L': '패', 'SV': '세', 'HLD': '홀드', 'WPCT': '승률', 'BF': '타자', 'AB': '타수', 'P': '투구수', 'IP': '이닝', 'HA': '피안타', 'HR': '피홈런', 'SH': '희타', 'SF': '희비', 'BB': '볼넷', 'IBB': '고의4구', 'HBP': '사구', 'SO': '탈삼진', 'WP': '폭투', 'BK': '보크', 'R': '실점', 'ER': '자책점', 'WHIP': 'WHIP', 'BAA': '피안타율', 'K9': '탈삼진율', 'Team': '팀'}
+pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': '경기수', 'W': '승', 'L': '패', 'SV': '세', 'HLD': '홀드', 'WPCT': '승률', 
+                     'BF': '타자', 'AB': '타수', 'P': '투구수', 'IP': '이닝', 'HA': '피안타', 'HR': '피홈런', 'SH': '희타', 'SF': '희비', 'BB': '볼넷', 'IBB': '고의4구', 'HBP': '사구', 
+                     'SO': '탈삼진', 'WP': '폭투', 'BK': '보크', 'R': '실점', 'ER': '자책점', 'WHIP': 'WHIP', 'BAA': '피안타율', 'SLG':'피장타율', 'OBP':'피출루율', 'OPS' : '피OPS', 
+                     'K9': '탈삼진율', 'Team': '팀'}
 
 @st.cache_data
 def load_data(team_name, team_id):
@@ -208,9 +210,6 @@ with tab_sn_players:
         rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OPS', 'OBP', 'SLG', 'G', 'W', 'L', 'SV', 'HLD', 
                                  'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
-        # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
-        # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
-            # df_pitcher['ERA'] = ((df_pitcher['ER'] / df_pitcher['IP']) * 9).round(3)
         pitcher_sumcols = df_pitcher.select_dtypes(include=['int64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
         
         # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
@@ -229,6 +228,7 @@ with tab_sn_players:
             df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
             df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
             df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
+            st.write(df_pitcher[['OBP', 'SLG', 'OPS']])
 
         # None, '', '-'를 NaN으로 변환
         df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
