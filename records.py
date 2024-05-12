@@ -122,8 +122,9 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     # 데이터프레임 df의 컬럼 자료형 설정
     df_hitter = final_hitters_data.astype(hitter_data_types)
     # 타자 데이터프레임 컬럼명 영어로
-    df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 
-                        'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP',  'SB%', 'MHit', 'OPS', 'BB/K', 'XBH/H', 'Team']
+    df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 
+                         'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 'SB%', 'MHit', 
+                         'OPS', 'BB/K', 'XBH/H', 'Team']
 
     final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
 
@@ -157,7 +158,8 @@ with tab_sn_players:
     with tab_sn_players_1:
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
-                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'PA', 'AB', 'SO', 'DP'] 
+                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
+                                    'HBP', 'PA', 'AB', 'SO', 'DP'] 
         st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
