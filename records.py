@@ -446,14 +446,14 @@ with tab_sn_viz:
             ## Chart AND Dataframe display Area
             if not team_all:    #if team_selection_rader == 'VS':  
                 df_rader_vs_h = pd.concat([hitter_grpby_plt.loc[hitter_grpby_plt['팀'] == team1, selected_cols_h], 
-                                    hitter_grpby_plt.loc[hitter_grpby_plt['팀'] == team2, selected_cols_h]], axis = 0).sort_values('Team')      
+                                    hitter_grpby_plt.loc[hitter_grpby_plt['팀'] == team2, selected_cols_h]], axis = 0).sort_values('팀')      
                 st.dataframe(df_rader_vs_h, use_container_width = True, hide_index = True) 
             else :
                 st.dataframe(hitter_grpby_plt[selected_cols_h].sort_values('팀').T, use_container_width = True)    
 
             if not team_all:    #if team_selection_rader == 'VS':    
                 df_rader_vs_p = pd.concat([pitcher_grpby_plt.loc[pitcher_grpby_plt['팀'] == team1, selected_cols_p], 
-                                    pitcher_grpby_plt.loc[pitcher_grpby_plt['팀'] == team2, selected_cols_p]], axis = 0).sort_values('Team')           
+                                    pitcher_grpby_plt.loc[pitcher_grpby_plt['팀'] == team2, selected_cols_p]], axis = 0).sort_values('팀')           
                 st.dataframe(df_rader_vs_p, use_container_width = True, hide_index = True)      
             else :
                 st.dataframe(pitcher_grpby_plt[selected_cols_p].sort_values('팀').T, use_container_width = True)  
