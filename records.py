@@ -177,7 +177,7 @@ with tab_sn_players:
         rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
                     '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
-        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted], use_container_width = True, hide_index = True)
+        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         hitter_grpby_rank = pd.concat([
                                         hitter_grpby.Team, 
                                         hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
@@ -254,7 +254,7 @@ with tab_sn_players:
         rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP'] # 높을수록 좋은 지표들
-        st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted], use_container_width = True, hide_index = True)
+        st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
                                         pitcher_grpby[rank_by_descending_cols_p].rank(method = 'min', ascending=False),
@@ -293,14 +293,15 @@ with tab_sn_teamwise:
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
-        st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]], use_container_width = True, hide_index = True)
+        st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
+                     use_container_width = True, hide_index = True)
         st.write(DATA_URL_B)
         df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
         st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-        st.dataframe(pd.concat([df1, df2], axis = 0), 
+        st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')   
@@ -309,7 +310,7 @@ with tab_sn_teamwise:
         DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
-        st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]], 
+        st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
         st.write(DATA_URL_P) 
         df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
@@ -317,7 +318,7 @@ with tab_sn_teamwise:
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
         st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-        st.dataframe(pd.concat([df1, df2], axis = 0), 
+        st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
         # st.dataframe(df2, use_container_width = True, hide_index = True)
 
@@ -407,13 +408,13 @@ with tab_sn_viz:
             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
 
             if team_all: #if team_selection_rader == '전체':
-                filtered_data_h = hitter_grpby_scaled
+                filtered_data_h = hitter_grpby_scaled.rename(columns = hitter_data_EnKr, inplace=False)
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_h = px.line_polar(radar_data_h, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력')   
 
-                filtered_data_p = pitcher_grpby_scaled
+                filtered_data_p = pitcher_grpby_scaled.rename(columns = pitcher_data_EnKr, inplace=False)
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 fig_p = px.line_polar(radar_data_p, r='Value', theta='Stat', color='Team', line_close=True,
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
@@ -421,7 +422,7 @@ with tab_sn_viz:
 
             else: # team_selection_rader == 'VS' : 2개팀을 비교할 경우
                 # 선택된 팀 데이터 필터링
-                filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['Team'].isin([team1, team2])].copy()
+                filtered_data_h = hitter_grpby_scaled[hitter_grpby_scaled['Team'].isin([team1, team2])].rename(columns = hitter_data_EnKr, inplace=False).copy()
                 # 레이더 차트 데이터 준비
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
@@ -429,7 +430,7 @@ with tab_sn_viz:
                                     color_discrete_sequence=px.colors.qualitative.D3, #px.colors.sequential.Plasma_r,
                                     template=template_input, title=f'공격력 : {team1} vs {team2}')
                 # 선택된 팀 데이터 필터링
-                filtered_data_p = pitcher_grpby_scaled[pitcher_grpby_scaled['Team'].isin([team1, team2])].copy()
+                filtered_data_p = pitcher_grpby_scaled[pitcher_grpby_scaled['Team'].isin([team1, team2])].rename(columns = pitcher_data_EnKr, inplace=False).copy()
                 # 레이더 차트 데이터 준비
                 radar_data_p = filtered_data_p[selected_cols_p].melt(id_vars=['Team'], var_name='Stat', value_name='Value')
                 # 레이더 차트 생성
