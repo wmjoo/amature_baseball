@@ -248,7 +248,7 @@ with tab_sn_players:
         # WHIP 계산: (볼넷 + 피안타) / 이닝
         if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
-            pitcher_grpby['AVG'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
+            pitcher_grpby['BAA'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
             pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF'])
             # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
             # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
@@ -265,7 +265,6 @@ with tab_sn_players:
         rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BAA', 'OBP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP', 'K9'] # 높을수록 좋은 지표들
-        st.dataframe(pitcher_grpby.head())
         st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
