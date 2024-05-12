@@ -288,7 +288,7 @@ with tab_sn_teamwise:
 
     with tab_sn_teamwise_1:
         # 팀명을 기준으로 데이터 프레임 필터링
-        team_id = team_id_dict2[team_name]
+        team_id = team_id_dict[team_name]
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
