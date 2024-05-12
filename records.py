@@ -194,7 +194,7 @@ with tab_sn_players:
         
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
-        df = hitter_grpby_rank.drop('Team', axis = 1).copy()
+        df = hitter_grpby_rank.drop('Team', axis = 1).copy()  
         df['team_eng'] = team_englist
         df.set_index('team_eng', inplace=True)
         # 커스텀 컬러맵 생성
