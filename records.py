@@ -254,13 +254,10 @@ with tab_sn_players:
         # WHIP 계산: (볼넷 + 피안타) / 이닝
         if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
-
-        # 피OBP, 피SLG 피OPS
-        columns_to_check = ['HA', 'BB', 'HBP', 'AB', 'SF', '2B', '3B', 'HR']
-        if all(column in pitcher_grpby.columns for column in columns_to_check): #'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF'])
             pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
             pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
+            st.write(pitcher_grpby)
 
         # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
         new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OPS', 'OBP', 'SLG']
