@@ -221,18 +221,11 @@ with tab_sn_players:
         # WHIP 계산: (볼넷 + 피안타) / 이닝
         if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
-
-        # 피OBP, 피SLG 피OPS
-        columns_to_check = ['HA', 'BB', 'HBP', 'AB', 'SF', '2B', '3B', 'HR']
-        # st.write('HEAD DISPLAY')
-        # st.write(df_pitcher.head(3))
-                
-        if all(column in df_pitcher.columns for column in columns_to_check): #'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
             df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
             df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
             st.write(df_pitcher[['OBP', 'SLG', 'OPS']])
-
+            
         # None, '', '-'를 NaN으로 변환
         df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
         st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
