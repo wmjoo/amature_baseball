@@ -253,7 +253,7 @@ with tab_sn_players:
         
         # WHIP 계산: (볼넷 + 피안타) / 이닝
         if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-            pitcher_grpby['WHIP'] = ((pitcher_grp by['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
+            pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
             pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF'])
             pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
             pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
