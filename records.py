@@ -408,11 +408,11 @@ with tab_sn_viz:
             hitter_grpby_scaled = hitter_grpby.copy()
             scaler_h = MinMaxScaler()             # 스케일러 초기화
             hitter_grpby_scaled[hitter_grpby_scaled.columns[1:]] = scaler_h.fit_transform(hitter_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
-
+            st.write(hitter_grpby_scaled.head(2))
             pitcher_grpby_scaled = pitcher_grpby.copy()
             scaler_p = MinMaxScaler()             # 스케일러 초기화
             pitcher_grpby_scaled[pitcher_grpby_scaled.columns[1:]] = scaler_p.fit_transform(pitcher_grpby_scaled.iloc[:, 1:]) # 첫 번째 열 'Team'을 제외하고 스케일링
-
+            st.write(pitcher_grpby_scaled.head(2))
             if team_all: #if team_selection_rader == '전체':
                 filtered_data_h = hitter_grpby_scaled.rename(columns = hitter_data_EnKr, inplace=False)
                 radar_data_h = filtered_data_h[selected_cols_h].melt(id_vars=['팀'], var_name='Stat', value_name='Value')
