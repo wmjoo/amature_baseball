@@ -250,7 +250,6 @@ with tab_sn_players:
             pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF'])
             # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
             # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
-            st.write(pitcher_grpby)
 
         # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
         new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OBP'] # , 'OPS', 'OBP', 'SLG']
@@ -264,6 +263,7 @@ with tab_sn_players:
         rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BAA', 'OBP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                     'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
         rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP', 'K9'] # 높을수록 좋은 지표들
+        st.dataframe(pitcher_grpby.head())
         st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         pitcher_grpby_rank = pd.concat([
                                         pitcher_grpby.Team, 
