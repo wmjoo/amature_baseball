@@ -205,7 +205,7 @@ with tab_sn_players:
         st.pyplot(plt)
     with tab_sn_players_2:
         # 출력시 열 순서 변경
-        rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'SLG', 'OPS', 'G', 'W', 'L', 'SV', 'HLD', 
+        rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OPS', 'OBP', 'SLG', 'G', 'W', 'L', 'SV', 'HLD', 
                                  'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
@@ -251,9 +251,16 @@ with tab_sn_players:
         # WHIP 계산: (볼넷 + 피안타) / 이닝
         if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
             pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
-        
+
+        # 피OBP, 피SLG 피OPS
+        columns_to_check = ['HA', 'BB', 'HBP', 'AB', 'SF', '2B', '3B', 'HR']
+        if all(column in pitcher_grpby.columns for column in columns_to_check): #'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF'])
+            pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
+            pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
+
         # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-        new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA']
+        new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OPS', 'OBP', 'SLG']
         for col in new_cols:
             if col in pitcher_grpby.columns:
                 team_idx = pitcher_grpby.columns.get_loc('Team') + 1
