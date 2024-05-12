@@ -443,6 +443,7 @@ with tab_sn_viz:
             ########################
             ## Chart AND Dataframe display Area
             if not team_all:    #if team_selection_rader == 'VS':  
+                st.write(hitter_grpby)
                 df_rader_vs_h = pd.concat([hitter_grpby.loc[hitter_grpby['팀'] == team1, selected_cols_h], 
                                     hitter_grpby.loc[hitter_grpby['팀'] == team2, selected_cols_h]], axis = 0).sort_values('Team')      
                 st.dataframe(df_rader_vs_h, use_container_width = True, hide_index = True) 
