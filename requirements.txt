@@ -1,5 +1,6 @@
+streamlit==1.34.0
+datetime
 lxml
-streamlit
 pandas
 numpy
 requests
