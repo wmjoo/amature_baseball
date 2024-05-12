@@ -260,7 +260,7 @@ with tab_sn_players:
             st.write(pitcher_grpby)
 
         # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-        new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OPS', 'OBP', 'SLG']
+        new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA'] # , 'OPS', 'OBP', 'SLG']
         for col in new_cols:
             if col in pitcher_grpby.columns:
                 team_idx = pitcher_grpby.columns.get_loc('Team') + 1
