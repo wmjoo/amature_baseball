@@ -586,10 +586,11 @@ with tab_sn_terms:
 
 
 with tab_dataload:
-    st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
     user_password_update = st.text_input('Input Password for Update')
+    user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
+        st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
             hitters = []
             pitchers = []
