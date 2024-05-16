@@ -633,8 +633,8 @@ with tab_dataload:
             time.sleep(3)
             st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
             st.write(df_hitter.shape, "Hitter Data SAVED!")
-            st.dataframe(df_hitter)
+            st.dataframe(df_hitter, use_container_width = True, hide_index = True)
             st.write(df_pitcher.shape, "Pitcher Data SAVED!")
-            st.dataframe(df_pitcher)
+            st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
     else:
         st.write('Wrong Password!!')
