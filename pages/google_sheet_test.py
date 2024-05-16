@@ -10,6 +10,5 @@ if load_yn :
     st.subheader('Google Sheets')
     st.dataframe(df, use_container_width = True, hide_index = True)
 
-    st.write(df.isna())
-    st.write(df.isna(axis = 0))
-    st.write(df.isna(axis = 1))
+    st.write(df.isna().all(0))
+    st.write(df.isna().all(1))
