@@ -106,9 +106,20 @@ def load_data(team_name, team_id):
 
 ## 
 try:
-    df_hitter = pd.read_csv('sn_df_hitter.csv', index=False)
-    df_pitcher = pd.read_csv('sn_df_pitcher.csv', index=False)
+    # df_hitter = pd.read_csv('sn_df_hitter.csv', index=False)
+    # df_pitcher = pd.read_csv('sn_df_pitcher.csv', index=False)
+        # Create GSheets connection
+    conn = st.connection("gsheets", type=GSheetsConnection)
+
+    # Read Google WorkSheet as DataFrame
+    df_hitter = conn.read(worksheet="df_hitter")
+    df_pitcher = conn.read(worksheet="df_pitcher")
+
+    # Display our Spreadsheet as st.dataframe
+    st.dataframe(df_hitter.head(3))
+    st.dataframe(df_pitcher.head(3))    
     st.write('data from csv files ...')
+
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     hitters = []
     pitchers = []
