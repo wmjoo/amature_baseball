@@ -15,6 +15,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 from sklearn.preprocessing import MinMaxScaler
 
+from streamlit_gsheets import GSheetsConnection
+import pandasql as psql
+
+
 warnings.filterwarnings('ignore')
 st.set_page_config(page_title="Baseball Data")
 st.title('Saturday League Data')
@@ -205,6 +209,33 @@ with tab_sn_players:
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
+
+        ###### GOOGLE SHEETS
+        st.write("#### 3. Load DataFrame into Google Sheets")
+
+        with st.echo():
+            import streamlit as st
+            from streamlit_gsheets import GSheetsConnection
+
+            # Create GSheets connection
+            conn = st.experimental_connection("gsheets", type=GSheetsConnection)
+
+            # Demo Births DataFrame
+            df = psql.load_births()
+
+            # click button to update worksheet
+            # This is behind a button to avoid exceeding Google API Quota
+            if st.button("Create new worksheet"):
+                df_hitter = conn.create(
+                    worksheet="Example 1",
+                    data=df_hitter,
+                )
+                st.cache_data.clear()
+                st.experimental_rerun()
+
+            # Display our Spreadsheet as st.dataframe
+            st.dataframe(df_hitter.head(10))
+
     with tab_sn_players_2:
         # 출력시 열 순서 변경
         rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
@@ -287,6 +318,8 @@ with tab_sn_players:
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
+
+    
 
 with tab_sn_teamwise:
     # HTML display Setting
