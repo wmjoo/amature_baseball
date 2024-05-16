@@ -179,12 +179,14 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
         except Exception as e:
             st.error(f"Failed to save df_hitter: {e}", icon="🚨")        
             df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
+            st.toast('Updete Hitter Data from Web to Cloud!', icon='💾')
         
         try:
             df_pitcher = conn.create(worksheet="df_pitcher", data=df_pitcher)
         except Exception as e:
             st.error(f"Failed to save df_pitcher: {e}", icon="🚨")        
             df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)               
+            st.toast('Updete Pitcher Data from Web to Cloud!', icon='💾')
         time.sleep(2)
         st.toast('Saved Data from Web to Cloud!', icon='💾')
 
