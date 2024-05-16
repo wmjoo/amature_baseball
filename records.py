@@ -184,7 +184,8 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화", "약어", "데이터 로드"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, \ 
+    tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화", "약어", "데이터 업데이트"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -589,11 +590,7 @@ with tab_dataload:
     st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
     # data_load_yn = 
     if st.button('Data Update'):
-        st.write('...')    # Create GSheets connection
-    conn = st.connection("gsheets", type=GSheetsConnection)
-
-    # click button to update worksheet / This is behind a button to avoid exceeding Google API Quota
-    if st.button("Loading Dataset"):
+        conn = st.connection("gsheets", type=GSheetsConnection)
         df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
         df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)
         time.sleep(3)
