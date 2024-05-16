@@ -589,48 +589,50 @@ with tab_dataload:
     st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
     # data_load_yn = 
     if st.button('Data Update'):
-        hitters = []
-        pitchers = []
-        with ThreadPoolExecutor(max_workers=4) as executor:
-            futures = {executor.submit(load_data, team_name, team_id): team_name for team_name, team_id in team_id_dict.items()}
-            for future in as_completed(futures):
-                try:
-                    result = future.result()
-                    hitters.append(result['hitter'])
-                    pitchers.append(result['pitcher'])
-                except Exception as exc:
-                    print(f'Team {futures[future]} generated an exception: {exc}')
-        # 모든 데이터를 각각의 데이터프레임으로 합침
-        final_hitters_data = pd.concat(hitters, ignore_index=True)
-        final_pitchers_data = pd.concat(pitchers, ignore_index=True)
+        user_password_update = st.text_input('Input Password for Update')
+        if user_password_update == st.secrets["password_update"]: # Correct Password
+            hitters = []
+            pitchers = []
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {executor.submit(load_data, team_name, team_id): team_name for team_name, team_id in team_id_dict.items()}
+                for future in as_completed(futures):
+                    try:
+                        result = future.result()
+                        hitters.append(result['hitter'])
+                        pitchers.append(result['pitcher'])
+                    except Exception as exc:
+                        print(f'Team {futures[future]} generated an exception: {exc}')
+            # 모든 데이터를 각각의 데이터프레임으로 합침
+            final_hitters_data = pd.concat(hitters, ignore_index=True)
+            final_pitchers_data = pd.concat(pitchers, ignore_index=True)
 
-        # 데이터프레임 df의 컬럼 자료형 설정
-        df_hitter = final_hitters_data.astype(hitter_data_types)
-        # 타자 데이터프레임 컬럼명 영어로
-        df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 
-                            'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 'SB%', 'MHit', 
-                            'OPS', 'BB/K', 'XBH/H', 'Team']
+            # 데이터프레임 df의 컬럼 자료형 설정
+            df_hitter = final_hitters_data.astype(hitter_data_types)
+            # 타자 데이터프레임 컬럼명 영어로
+            df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 
+                                'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 'SB%', 'MHit', 
+                                'OPS', 'BB/K', 'XBH/H', 'Team']
 
-        final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
+            final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
 
-        # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
-        df_pitcher = final_pitchers_data.astype(pitcher_data_types)
-        # 투수 데이터프레임 컬럼명 영어로
-        df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 
-                            'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
-                            'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
-        # IP 컬럼을 올바른 소수 형태로 변환
-        df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
-        
-        ###### GOOGLE SHEETS
-        # Create GSheets connection
-        conn = st.connection("gsheets", type=GSheetsConnection)
+            # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
+            df_pitcher = final_pitchers_data.astype(pitcher_data_types)
+            # 투수 데이터프레임 컬럼명 영어로
+            df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 
+                                'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
+                                'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
+            # IP 컬럼을 올바른 소수 형태로 변환
+            df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
+            
+            ###### GOOGLE SHEETS
+            # Create GSheets connection
+            conn = st.connection("gsheets", type=GSheetsConnection)
 
-        df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
-        df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)
-        time.sleep(3)
-        st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
-        st.write(df_hitter.shape)
-        st.dataframe(df_hitter.head(3))
-        st.write(df_pitcher.shape)
-        st.dataframe(df_pitcher.head(3))
+            df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
+            df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)
+            time.sleep(3)
+            st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
+            st.write(df_hitter.shape)
+            st.dataframe(df_hitter.head(3))
+            st.write(df_pitcher.shape)
+            st.dataframe(df_pitcher.head(3))
