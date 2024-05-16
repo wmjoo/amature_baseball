@@ -39,8 +39,8 @@ team_id_dict = team_id_dict_rkA.copy()
 team_id_dict.setdefault('SKCC Wings', 4653) 
 rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_rkA.keys())
 
-team_englist = ["Big Hits", "FA Members", "RedStorm", "unknown`s", "GNHaJa", "Gideons", "Diamon]ster", "DevilBears",
-                 "Rhinos", "Mifas", "BundangStars", "BlueLakers", "SungsiYGSG", "Wasabi", "KometsHSTT"] #, "SKCC Wings"]
+team_englist = ["Big Hits", "FA Members", "Red Storm", "unknown`s", "GNHaJa", "Gideons", "Diamonster", "DevilBears",
+                 "Rhinos", "Mifas", "Bundang Stars", "Blue Lakers", "Sungsi YGSG", "Wasabi", "KometsHSTT"] #, "SKCC Wings"]
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
@@ -81,6 +81,17 @@ pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': 
                      'SO': '탈삼진', 'WP': '폭투', 'BK': '보크', 'R': '실점', 'ER': '자책점', 'WHIP': 'WHIP', 'BAA': '피안타율', 'SLG':'피장타율', 'OBP':'피출루율', 'OPS' : '피OPS', 
                      'K9': '탈삼진율', 'Team': '팀'}
 
+################################################################
+## User def functions
+################################################################
+def create_heatmap(data, cmap, input_figsize = (10, 7)):
+    plt.figure(figsize=input_figsize)
+    sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
+    plt.xticks(rotation=45)  # x축 레이블 회전
+    plt.yticks(rotation=0)   # y축 레이블 회전
+    plt.tight_layout()
+    return plt
+
 @st.cache_data
 def load_data(team_name, team_id):
     urls = {
@@ -110,20 +121,18 @@ def load_data(team_name, team_id):
     return {'hitter': pd.concat(results['hitter'], ignore_index=True), 
             'pitcher': pd.concat(results['pitcher'], ignore_index=True)}
 
+################################################################
+## Data Loading
+################################################################
+sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 ## 
-try:        # Create GSheets connection
+try:        # Create GSheets connection AND Load Data from google sheets 
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
     df_hitter = conn.read(worksheet="df_hitter")
     df_pitcher = conn.read(worksheet="df_pitcher")
-
-    # Display our Spreadsheet as st.dataframe
-    # st.dataframe(df_hitter.head(3))
-    # st.dataframe(df_pitcher.head(3))    
-    # st.write('Loaded Data from Google Drive ...')
     time.sleep(2)    
     st.toast('Loaded Data from Cloud!', icon='💾')
-
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     hitters = []
     pitchers = []
@@ -171,15 +180,11 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
         time.sleep(3)
         st.toast('Saved Data from Web to Cloud!', icon='☁️')
 
+################################################################
+## UI Tab
+################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
-def create_heatmap(data, cmap, input_figsize = (10, 7)):
-    plt.figure(figsize=input_figsize)
-    sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
-    plt.xticks(rotation=45)  # x축 레이블 회전
-    plt.yticks(rotation=0)   # y축 레이블 회전
-    plt.tight_layout()
-    return plt
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화", "약어", "데이터 로드"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -579,10 +584,21 @@ with tab_sn_terms:
         | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
 
-sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 
-# with tab_sn_dataload:
-#     st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
-#     data_load_yn = st.button('data load')
-#     if data_load_yn:
-#         st.write('...')
+with tab_dataload:
+    st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
+    # data_load_yn = 
+    if st.button('Data Update'):
+        st.write('...')    # Create GSheets connection
+    conn = st.connection("gsheets", type=GSheetsConnection)
+
+    # click button to update worksheet / This is behind a button to avoid exceeding Google API Quota
+    if st.button("Loading Dataset"):
+        df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
+        df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)
+        time.sleep(3)
+        st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
+        st.write(df_hitter.shape)
+        st.dataframe(df_hitter.head(3))
+        st.write(df_pitcher.shape)
+        st.dataframe(df_pitcher.head(3))
