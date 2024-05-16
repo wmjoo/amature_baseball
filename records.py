@@ -143,6 +143,29 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     # IP 컬럼을 올바른 소수 형태로 변환
     df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
     
+    ###### GOOGLE SHEETS
+    st.write("#### 3. Load DataFrame into Google Sheets")
+    with st.echo():
+        # Create GSheets connection
+        conn = st.connection("gsheets", type=GSheetsConnection)
+
+        # click button to update worksheet
+        # This is behind a button to avoid exceeding Google API Quota
+        if st.button("Create new worksheet (타자)"):
+            df_hitter = conn.create(
+                worksheet="df_hitter",
+                data=df_hitter.rename(columns = hitter_data_EnKr, inplace=False),
+            )
+            # Display our Spreadsheet as st.dataframe
+            st.dataframe(df_hitter.head(10))
+        if st.button("Create new worksheet (투수)"):
+            df_pitcher = conn.create(
+                worksheet="df_hitter",
+                data=df_pitcher.rename(columns = pitcher_data_EnKr, inplace=False),
+            )
+            # Display our Spreadsheet as st.dataframe
+            st.dataframe(df_pitcher.head(10))
+
     # 'YYMMDD_HHMMSS' 형식으로 시각 포매팅
     # formatted_time = datetime.now().strftime('%y%m%d_%H%M%S')
     # st.write(os.getcwd())
@@ -210,25 +233,6 @@ with tab_sn_players:
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
 
-        ###### GOOGLE SHEETS
-        st.write("#### 3. Load DataFrame into Google Sheets")
-
-        with st.echo():
-            # Create GSheets connection
-            conn = st.connection("gsheets", type=GSheetsConnection)
-
-            # click button to update worksheet
-            # This is behind a button to avoid exceeding Google API Quota
-            if st.button("Create new worksheet"):
-                df_hitter = conn.create(
-                    worksheet="df_hitter",
-                    data=df_hitter,
-                )
-                # st.cache_data.clear()
-                # st.experimental_rerun()
-
-                # Display our Spreadsheet as st.dataframe
-                st.dataframe(df_hitter.head(10))
 
     with tab_sn_players_2:
         # 출력시 열 순서 변경
