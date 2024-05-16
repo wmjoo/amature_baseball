@@ -16,7 +16,8 @@ import warnings
 from sklearn.preprocessing import MinMaxScaler
 
 from streamlit_gsheets import GSheetsConnection
-import pandasql as psql
+# import pandasql as psql
+import time
 
 
 warnings.filterwarnings('ignore')
@@ -115,6 +116,7 @@ try:        # Create GSheets connection
     # st.dataframe(df_hitter.head(3))
     # st.dataframe(df_pitcher.head(3))    
     # st.write('Loaded Data from Google Drive ...')
+    time.sleep(2)    
     st.toast('Loaded Data from Cloud!', icon='💾')
 
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
@@ -152,20 +154,16 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
     
     ###### GOOGLE SHEETS
-    # st.write("#### 0. Load DataFrame into Google Sheets")
-    # with st.echo():
     # Create GSheets connection
     conn = st.connection("gsheets", type=GSheetsConnection)
 
-    # click button to update worksheet
-    # This is behind a button to avoid exceeding Google API Quota
+    # click button to update worksheet / This is behind a button to avoid exceeding Google API Quota
     if st.button("Loading Dataset"):
-        df_hitter = conn.create(worksheet="df_hitter",
-            data=df_hitter # .rename(columns = hitter_data_EnKr, inplace=False),
+        df_hitter = conn.create(worksheet="df_hitter", data=df_hitter # .rename(columns = hitter_data_EnKr, inplace=False),
         )
-        df_pitcher = conn.create(worksheet="df_pitcher",
-            data=df_pitcher #.rename(columns = pitcher_data_EnKr, inplace=False),
+        df_pitcher = conn.create(worksheet="df_pitcher", data=df_pitcher #.rename(columns = pitcher_data_EnKr, inplace=False),
         )
+        time.sleep(3)
         st.toast('Saved Data from Web to Cloud!', icon='☁️')
 
 ## 탭 설정
