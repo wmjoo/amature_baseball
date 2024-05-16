@@ -125,7 +125,8 @@ def load_data(team_name, team_id):
 ## Data Loading
 ################################################################
 sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
-## 
+
+
 try:        # Create GSheets connection AND Load Data from google sheets 
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
@@ -133,7 +134,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     df_pitcher = conn.read(worksheet="df_pitcher")
     time.sleep(2)    
     st.toast('Loaded Data from Cloud!', icon='✅"')
-except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
+except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     st.error(f"Failed to read data from drive: {e}", icon="🚨") 
     hitters = []
     pitchers = []
