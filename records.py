@@ -176,11 +176,13 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
             df_hitter = conn.create(worksheet="df_hitter", data=df_hitter)
         except Exception as e:
             st.error(f"Failed to save df_hitter: {e}", icon="🚨")        
+            df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
         
         try:
             df_pitcher = conn.create(worksheet="df_pitcher", data=df_pitcher)
         except Exception as e:
-            st.error(f"Failed to save df_pitcher: {e}", icon="🚨")           
+            st.error(f"Failed to save df_pitcher: {e}", icon="🚨")        
+            df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)               
         time.sleep(2)
         st.toast('Saved Data from Web to Cloud!', icon='💾')
 
