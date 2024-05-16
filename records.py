@@ -584,7 +584,6 @@ with tab_sn_terms:
         | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
 
-
 with tab_dataload:
     user_password_update = st.text_input('Input Password for Update')
     user_password_update = str(user_password_update)
@@ -633,9 +632,9 @@ with tab_dataload:
             df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)
             time.sleep(3)
             st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
-            st.write(df_hitter.shape)
-            st.dataframe(df_hitter.head(3))
-            st.write(df_pitcher.shape)
-            st.dataframe(df_pitcher.head(3))
+            st.write(df_hitter.shape, "Hitter Data SAVED!")
+            st.dataframe(df_hitter)
+            st.write(df_pitcher.shape, "Pitcher Data SAVED!")
+            st.dataframe(df_pitcher)
     else:
         st.write('Wrong Password!!')
