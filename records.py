@@ -214,14 +214,8 @@ with tab_sn_players:
         st.write("#### 3. Load DataFrame into Google Sheets")
 
         with st.echo():
-            import streamlit as st
-            from streamlit_gsheets import GSheetsConnection
-
             # Create GSheets connection
-            conn = st.experimental_connection("gsheets", type=GSheetsConnection)
-
-            # Demo Births DataFrame
-            df = psql.load_births()
+            conn = st.connection("gsheets", type=GSheetsConnection)
 
             # click button to update worksheet
             # This is behind a button to avoid exceeding Google API Quota
@@ -230,11 +224,11 @@ with tab_sn_players:
                     worksheet="Example 1",
                     data=df_hitter,
                 )
-                st.cache_data.clear()
-                st.experimental_rerun()
+                # st.cache_data.clear()
+                # st.experimental_rerun()
 
-            # Display our Spreadsheet as st.dataframe
-            st.dataframe(df_hitter.head(10))
+                # Display our Spreadsheet as st.dataframe
+                st.dataframe(df_hitter.head(10))
 
     with tab_sn_players_2:
         # 출력시 열 순서 변경
