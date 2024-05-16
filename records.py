@@ -132,7 +132,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     df_hitter = conn.read(worksheet="df_hitter")
     df_pitcher = conn.read(worksheet="df_pitcher")
     time.sleep(2)    
-    st.toast('Loaded Data from Cloud!', icon='💾')
+    st.toast('Loaded Data from Cloud!', icon='✅"')
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     hitters = []
     pitchers = []
@@ -166,19 +166,23 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
                         'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
     # IP 컬럼을 올바른 소수 형태로 변환
     df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
-    
-    ###### GOOGLE SHEETS
+
     # Create GSheets connection
     conn = st.connection("gsheets", type=GSheetsConnection)
 
     # click button to update worksheet / This is behind a button to avoid exceeding Google API Quota
     if st.button("Loading Dataset"):
-        df_hitter = conn.create(worksheet="df_hitter", data=df_hitter # .rename(columns = hitter_data_EnKr, inplace=False),
-        )
-        df_pitcher = conn.create(worksheet="df_pitcher", data=df_pitcher #.rename(columns = pitcher_data_EnKr, inplace=False),
-        )
-        time.sleep(3)
-        st.toast('Saved Data from Web to Cloud!', icon='☁️')
+        try:
+            df_hitter = conn.create(worksheet="df_hitter", data=df_hitter)
+        except Exception as e:
+            st.error(f"Failed to save df_hitter: {e}", icon="🚨")        
+        
+        try:
+            df_pitcher = conn.create(worksheet="df_pitcher", data=df_pitcher)
+        except Exception as e:
+            st.error(f"Failed to save df_pitcher: {e}", icon="🚨")           
+        time.sleep(2)
+        st.toast('Saved Data from Web to Cloud!', icon='💾')
 
 ################################################################
 ## UI Tab
