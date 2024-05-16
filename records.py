@@ -107,14 +107,13 @@ def load_data(team_name, team_id):
 ## 
 try:        # Create GSheets connection
     conn = st.connection("gsheets", type=GSheetsConnection)
-
     # Read Google WorkSheet as DataFrame
     df_hitter = conn.read(worksheet="df_hitter")
     df_pitcher = conn.read(worksheet="df_pitcher")
 
     # Display our Spreadsheet as st.dataframe
-    st.dataframe(df_hitter.head(3))
-    st.dataframe(df_pitcher.head(3))    
+    # st.dataframe(df_hitter.head(3))
+    # st.dataframe(df_pitcher.head(3))    
     st.write('Loaded Data from Google Drive ...')
 
 except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
@@ -164,13 +163,13 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
             data=df_hitter # .rename(columns = hitter_data_EnKr, inplace=False),
         )
         # Display our Spreadsheet as st.dataframe
-        st.dataframe(df_hitter.rename(columns = hitter_data_EnKr, inplace=False).head(5))
+        st.dataframe(df_hitter.head(2))
     # if st.button("Create new worksheet (투수)"):
         df_pitcher = conn.create(worksheet="df_pitcher",
             data=df_pitcher #.rename(columns = pitcher_data_EnKr, inplace=False),
         )
         # Display our Spreadsheet as st.dataframe
-        st.dataframe(df_pitcher)
+        st.dataframe(df_pitcher.head(2))
 
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms = st.tabs(["성남:전체선수", "성남:팀별선수", "성남:시각화", "약어"])
