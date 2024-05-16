@@ -10,5 +10,3 @@ matplotlib
 seaborn
 plotly
 scikit-learn
-pandasql
-time
