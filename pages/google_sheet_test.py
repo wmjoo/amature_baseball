@@ -3,7 +3,6 @@ from streamlit_gsheets import GSheetsConnection
 
 load_yn = st.button('Load Data')
 
-@st.cache
 if load_yn :
     # Create a connection object.
     conn = st.connection("gsheets", type=GSheetsConnection)
