@@ -133,7 +133,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     df_hitter = conn.read(worksheet="df_hitter")
     df_pitcher = conn.read(worksheet="df_pitcher")
     time.sleep(2)    
-    st.toast('Loaded Data from Cloud!', icon='✅"')
+    st.toast('Loaded Data from Cloud!', icon='✅')
 except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     st.error(f"Failed to read data from drive: {e}", icon="🚨") 
     hitters = []
