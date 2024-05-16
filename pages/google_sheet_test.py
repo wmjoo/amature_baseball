@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandasql as psql
-import streamlit as st
 
 # load_yn = st.button('Load Data')
 
