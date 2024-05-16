@@ -160,15 +160,13 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
     # click button to update worksheet
     # This is behind a button to avoid exceeding Google API Quota
     if st.button("Loading Dataset"):
-        df_hitter = conn.create(
-            worksheet="df_hitter",
+        df_hitter = conn.create(worksheet="df_hitter",
             data=df_hitter # .rename(columns = hitter_data_EnKr, inplace=False),
         )
         # Display our Spreadsheet as st.dataframe
         st.dataframe(df_hitter.rename(columns = hitter_data_EnKr, inplace=False).head(5))
     # if st.button("Create new worksheet (투수)"):
-        df_pitcher = conn.create(
-            worksheet="df_pitcher",
+        df_pitcher = conn.create(worksheet="df_pitcher",
             data=df_pitcher #.rename(columns = pitcher_data_EnKr, inplace=False),
         )
         # Display our Spreadsheet as st.dataframe
