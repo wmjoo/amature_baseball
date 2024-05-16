@@ -587,11 +587,10 @@ with tab_sn_terms:
 
 with tab_dataload:
     st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')
-    # data_load_yn = 
-    if st.button('Data Update'):
-        user_password_update = st.text_input('Input Password for Update')
-        if user_password_update == st.secrets["password_update"]: # Correct Password
-            st.write('Correct Password')
+    user_password_update = st.text_input('Input Password for Update')
+    if user_password_update == st.secrets["password_update"]: # Correct Password
+        st.write('Correct Password')
+        if st.button('Data Update'):
             hitters = []
             pitchers = []
             with ThreadPoolExecutor(max_workers=4) as executor:
@@ -637,5 +636,5 @@ with tab_dataload:
             st.dataframe(df_hitter.head(3))
             st.write(df_pitcher.shape)
             st.dataframe(df_pitcher.head(3))
-        else:
-            st.write('Wrong Password!!')
+    else:
+        st.write('Wrong Password!!')
