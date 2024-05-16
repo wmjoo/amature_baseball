@@ -163,14 +163,9 @@ except: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 �
         df_hitter = conn.create(worksheet="df_hitter",
             data=df_hitter # .rename(columns = hitter_data_EnKr, inplace=False),
         )
-        # Display our Spreadsheet as st.dataframe
-        # st.dataframe(df_hitter.head(2))
-    # if st.button("Create new worksheet (투수)"):
         df_pitcher = conn.create(worksheet="df_pitcher",
             data=df_pitcher #.rename(columns = pitcher_data_EnKr, inplace=False),
         )
-        # Display our Spreadsheet as st.dataframe
-        # st.dataframe(df_pitcher.head(2))
         st.toast('Saved Data from Web to Cloud!', icon='☁️')
 
 ## 탭 설정
