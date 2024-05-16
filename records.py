@@ -105,10 +105,7 @@ def load_data(team_name, team_id):
             'pitcher': pd.concat(results['pitcher'], ignore_index=True)}
 
 ## 
-try:
-    # df_hitter = pd.read_csv('sn_df_hitter.csv', index=False)
-    # df_pitcher = pd.read_csv('sn_df_pitcher.csv', index=False)
-        # Create GSheets connection
+try:        # Create GSheets connection
     conn = st.connection("gsheets", type=GSheetsConnection)
 
     # Read Google WorkSheet as DataFrame
