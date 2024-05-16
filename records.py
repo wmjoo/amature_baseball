@@ -221,7 +221,7 @@ with tab_sn_players:
             # This is behind a button to avoid exceeding Google API Quota
             if st.button("Create new worksheet"):
                 df_hitter = conn.create(
-                    worksheet="Example 1",
+                    worksheet="df_hitter",
                     data=df_hitter,
                 )
                 # st.cache_data.clear()
