@@ -337,6 +337,7 @@ with tab_sn_teamwise:
     # HTML display Setting
     span_stylesetting = '<span style="font-size: 9px; color: black; line-height: 5px;">'
     df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
+    df_h_mediandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].median(numeric_only=True).to_dict().items()}
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_id = team_id_dict[team_name]
@@ -353,7 +354,12 @@ with tab_sn_teamwise:
         df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
+        st.write('Entire Mean')
         st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+        st.write('Entire Median')
+        st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)
+
+        
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
