@@ -644,8 +644,9 @@ with tab_schd:
     # DataFrame 생성
     df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
     # DataFrame 출력
-    df_schd2 = pd.concat([df_schd.drop(['게임'], axis =1), df_team], axis = 1)
-    df_schd2.columns = ['일시', '분류', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
+    df_schd2 = pd.concat([df_schd.drop(['게임', '분류'], axis =1), df_team], axis = 1)
+    df_schd2.columns = ['일시', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
+    df_schd2.구장 = df_schd2.구장.str.replace('야구장', '')
     st.dataframe(df_schd2)
 
 with tab_dataload:
