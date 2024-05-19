@@ -335,7 +335,7 @@ with tab_sn_players:
 
 with tab_sn_teamwise:
     # HTML display Setting
-    span_stylesetting = '<span style="font-size: 9px; color: black; line-height: 5px;">'
+    span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'
     df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
     df_h_mediandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].median(numeric_only=True).to_dict().items()}
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
@@ -530,7 +530,7 @@ with tab_sn_viz:
         st.dataframe(df_hitter.drop('No', axis = 1).rename(columns = hitter_data_EnKr, inplace=False).describe(), 
                      use_container_width = True, hide_index = False)  
         st.write("투수")
-        st.dataframe(df_pitcher.rename(columns = pitcher_data_EnKr, inplace=False).describe(), 
+        st.dataframe(df_pitcher.drop('No', axis = 1).rename(columns = pitcher_data_EnKr, inplace=False).describe(), 
                      use_container_width = True, hide_index = False)  
         
 with tab_sn_terms:
