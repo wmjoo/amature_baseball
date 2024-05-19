@@ -527,7 +527,7 @@ with tab_sn_viz:
     with tab_sn_viz_3:
         st.write("선수 별 기록 분포 통계량")
         st.write("타자")
-        st.dataframe(df_hitter.rename(columns = hitter_data_EnKr, inplace=False).describe(), 
+        st.dataframe(df_hitter.drop('No', axis = 1).rename(columns = hitter_data_EnKr, inplace=False).describe(), 
                      use_container_width = True, hide_index = False)  
         st.write("투수")
         st.dataframe(df_pitcher.rename(columns = pitcher_data_EnKr, inplace=False).describe(), 
