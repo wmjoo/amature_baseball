@@ -339,6 +339,7 @@ with tab_sn_teamwise:
     df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
     df_h_mediandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].median(numeric_only=True).to_dict().items()}
     df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
+    df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_id = team_id_dict[team_name]
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
@@ -354,9 +355,9 @@ with tab_sn_teamwise:
         df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
-        st.write('Entire Mean')
+        st.write('Entire Mean(Hitters)')
         st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-        st.write('Entire Median')
+        st.write('Entire Median(Hitters)')
         st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)
 
         
@@ -373,11 +374,12 @@ with tab_sn_teamwise:
         df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
+        st.write('Entire Mean(Pitchers)')        
         st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+        st.write('Entire Median(Pitchers)')
+        st.markdown(span_stylesetting + str(df_p_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)        
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
-        # st.dataframe(df2, use_container_width = True, hide_index = True)
-
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
@@ -601,7 +603,7 @@ with tab_sn_terms:
         """)
 
 with tab_dataload:
-    user_password_update = st.text_input('Input Password for Update')
+    user_password_update = st.text_input('Input Password for Update', type='password')
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
