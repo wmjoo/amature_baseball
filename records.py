@@ -126,7 +126,7 @@ def load_data(team_name, team_id):
 ################################################################
 sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 
-
+@st.cache_data
 try:        # Create GSheets connection AND Load Data from google sheets 
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
@@ -194,7 +194,7 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "약어", "업데이트"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_schd, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "약어", "일정", "업데이트"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -609,6 +609,45 @@ with tab_sn_terms:
         | IP           | 이닝        | Innings pitched                |    
         | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
+
+with tab_schd:
+    # 일정표 URL 설정
+    url = 'http://www.gameone.kr/club/info/schedule/table?club_idx=7984'
+
+    # HTTP GET 요청
+    response = requests.get(url)
+    response.raise_for_status()  # 요청이 성공했는지 확인
+
+    # BeautifulSoup을 이용하여 HTML 파싱
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # 테이블 찾기
+    table = soup.find('table', {'class': 'game_table'})  # 테이블의 클래스를 확인하고 지정하세요
+
+    # 테이블 헤더 추출
+    headers = [header.text.strip() for header in table.find_all('th')]
+
+    # 테이블 데이터 추출
+    rows = []
+    for row in table.find_all('tr')[1:]:  # 첫 번째 행은 헤더이므로 제외
+        cells = row.find_all('td')
+        row_data = [cell.text.strip() for cell in cells]
+        rows.append(row_data)
+
+    # pandas DataFrame 생성
+    df_schd = pd.DataFrame(rows, columns=headers)
+    df_schd = df_schd.sort_values('일시').reset_index(drop=True)
+    data = df_schd.게임.str.split('\n').tolist()
+    # 최대 열 개수 확인
+    max_columns = max(len(row) for row in data)
+    # 열 이름 설정
+    column_names = [f"col{i+1}" for i in range(max_columns)]
+    # DataFrame 생성
+    df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
+    # DataFrame 출력
+    df_schd2 = pd.concat([df_schd.drop(['게임'], axis =1), df_team], axis = 1)
+    df_schd2.columns = ['일시', '분류', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
+    st.dataframe(df_schd2)
 
 with tab_dataload:
     user_password_update = st.text_input('Input Password for Update', type='password')
