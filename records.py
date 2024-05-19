@@ -647,6 +647,41 @@ with tab_schd:
     df_schd2 = pd.concat([df_schd.drop(['게임', '분류'], axis =1), df_team], axis = 1)
     df_schd2.columns = ['일시', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
     df_schd2.구장 = df_schd2.구장.str.replace('야구장', '')
+
+    first_called = df_schd2.선공점수.str.contains('콜드승')
+    second_called = df_schd2.후공점수.str.contains('콜드승')
+    df_schd2.선공점수 = df_schd2.선공점수.str.replace('콜드승 ', '').replace('', 0).astype('int')
+    df_schd2.후공점수 = df_schd2.후공점수.str.replace('콜드승 ', '').fillna(0).astype('int')
+    df_schd2['Result'] = ''
+    tmp_result = list()
+    for i in range(df_schd2.shape[0]):
+        # print(i, first_called[i], second_called[i])
+        if df_schd2.iloc[i]['선공점수'] > df_schd2.iloc[i]['후공점수']:
+            if first_called[i]:
+                result = df_schd2.iloc[i]['선공'] + '_콜드승'    
+            else :
+                result = df_schd2.iloc[i]['선공'] + '_승'
+        elif df_schd2.iloc[i]['선공점수'] < df_schd2.iloc[i]['후공점수']:
+            if second_called[i]:
+                result = df_schd2.iloc[i]['후공'] + '_콜드승'
+            else:
+                result = df_schd2.iloc[i]['후공'] + '_승'
+            # print(i, result)
+        elif (df_schd2.iloc[i]['결과'] != '게임대기') & (df_schd2.iloc[i]['선공점수'] == df_schd2.iloc[i]['후공점수']):
+            result = '무'
+            # print(i, result)
+        else:
+            result = '경기전'
+            # print(i, result)
+        tmp_result.append(result)
+
+    df_schd2['Result'] = tmp_result
+    df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_콜드승'), 'Result'] = '콜드승'
+    df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_승'), 'Result'] = '승'
+    df_schd2.loc[df_schd2['Result'].str.contains('_승'), 'Result'] = '패'
+    df_schd2.loc[df_schd2['Result'].str.contains('_콜드승'), 'Result'] = '콜드패'
+
+    df_schd2 = df_schd2.drop('결과', axis = 1)
     st.dataframe(df_schd2)
 
 with tab_dataload:
