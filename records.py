@@ -193,7 +193,7 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_schd, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "약어", "일정", "업데이트"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
