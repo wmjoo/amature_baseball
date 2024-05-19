@@ -526,8 +526,12 @@ with tab_sn_viz:
                 st.plotly_chart(fig_p, use_container_width=True)
     with tab_sn_viz_3:
         st.write("선수 별 기록 분포 통계량")
-        st.dataframe(df_hitter.describe(), use_container_width = True, hide_index = True)  
-        st.dataframe(df_pitcher.describe(), use_container_width = True, hide_index = True)  
+        st.write("타자")
+        st.dataframe(df_hitter.rename(columns = hitter_data_EnKr, inplace=False).describe(), 
+                     use_container_width = True, hide_index = False)  
+        st.write("투수")
+        st.dataframe(df_pitcher.rename(columns = pitcher_data_EnKr, inplace=False).describe(), 
+                     use_container_width = True, hide_index = False)  
         
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
