@@ -126,7 +126,6 @@ def load_data(team_name, team_id):
 ################################################################
 sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 
-@st.cache_data
 try:        # Create GSheets connection AND Load Data from google sheets 
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
