@@ -531,83 +531,6 @@ with tab_sn_viz:
         st.write("투수")
         st.dataframe(df_pitcher.drop('No', axis = 1).rename(columns = pitcher_data_EnKr, inplace=False).describe(), 
                      use_container_width = True, hide_index = False)  
-        
-with tab_sn_terms:
-    st.subheader('야구 기록 설명')
-    tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
-    # 스트림릿 페이지 제목 설정
-    with tab_sn_terms_col1:
-        # 타자 데이터 설명
-        st.markdown("""
-        ### 타자(Hitters) 컬럼명 약어:
-        | ENG | KOR | Desc                    |
-        |--------------|-------------|--------------------------------|
-        | Name         | 성명        | Player's name                  |
-        | No           | 배번        | Jersey number                  |
-        | AVG           | 타율        | Batting average                |
-        | G            | 경기        | Games played                   |
-        | PA           | 타석        | Plate appearances              |
-        | AB           | 타수        | At bats                        |
-        | R            | 득점        | Runs                           |
-        | H            | 총안타      | Hits                           |
-        | 1B           | 1루타       | Singles                        |
-        | 2B           | 2루타       | Doubles                        |
-        | 3B           | 3루타       | Triples                        |
-        | HR           | 홈런        | Home runs                      |
-        | TB           | 루타        | Total bases                    |
-        | RBI          | 타점        | Runs batted in                 |
-        | SB           | 도루        | Stolen bases                   |
-        | CS           | 도실(도루자)| Caught stealing                |
-        | SH           | 희타        | Sacrifice hits                 |
-        | SF           | 희비        | Sacrifice flies                |
-        | BB           | 볼넷        | Walks                          |
-        | IBB          | 고의4구     | Intentional walks              |
-        | HBP          | 사구        | Hit by pitch                   |
-        | SO           | 삼진        | Strikeouts                     |
-        | DP           | 병살        | Double plays                   |
-        | SLG          | 장타율      | Slugging percentage            |
-        | OBP          | 출루율      | On-base percentage             |
-        | SB%          | 도루성공률  | Stolen base percentage         |
-        | MHit         | 멀티히트    | Multi-hit games                |
-        | OPS          | OPS         | On-base plus slugging          |
-        | BB/K         | BB/K       | Walks per strikeout            |
-        | XBH/H        | 장타/안타   | Extra base hits per hit        |
-        | Team         | 팀          | Team name                      |
-        """)
-    with tab_sn_terms_col2:
-        # 투수 데이터 설명
-        st.markdown("""
-        ### 투수(Pitchers) 컬럼명 약어:
-        | ENG | KOR | Desc                    |
-        |--------------|-------------|--------------------------------|
-        | Name         | 성명        | Player's name                  |
-        | No           | 배번        | Jersey number                  |
-        | ERA          | 방어율      | Earned run average             |
-        | WHIP         | WHIP        | Walks plus hits per inning    |
-        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
-        | GS           | 경기수      | Games started                  |
-        | W            | 승          | Wins                           |
-        | L            | 패          | Losses                         |
-        | SV           | 세          | Saves                          |
-        | HLD          | 홀드        | Holds                          |
-        | BF           | 타자        | Batters faced                  |
-        | AB           | 타수        | At bats against                |
-        | P            | 투구수      | Pitches thrown                 |
-        | HA           | 피안타      | Hits allowed                   |
-        | HR           | 피홈런      | Home runs allowed              |
-        | SH           | 희생타        | Sacrifice hits allowed         |
-        | SF           | 희생플라이     | Sacrifice flies allowed        |
-        | BB           | 볼넷        | Walks allowed                  |
-        | IBB          | 고의4구     | Intentional walks allowed      |
-        | HBP          | 사구        | Hit by pitch allowed           |
-        | SO           | 탈삼진      | Strikeouts                     |
-        | WP           | 폭투        | Wild pitches                   |
-        | BK           | 보크        | Balks                          |
-        | R            | 실점        | Runs allowed                   |
-        | ER           | 자책점      | Earned runs allowed            |
-        | IP           | 이닝        | Innings pitched                |    
-        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
-        """)
 
 with tab_schd:
     # 일정표 URL 설정
@@ -741,3 +664,82 @@ with tab_dataload:
             st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
     else:
         st.write('Wrong Password!!')
+
+
+        
+with tab_sn_terms:
+    st.subheader('야구 기록 설명')
+    tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
+    # 스트림릿 페이지 제목 설정
+    with tab_sn_terms_col1:
+        # 타자 데이터 설명
+        st.markdown("""
+        ### 타자(Hitters) 컬럼명 약어:
+        | ENG | KOR | Desc                    |
+        |--------------|-------------|--------------------------------|
+        | Name         | 성명        | Player's name                  |
+        | No           | 배번        | Jersey number                  |
+        | AVG           | 타율        | Batting average                |
+        | G            | 경기        | Games played                   |
+        | PA           | 타석        | Plate appearances              |
+        | AB           | 타수        | At bats                        |
+        | R            | 득점        | Runs                           |
+        | H            | 총안타      | Hits                           |
+        | 1B           | 1루타       | Singles                        |
+        | 2B           | 2루타       | Doubles                        |
+        | 3B           | 3루타       | Triples                        |
+        | HR           | 홈런        | Home runs                      |
+        | TB           | 루타        | Total bases                    |
+        | RBI          | 타점        | Runs batted in                 |
+        | SB           | 도루        | Stolen bases                   |
+        | CS           | 도실(도루자)| Caught stealing                |
+        | SH           | 희타        | Sacrifice hits                 |
+        | SF           | 희비        | Sacrifice flies                |
+        | BB           | 볼넷        | Walks                          |
+        | IBB          | 고의4구     | Intentional walks              |
+        | HBP          | 사구        | Hit by pitch                   |
+        | SO           | 삼진        | Strikeouts                     |
+        | DP           | 병살        | Double plays                   |
+        | SLG          | 장타율      | Slugging percentage            |
+        | OBP          | 출루율      | On-base percentage             |
+        | SB%          | 도루성공률  | Stolen base percentage         |
+        | MHit         | 멀티히트    | Multi-hit games                |
+        | OPS          | OPS         | On-base plus slugging          |
+        | BB/K         | BB/K       | Walks per strikeout            |
+        | XBH/H        | 장타/안타   | Extra base hits per hit        |
+        | Team         | 팀          | Team name                      |
+        """)
+    with tab_sn_terms_col2:
+        # 투수 데이터 설명
+        st.markdown("""
+        ### 투수(Pitchers) 컬럼명 약어:
+        | ENG | KOR | Desc                    |
+        |--------------|-------------|--------------------------------|
+        | Name         | 성명        | Player's name                  |
+        | No           | 배번        | Jersey number                  |
+        | ERA          | 방어율      | Earned run average             |
+        | WHIP         | WHIP        | Walks plus hits per inning    |
+        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
+        | GS           | 경기수      | Games started                  |
+        | W            | 승          | Wins                           |
+        | L            | 패          | Losses                         |
+        | SV           | 세          | Saves                          |
+        | HLD          | 홀드        | Holds                          |
+        | BF           | 타자        | Batters faced                  |
+        | AB           | 타수        | At bats against                |
+        | P            | 투구수      | Pitches thrown                 |
+        | HA           | 피안타      | Hits allowed                   |
+        | HR           | 피홈런      | Home runs allowed              |
+        | SH           | 희생타        | Sacrifice hits allowed         |
+        | SF           | 희생플라이     | Sacrifice flies allowed        |
+        | BB           | 볼넷        | Walks allowed                  |
+        | IBB          | 고의4구     | Intentional walks allowed      |
+        | HBP          | 사구        | Hit by pitch allowed           |
+        | SO           | 탈삼진      | Strikeouts                     |
+        | WP           | 폭투        | Wild pitches                   |
+        | BK           | 보크        | Balks                          |
+        | R            | 실점        | Runs allowed                   |
+        | ER           | 자책점      | Earned runs allowed            |
+        | IP           | 이닝        | Innings pitched                |    
+        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
+        """)
