@@ -194,7 +194,7 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화", "약어", "데이터 업데이트"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "약어", "업데이트"])
 
 with tab_sn_players:
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -381,7 +381,7 @@ with tab_sn_teamwise:
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
 with tab_sn_viz:
-    tab_sn_viz_1, tab_sn_viz_2 = st.tabs(["선수별기록분포", "팀별비교"])
+    tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
         #st.subheader('선수별 기록 분포 시각화')    
         df_plot = df_hitter
@@ -524,7 +524,11 @@ with tab_sn_viz:
                 st.plotly_chart(fig_h, use_container_width=True)
             with tab_sn_vs_col2_2:             # 차트 보기 [Pitcher]
                 st.plotly_chart(fig_p, use_container_width=True)
-
+    with tab_sn_viz_3:
+        st.write("선수 별 기록 분포 통계량")
+        st.dataframe(df_hitter.describe(), use_container_width = True, hide_index = True)  
+        st.dataframe(df_pitcher.describe(), use_container_width = True, hide_index = True)  
+        
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
