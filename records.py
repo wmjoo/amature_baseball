@@ -685,6 +685,7 @@ with tab_schd:
     df_schd2.columns = ['일시', '구장', '선공', '선', '후공', '후', '결과']
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
     st.dataframe(df_schd2)
+    st.markdown(df_schd2)
 
 with tab_dataload:
     user_password_update = st.text_input('Input Password for Update', type='password')
