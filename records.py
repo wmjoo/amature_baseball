@@ -29,6 +29,9 @@ warnings.filterwarnings('ignore')
 st.set_page_config(page_title="Baseball Data")
 st.title('Saturday League Data')
 
+## 년도 설정
+deafult_year = 2024
+
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
 team_id_dict_rkA = { # team_id_dict_rookieA
     "코메츠 호시탐탐": 7984, "Big Hits": 36636,    "FA Members": 13621, "RedStorm": 17375,    "unknown`s": 33848, "그냥하자": 10318,
@@ -115,8 +118,8 @@ def create_heatmap(data, cmap, input_figsize = (10, 7)):
 @st.cache_data
 def load_data(team_name, team_id):
     urls = {
-        'hitter': f"http://www.gameone.kr/club/info/ranking/hitter?club_idx={team_id}",
-        'pitcher': f"http://www.gameone.kr/club/info/ranking/pitcher?club_idx={team_id}"
+        'hitter': f"http://www.gameone.kr/club/info/ranking/hitter?club_idx={team_id}&kind=&season={deafult_year}",
+        'pitcher': f"http://www.gameone.kr/club/info/ranking/pitcher?club_idx={team_id}&kind=&season={deafult_year}""
     }
     results = {'hitter': [], 'pitcher': []}
     for key, url in urls.items():
