@@ -366,8 +366,8 @@ with tab_sn_teamwise:
     team_id = team_id_dict[team_name]
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
-    with tab_sn_teamwise_1:
-        DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}".format(team_id)
+    with tab_sn_teamwise_1: # club_idx={team_id}&kind=&season={default_year}",
+        DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
         st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
@@ -386,7 +386,7 @@ with tab_sn_teamwise:
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
-        DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}".format(team_id)
+        DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
         df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
         st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
@@ -454,6 +454,7 @@ with tab_sn_viz:
                 ### template_input 
                 # plotly - Plotly의 기본 템플릿.     # plotly_white - 배경이 하얀색인 깔끔한 템플릿.     # plotly_dark - 배경이 어두운색인 템플릿.
                 # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.    # simple_white - 매우 단순하고 깨끗한 템플릿.
+    
     with tab_sn_viz_2: # tab_sn_vs [레이더 차트]
         teams = list(sorted(team_id_dict.keys())) # Team list applied sorting
         template_input = 'plotly_white'    
