@@ -35,12 +35,32 @@ team_id_dict_rkA = { # team_id_dict_rookieA
     "기드온스": 27811,    "다이아몬스터": 39783,     "데빌베어스": 19135, "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
     "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207, # "SKCC Wings": 4653,
 }
-team_id_dict = team_id_dict_rkA.copy()
-team_id_dict.setdefault('SKCC Wings', 4653) 
-rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_rkA.keys())
+team_id_dict_rkB = {
+    '보성야구단': 15977,
+    '데빌베어스(Devil Bears)': 19135,
+    'FA Members': 13621,
+    'Team 야놀자': 39918,
+    '슈퍼스타즈': 23785,
+    'MANNA ECCLESIA': 43133,
+    '성남야구선수촌': 7072,
+    '라이노즈': 41326,
+    '에자이갑스': 23042,
+    '실버서울 야구단': 15753,
+    '야호 이겨스': 42160,
+    '마자야지': 19163,
+    '다이아몬스터': 39783,
+    'HEAT': 18414
+}
 
-team_englist = ["Big Hits", "FA Members", "Red Storm", "unknown`s", "GNHaJa", "Gideons", "Diamonster", "DevilBears",
-                 "Rhinos", "Mifas", "Bundang Stars", "Blue Lakers", "Sungsi YGSG", "Wasabi", "KometsHSTT"] #, "SKCC Wings"]
+team_id_dict = team_id_dict_rkB.copy()
+team_id_dict.setdefault('SKCC Wings', 4653) 
+rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_rkB.keys())
+
+team_englist = ['BoseongBaseballTeam', 'DevilBears', 'FAMembers', 'TeamYnj', 'Superstars', 'MANNAECCLESIA', 
+                'SeongnamYgssc', 'Rhinos', 'EisaiGabs', 'SilverSeoul', 'Yaho', 'MajaYaji', 'Diamonster', 'HEAT', "KometsHSTT"] #, "SKCC Wings"]
+
+# ["Big Hits", "FA Members", "Red Storm", "unknown`s", "GNHaJa", "Gideons", "Diamonster", "DevilBears",
+                #  "Rhinos", "Mifas", "Bundang Stars", "Blue Lakers", "Sungsi YGSG", "Wasabi", "KometsHSTT"] #, "SKCC Wings"]
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
