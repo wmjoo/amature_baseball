@@ -27,11 +27,7 @@ from streamlit_gsheets import GSheetsConnection
 
 warnings.filterwarnings('ignore')
 st.set_page_config(page_title="Baseball Data")
-st.title('Saturday League Data')
-
-## 년도 설정
-default_year = 2024
-default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
+st.title('Sat League Data')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
 team_id_dict_rkA = { # team_id_dict_rookieA
@@ -216,6 +212,10 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ################################################################
 ## UI Tab
 ################################################################
+## 년도 설정
+# default_year = 2024
+default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
+
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
 
