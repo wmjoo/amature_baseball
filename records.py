@@ -119,7 +119,7 @@ def create_heatmap(data, cmap, input_figsize = (10, 7)):
 def load_data(team_name, team_id):
     urls = {
         'hitter': f"http://www.gameone.kr/club/info/ranking/hitter?club_idx={team_id}&kind=&season={deafult_year}",
-        'pitcher': f"http://www.gameone.kr/club/info/ranking/pitcher?club_idx={team_id}&kind=&season={deafult_year}""
+        'pitcher': f"http://www.gameone.kr/club/info/ranking/pitcher?club_idx={team_id}&kind=&season={deafult_year}"
     }
     results = {'hitter': [], 'pitcher': []}
     for key, url in urls.items():
@@ -587,6 +587,7 @@ with tab_schd:
     max_columns = max(len(row) for row in data)
     # 열 이름 설정
     column_names = [f"col{i+1}" for i in range(max_columns)]
+    st.write(pd.DataFrame(data))
     # DataFrame 생성
     df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
     # DataFrame 출력
