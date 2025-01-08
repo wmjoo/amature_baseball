@@ -589,7 +589,6 @@ with tab_schd:
     max_columns = max(len(row) for row in data)
     # 열 이름 설정
     column_names = [f"col{i+1}" for i in range(max_columns)]
-    st.write(pd.DataFrame(data))
     # DataFrame 생성
     df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
     # DataFrame 출력
@@ -599,7 +598,6 @@ with tab_schd:
         df_schd2['6'] = ''  # '' 값을 가진 빈 컬럼을 추가    
     df_schd2.columns = ['일시', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
     df_schd2.구장 = df_schd2.구장.str.replace('야구장', '')
-    st.write(df_schd2)
     first_called = df_schd2.선공점수.str.contains('콜드승')
     second_called = df_schd2.후공점수.str.contains('콜드승')
     df_schd2.선공점수 = df_schd2.선공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
