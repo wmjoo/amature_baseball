@@ -558,7 +558,7 @@ with tab_sn_viz:
 
 with tab_schd:
     # 일정표 URL 설정
-    url = f'http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={default_year}'
+    url = f"http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={default_year}"
     st.write(url)
     # HTTP GET 요청
     response = requests.get(url)
