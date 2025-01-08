@@ -31,6 +31,7 @@ st.title('Saturday League Data')
 
 ## 년도 설정
 default_year = 2024
+default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
 team_id_dict_rkA = { # team_id_dict_rookieA
