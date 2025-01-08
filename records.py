@@ -594,6 +594,9 @@ with tab_schd:
     df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
     # DataFrame 출력
     df_schd2 = pd.concat([df_schd.drop(['게임', '분류'], axis =1), df_team], axis = 1)
+    # 열 갯수가 6개일 경우, '6' 컬럼을 추가
+    if df_schd2.shape[1] == 6:
+        df_schd2['6'] = ''  # '' 값을 가진 빈 컬럼을 추가    
     df_schd2.columns = ['일시', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
     df_schd2.구장 = df_schd2.구장.str.replace('야구장', '')
    # st.write(df_schd2)
