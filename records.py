@@ -602,8 +602,8 @@ with tab_schd:
     st.write(df_schd2)
     first_called = df_schd2.선공점수.str.contains('콜드승')
     second_called = df_schd2.후공점수.str.contains('콜드승')
-    df_schd2.선공점수 = df_schd2.선공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
-    df_schd2.후공점수 = df_schd2.후공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').fillna(0).astype('int')
+    df_schd2.선공점수 = df_schd2.선공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
+    df_schd2.후공점수 = df_schd2.후공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').fillna(0).astype('int')
     df_schd2['Result'] = ''
     tmp_result = list()
     for i in range(df_schd2.shape[0]):
