@@ -271,7 +271,7 @@ with tab_sn_players:
         rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
                                  'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
-        pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() + ['IP'] # Sum 컬럼 선택
+        pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
         pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
 
         # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
