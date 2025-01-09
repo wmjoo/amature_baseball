@@ -291,11 +291,12 @@ with tab_sn_players:
         df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
         st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         st.write(df_pitcher)
+        st.write(df_pitcher.info())        
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         st.subheader('팀별 기록 : 투수')
         pitcher_grpby = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
         st.write(pitcher_grpby)
-        st.write(pitcher_grpby.info())
+        st.write(pitcher_grpby.info())        
         # 파생 변수 추가
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
         if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
