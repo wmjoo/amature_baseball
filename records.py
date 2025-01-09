@@ -300,9 +300,8 @@ with tab_sn_players:
         st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].shape)
         pitcher_grpby = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
         # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
-        tmp_df = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), 
-                                ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum()
         st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
+        st.write(pitcher_grpby.head(3))
         # 파생 변수 추가
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
         if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
