@@ -48,11 +48,11 @@ team_name_dict_2025rkC = {
 }
 
 team_id_dict = team_id_dict_2025rkC.copy()
-team_id_dict.setdefault('SKCC Wings', 4653) 
+# team_id_dict.setdefault('SKCC Wings', 4653) 
 rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
 
-team_englist = ['Bosung', 'DevilBears', 'FAMembers', 'TeamYnj', 'Superstars', 'MANNAECCLESIA', 
-                'SeongnamYgssc', 'Rhinos', 'EisaiGabs', 'SilverSeoul', 'Yaho', 'MajaYaji', 'Diamonster', 'HEAT', "HOSHI"] #, "SKCC Wings"]
+# team_englist = ['Bosung', 'DevilBears', 'FAMembers', 'TeamYnj', 'Superstars', 'MANNAECCLESIA', 
+#                 'SeongnamYgssc', 'Rhinos', 'EisaiGabs', 'SilverSeoul', 'Yaho', 'MajaYaji', 'Diamonster', 'HEAT', "HOSHI"] #, "SKCC Wings"]
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
@@ -295,6 +295,7 @@ with tab_sn_players:
         st.subheader('팀별 기록 : 투수')
         pitcher_grpby = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
         st.write(pitcher_grpby)
+        st.write(pitcher_grpby.info())
         # 파생 변수 추가
         # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
         if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
