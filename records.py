@@ -340,9 +340,8 @@ with tab_sn_players:
 
         ## 히트맵 시각화 팀별 랭킹        
         st.write("Heatmap")
-        df = pitcher_grpby_rank.drop('Team', axis = 1).copy()
+        # df = pitcher_grpby_rank.drop('Team', axis = 1).copy()
         # df = pitcher_grpby_rank.drop('Team', axis = 1).copy()  
-
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
         df['team_eng'] = df['Team'].map(team_name_dict_2025rkC)
         
