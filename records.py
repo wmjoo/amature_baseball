@@ -292,6 +292,7 @@ with tab_sn_players:
         st.dataframe(df_pitcher[['No', 'Name'] + rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
         st.write(df_pitcher)
         st.write(df_pitcher.dtypes)
+        st.write(pitcher_sumcols)
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
         st.subheader('팀별 기록 : 투수')
         pitcher_grpby = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
