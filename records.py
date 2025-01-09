@@ -23,10 +23,8 @@ from sklearn.preprocessing import MinMaxScaler
 from streamlit_gsheets import GSheetsConnection
 # import pandasql as psql
 
-
-
 warnings.filterwarnings('ignore')
-st.set_page_config(page_title="Baseball Data")
+st.set_page_config(page_title="사회인야구")
 st.title('Sat League Data')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
