@@ -101,7 +101,7 @@ def create_heatmap(data, cmap, input_figsize = (10, 7)):
     return plt
 
 @st.cache_data
-def load_data(team_name, team_id):
+def load_data(team_name, team_id, default_year):
     urls = {
         'hitter': f"http://www.gameone.kr/club/info/ranking/hitter?club_idx={team_id}&kind=&season={default_year}",
         'pitcher': f"http://www.gameone.kr/club/info/ranking/pitcher?club_idx={team_id}&kind=&season={default_year}"
