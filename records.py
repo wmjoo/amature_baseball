@@ -406,9 +406,10 @@ with tab_sn_teamwise:
         df_h_mediandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].median(numeric_only=True).to_dict().items()}
         df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
-        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
-        team_id = team_id_dict[team_name]
-        tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
+    
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+    team_id = team_id_dict[team_name]
+    tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
     with tab_sn_teamwise_1: 
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
