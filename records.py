@@ -679,7 +679,7 @@ with tab_dataload:
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         team_id_dict = team_id_dict_2025rkC | team_id_dict_2025miB
-        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023], index = 1, key = 'year_selectbox')
+        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023], index = 1, key = 'dataload_year_selectbox')
         st.write(len(team_id_dict.keys()))
         st.write('Correct Password')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
