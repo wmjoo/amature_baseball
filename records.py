@@ -225,6 +225,13 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ################################################################
 ## UI Tab
 ################################################################
+st.write(df_hitter.shape)
+df_hitter = df_hitter.loc[df_hitter['팀'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
+st.write(df_hitter.shape)
+
+st.write(df_pitcher.shape)
+df_pitcher = df_pitcher.loc[df_pitcher['팀'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
+st.write(df_pitcher.shape)
 
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
