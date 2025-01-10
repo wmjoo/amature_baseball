@@ -227,11 +227,11 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ################################################################
 st.write(df_hitter.shape)
 st.write(df_hitter.columns)
-df_hitter = df_hitter.loc[df_hitter['팀'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
+df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 st.write(df_hitter.shape)
 
 st.write(df_pitcher.shape)
-df_pitcher = df_pitcher.loc[df_pitcher['팀'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
+df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 st.write(df_pitcher.shape)
 
 ## 탭 설정
