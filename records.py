@@ -129,6 +129,31 @@ def load_data(team_name, team_id):
     return {'hitter': pd.concat(results['hitter'], ignore_index=True), 
             'pitcher': pd.concat(results['pitcher'], ignore_index=True)}
 
+
+
+# 화면 최상단을 2개의 컬럼으로 나누기
+top_col1, top_col2 = st.columns(2)
+
+# 첫 번째 컬럼에 내용 출력
+with top_col1:
+    ## 년도 설정
+    default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
+
+# 두 번째 컬럼에 내용 출력
+with top_col2:
+    hoshi_on = st.toggle("토요 루키C(호시탐탐)")
+    if hoshi_on:
+        st.write("토요 루키C(호시탐탐)")
+        team_id_dict = team_id_dict_2025rkC.copy()
+        rank_calc_include_teams = list(team_id_dict.keys())
+        rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
+    else:
+        st.write("토요 마이너B(SKCC Wings)")    
+        team_id_dict = team_id_dict_2025miB.copy()
+        rank_calc_include_teams = list(team_id_dict.keys())
+        rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
+
+
 ################################################################
 ## Data Loading
 ################################################################
@@ -200,20 +225,6 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ################################################################
 ## UI Tab
 ################################################################
-## 년도 설정
-# default_year = 2024
-default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
-
-on = st.toggle("토요 루키C(호시탐탐)")
-if on:
-    st.write("토요 루키C(호시탐탐)")
-    team_id_dict = team_id_dict_2025rkC.copy()
-    rank_calc_include_teams = list(team_id_dict.keys())
-    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
-else:
-    team_id_dict = team_id_dict_2025miB.copy()
-    rank_calc_include_teams = list(team_id_dict.keys())
-    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
 
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
