@@ -283,21 +283,22 @@ with tab_sn_players:
         hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
         st.write('Ranking')
         st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        
-        ## 히트맵 시각화 팀별 랭킹        
-        st.write("Heatmap")
-        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
-        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(allteam_name_dict)
-        df = df.drop('Team', axis = 1).copy()  
 
-        df.set_index('team_eng', inplace=True)
-        # 커스텀 컬러맵 생성
-        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-        # 히트맵 생성
-        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(plt)
+        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
+        ## 히트맵 시각화 팀별 랭킹        
+        if df.shape[0] > 0:
+            st.write("Heatmap")
+            # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+            df['team_eng'] = df['Team'].map(allteam_name_dict)
+            df = df.drop('Team', axis = 1).copy()  
+
+            df.set_index('team_eng', inplace=True)
+            # 커스텀 컬러맵 생성
+            colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+            cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+            # 히트맵 생성
+            plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+            st.pyplot(plt)
 
 
     with tab_sn_players_2:
@@ -379,8 +380,10 @@ with tab_sn_players:
         st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
         ## 히트맵 시각화 팀별 랭킹        
-        st.write("Heatmap")
-        df = pitcher_grpby_rank.copy() #drop('Team', axis = 1).copy()
+        df = pitcher_grpby_rank.copy() 
+        ## 히트맵 시각화 팀별 랭킹        
+        if df.shape[0] > 0:
+            st.write("Heatmap")        
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
         df['team_eng'] = df['Team'].map(allteam_name_dict)
         df = df.drop('Team', axis = 1).copy()  
