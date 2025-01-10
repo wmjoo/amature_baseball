@@ -140,13 +140,13 @@ top_col1, top_col2, top_col3 = st.columns(3)
 with top_col1:
     # st.write('')
     ## 년도 설정
-    default_year = st.selectbox('년도', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
+    default_year = st.selectbox('Display Year(현재 기록은 24시즌 기준)', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
 with top_col3:
     # 토글 상태를 나타내는 변수
-    hoshi_on = st.checkbox('토요 루키C')  # 기본적으로 체크박스로 토글을 구현
+    hoshi_on = st.checkbox('토요 루키C[호시]')  # 기본적으로 체크박스로 토글을 구현
     # hoshi_on = st.toggle("토요 루키C(호시탐탐)")    
     # # 상태에 따른 텍스트 출력
     # if hoshi_on:
@@ -404,7 +404,7 @@ with tab_sn_teamwise:
     team_id = team_id_dict[team_name]
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
-    with tab_sn_teamwise_1: # club_idx={team_id}&kind=&season={default_year}",
+    with tab_sn_teamwise_1: 
         DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
         df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
         st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
