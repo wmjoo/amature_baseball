@@ -141,7 +141,7 @@ top_col1, top_col2, top_col3 = st.columns(3)
 with top_col1:
     # st.write('')
     ## 년도 설정
-    default_year = st.selectbox('Display Year(현재 기록은 24시즌 기준)', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
+    default_year = st.selectbox('Display Year', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
@@ -176,8 +176,8 @@ sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 try:        # Create GSheets connection AND Load Data from google sheets 
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
-    df_hitter = conn.read(worksheet="df_hitter")
-    df_pitcher = conn.read(worksheet="df_pitcher")
+    df_hitter = conn.read(worksheet="df_hitter_{}".format(default_year))
+    df_pitcher = conn.read(worksheet="df_hitter_{}".format(default_year))
     time.sleep(2)    
     st.toast('Loaded Data from Cloud!', icon='✅')
 except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
@@ -680,7 +680,7 @@ with tab_dataload:
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
-        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023], index = 1, key = 'dataload_year_selectbox')
+        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023, 2022], index = 1, key = 'dataload_year_selectbox')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
             hitters = []
@@ -720,8 +720,8 @@ with tab_dataload:
             # Create GSheets connection
             conn = st.connection("gsheets", type=GSheetsConnection)
 
-            df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
-            df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)
+            df_hitter = conn.update(worksheet="df_hitter_{}".format(dataload_year), data=df_hitter)
+            df_pitcher = conn.update(worksheet="df_pitcher_{}".format(dataload_year), data=df_pitcher)
             time.sleep(3)
             st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
             st.write(df_hitter.shape, "Hitter Data SAVED!")
