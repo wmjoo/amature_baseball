@@ -302,10 +302,10 @@ with tab_sn_players:
 
 
     with tab_sn_players_2:
+        rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
+                                    'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         if df_pitcher.shape[0] > 0 : # pitcher data exists
             # 출력시 열 순서 변경
-            rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
-                                    'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
             st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
             pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
             pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
