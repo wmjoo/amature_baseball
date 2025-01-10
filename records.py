@@ -132,15 +132,15 @@ def load_data(team_name, team_id, default_year):
 
 
 # 화면 최상단을 2개의 컬럼으로 나누기
-top_col1, top_col2 = st.columns(2)
+top_col1, top_col2, top_col3 = st.columns(3)
 
 # 첫 번째 컬럼에 내용 출력
 with top_col1:
-    ## 년도 설정
-    default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
-
-# 두 번째 컬럼에 내용 출력
+    st.write('')
 with top_col2:
+    st.write('')
+# 세 번째 컬럼에 내용 출력
+with top_col3:
     hoshi_on = st.toggle("토요 루키C(호시탐탐)")
     if hoshi_on:
         st.write("토요 루키C(호시탐탐)")
