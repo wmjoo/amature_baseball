@@ -668,6 +668,7 @@ with tab_schd:
     st.table(df_schd2.reset_index(drop=True))
 
 with tab_dataload:
+    team_id_dict = team_id_dict_2025rkC | team_id_dict_2025miB
     user_password_update = st.text_input('Input Password for Update', type='password')
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
