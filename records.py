@@ -171,7 +171,7 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
     hitters = []
     pitchers = []
     with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = {executor.submit(load_data, team_name, team_id): team_name for team_name, team_id in team_id_dict.items()}
+        futures = {executor.submit(load_data, team_name, team_id, default_year): team_name for team_name, team_id in team_id_dict.items()}
         for future in as_completed(futures):
             try:
                 result = future.result()
@@ -679,7 +679,7 @@ with tab_dataload:
             hitters = []
             pitchers = []
             with ThreadPoolExecutor(max_workers=4) as executor:
-                futures = {executor.submit(load_data, team_name, team_id): team_name for team_name, team_id in team_id_dict.items()}
+                futures = {executor.submit(load_data, team_name, team_id, default_year): team_name for team_name, team_id in team_id_dict.items()}
                 for future in as_completed(futures):
                     try:
                         result = future.result()
