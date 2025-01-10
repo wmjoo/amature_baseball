@@ -399,9 +399,9 @@ with tab_sn_players:
     
 
 with tab_sn_teamwise:
+    # HTML display Setting
+    span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'    
     if (df_hitter.shape[0] > 0) & (df_pitcher.shape[0] > 0) : # pitcher data exists    
-        # HTML display Setting
-        span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'
         df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
         df_h_mediandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].median(numeric_only=True).to_dict().items()}
         df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
@@ -426,8 +426,6 @@ with tab_sn_teamwise:
         st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
         st.write('Entire Median(Hitters)')
         st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)
-
-        
         st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
