@@ -27,32 +27,39 @@ warnings.filterwarnings('ignore')
 st.set_page_config(page_title="사회인야구")
 st.title('Sat League Data')
 
-## 성남리그 팀 딕셔너리 및 영문 그래프용 리스트
-team_id_dict_rkA = { # team_id_dict_rookieA
-    "코메츠 호시탐탐": 7984, "Big Hits": 36636,    "FA Members": 13621, "RedStorm": 17375,    "unknown`s": 33848, "그냥하자": 10318,
-    "기드온스": 27811,    "다이아몬스터": 39783,     "데빌베어스": 19135, "라이노즈": 41236,    "미파스": 19757,    "분당스타즈": 34402,
-    "블루레이커즈": 22924,    "성시야구선교단": 29105,    "와사비": 14207, # "SKCC Wings": 4653,
-}
+## 성남리그 팀 딕셔너리 및 영문 그래프용 딕셔너리 & 리스트
 team_id_dict_2025rkC = {
     '코메츠 호시탐탐': 7984,   '보성야구단': 15977,     '데빌베어스(Devil Bears)': 19135,    'FA Members': 13621,
     'Team 야놀자': 39918,    '슈퍼스타즈': 23785,    'MANNA ECCLESIA': 43133,    '성남야구선수촌': 7072,    
-    '라이노즈': 41326,    '에자이갑스': 23042,    '실버서울 야구단': 15753,    '야호 이겨스': 42160,    '마자야지': 19163,
-    '다이아몬스터': 39783,    'HEAT': 18414
+    '라이노즈': 41326,    '에자이갑스': 23042,    '실버서울 야구단': 15753,    '야호 이겨스': 42160, '마자야지': 19163, '다이아몬스터': 39783,    'HEAT': 18414
 }
 
 team_name_dict_2025rkC = {
     '코메츠 호시탐탐': 'HOSHI',   '보성야구단': 'Bosung', '데빌베어스(Devil Bears)': 'DevilBears', 'FA Members': 'FAMembers',
     'Team 야놀자': 'TeamYnj', '슈퍼스타즈': 'Superstars','MANNA ECCLESIA': 'MANNAECCLESIA', '성남야구선수촌': 'SeongnamYgssc',    
-    '라이노즈': 'Rhinos',    '에자이갑스': 'EisaiGabs',    '실버서울 야구단': 'SilverSeoul',    '야호 이겨스': 'Yaho',  '마자야지': 'MajaYaji',
-    '다이아몬스터': 'Diamonster', 'HEAT': 'HEAT'
+    '라이노즈': 'Rhinos', '에자이갑스': 'EisaiGabs', '실버서울 야구단': 'SilverSeoul', '야호 이겨스': 'Yaho', '마자야지': 'MajaYaji', '다이아몬스터': 'Diamonster', 'HEAT': 'HEAT'
 }
 
-team_id_dict = team_id_dict_2025rkC.copy()
-# team_id_dict.setdefault('SKCC Wings', 4653) 
-rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
+team_id_dict_2025miB = {
+    'SKCC Wings', 4653, '크레이지 프렌즈': 10529, 'A-ONE CROWS': 38597, '나인거너스': 13457, '아가리 OB': 19129, 
+    '썬더버드': 31672, '팀 레볼루션': 15371, '백의종군': 39852, 'unknown`s B': 43215
+}
 
-# team_englist = ['Bosung', 'DevilBears', 'FAMembers', 'TeamYnj', 'Superstars', 'MANNAECCLESIA', 
-#                 'SeongnamYgssc', 'Rhinos', 'EisaiGabs', 'SilverSeoul', 'Yaho', 'MajaYaji', 'Diamonster', 'HEAT', "HOSHI"] #, "SKCC Wings"]
+team_name_dict_2025miB = {
+    'SKCC Wings' : 'skccWings', '크레이지 프렌즈': 'crazyfriends', 'A-ONE CROWS': 'aoneCrows', '나인거너스': 'nineGunners', '아가리 OB': 'agariOB', 
+    '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'bejg', 'unknown`s B': 'unknownB'
+ }
+
+on = st.toggle("토요 루키C(호시탐탐)")
+if on:
+    st.write("토요 루키C(호시탐탐)")
+    team_id_dict = team_id_dict_2025rkC.copy()
+    rank_calc_include_teams = list(team_id_dict.keys())
+    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
+else:
+    team_id_dict = team_id_dict_2025miB.copy()
+    rank_calc_include_teams = list(team_id_dict.keys())
+    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
