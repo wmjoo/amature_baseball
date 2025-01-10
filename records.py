@@ -226,7 +226,7 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ## UI Tab
 ################################################################
 st.write(df_hitter.shape)
-st.write(df_hitter.columns)
+# st.write(df_hitter.columns)
 df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 st.write(df_hitter.shape)
 
