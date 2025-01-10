@@ -142,7 +142,7 @@ with top_col1:
 with top_col2:
     st.write('')
     # 토글 상태를 나타내는 변수
-    hoshi_on = st.checkbox('토요 루키C(호시탐탐)')  # 기본적으로 체크박스로 토글을 구현
+    hoshi_on = st.checkbox('토요 루키C')  # 기본적으로 체크박스로 토글을 구현
     # hoshi_on = st.toggle("토요 루키C(호시탐탐)")    
     # # 상태에 따른 텍스트 출력
     # if hoshi_on:
@@ -154,12 +154,12 @@ with top_col2:
 # 세 번째 컬럼에 내용 출력
 with top_col3:
     if hoshi_on:
-        st.write("토요 루키C(호시탐탐)")
+        st.write("호시탐탐")
         team_id_dict = team_id_dict_2025rkC.copy()
         rank_calc_include_teams = list(team_id_dict.keys())
         rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
     else:
-        st.write("토요 마이너B(SKCC Wings)")    
+        st.write("SKCC Wings")    
         team_id_dict = team_id_dict_2025miB.copy()
         rank_calc_include_teams = list(team_id_dict.keys())
         rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
