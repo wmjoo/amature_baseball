@@ -142,6 +142,7 @@ with top_col1:
     # st.write('')
     ## 년도 설정
     default_year = st.selectbox('Display Year', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
+    st.write("df_hitter_{}".format(default_year))
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
