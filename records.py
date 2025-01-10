@@ -50,7 +50,8 @@ team_name_dict_2025miB = {
     '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'bejg', 'unknown`s B': 'unknownB'
  }
 
-team_name_dict = team_name_dict_2025rkC | team_name_dict_2025miB
+allteam_id_dict = team_id_dict_2025rkC | team_id_dict_2025miB
+allteam_name_dict = team_name_dict_2025rkC | team_name_dict_2025miB
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
@@ -287,7 +288,7 @@ with tab_sn_players:
         st.write("Heatmap")
         df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict)
+        df['team_eng'] = df['Team'].map(allteam_name_dict)
         df = df.drop('Team', axis = 1).copy()  
 
         df.set_index('team_eng', inplace=True)
@@ -381,7 +382,7 @@ with tab_sn_players:
         st.write("Heatmap")
         df = pitcher_grpby_rank.copy() #drop('Team', axis = 1).copy()
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict)
+        df['team_eng'] = df['Team'].map(allteam_name_dict)
         df = df.drop('Team', axis = 1).copy()  
         df.set_index('team_eng', inplace=True)
         # 커스텀 컬러맵 생성
@@ -678,16 +679,14 @@ with tab_dataload:
     user_password_update = st.text_input('Input Password for Update', type='password')
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
-        team_id_dict = team_id_dict_2025rkC | team_id_dict_2025miB
-        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023], index = 1, key = 'dataload_year_selectbox')
-        st.write(len(team_id_dict.keys()))
         st.write('Correct Password')
+        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023], index = 1, key = 'dataload_year_selectbox')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
             hitters = []
             pitchers = []
             with ThreadPoolExecutor(max_workers=4) as executor:
-                futures = {executor.submit(load_data, team_name, team_id, dataload_year): team_name for team_name, team_id in team_id_dict.items()}
+                futures = {executor.submit(load_data, team_name, team_id, dataload_year): team_name for team_name, team_id in allteam_id_dict.items()}
                 for future in as_completed(futures):
                     try:
                         result = future.result()
