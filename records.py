@@ -50,17 +50,6 @@ team_name_dict_2025miB = {
     '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'bejg', 'unknown`s B': 'unknownB'
  }
 
-on = st.toggle("토요 루키C(호시탐탐)")
-if on:
-    st.write("토요 루키C(호시탐탐)")
-    team_id_dict = team_id_dict_2025rkC.copy()
-    rank_calc_include_teams = list(team_id_dict.keys())
-    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
-else:
-    team_id_dict = team_id_dict_2025miB.copy()
-    rank_calc_include_teams = list(team_id_dict.keys())
-    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
-
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
     '성명': 'str', '배번': 'str', '타율': 'float', '경기': 'int', '타석': 'int', '타수': 'int',
@@ -214,6 +203,17 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 ## 년도 설정
 # default_year = 2024
 default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
+
+on = st.toggle("토요 루키C(호시탐탐)")
+if on:
+    st.write("토요 루키C(호시탐탐)")
+    team_id_dict = team_id_dict_2025rkC.copy()
+    rank_calc_include_teams = list(team_id_dict.keys())
+    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
+else:
+    team_id_dict = team_id_dict_2025miB.copy()
+    rank_calc_include_teams = list(team_id_dict.keys())
+    rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
 
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
