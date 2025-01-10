@@ -142,18 +142,17 @@ with top_col1:
 with top_col2:
     st.write('')
     # 토글 상태를 나타내는 변수
-    toggle_state = st.checkbox('Toggle')  # 기본적으로 체크박스로 토글을 구현
-
-    # 상태에 따른 텍스트 출력
-    if toggle_state:
-        st.button("ON")  # 토글이 켜지면 ON 버튼 표시
-        st.write("토글이 켜져 있습니다.")  # 토글이 켜져 있음을 알려주는 텍스트
-    else:
-        st.button("OFF")  # 토글이 꺼지면 OFF 버튼 표시
-        st.write("토글이 꺼져 있습니다.")  # 토글이 꺼져 있음을 알려주는 텍스트
+    hoshi_on = st.checkbox('토요 루키C(호시탐탐)')  # 기본적으로 체크박스로 토글을 구현
+    # hoshi_on = st.toggle("토요 루키C(호시탐탐)")    
+    # # 상태에 따른 텍스트 출력
+    # if hoshi_on:
+    #     st.button("ON")  # 토글이 켜지면 ON 버튼 표시
+    #     st.write("토글이 켜져 있습니다.")  # 토글이 켜져 있음을 알려주는 텍스트
+    # else:
+    #     st.button("OFF")  # 토글이 꺼지면 OFF 버튼 표시
+    #     st.write("토글이 꺼져 있습니다.")  # 토글이 꺼져 있음을 알려주는 텍스트
 # 세 번째 컬럼에 내용 출력
 with top_col3:
-    hoshi_on = st.toggle("토요 루키C(호시탐탐)")
     if hoshi_on:
         st.write("토요 루키C(호시탐탐)")
         team_id_dict = team_id_dict_2025rkC.copy()
