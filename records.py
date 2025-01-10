@@ -321,7 +321,7 @@ with tab_sn_players:
             # 필요한 컬럼을 정의
             p_required_columns = ['No', 'Name'] + rank_by_cols_p_sorted
             # 존재하는 컬럼만 선택
-            p_existing_columns = [col for col in required_columns if col in df_pitcher.columns]
+            p_existing_columns = [col for col in p_required_columns if col in df_pitcher.columns]
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
             # st.write(df_pitcher.head(3))
             # st.write(df_pitcher.dtypes)
