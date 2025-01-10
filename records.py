@@ -50,6 +50,8 @@ team_name_dict_2025miB = {
     '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'bejg', 'unknown`s B': 'unknownB'
  }
 
+team_name_dict = team_name_dict_2025rkC | team_name_dict_2025miB
+
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
     '성명': 'str', '배번': 'str', '타율': 'float', '경기': 'int', '타석': 'int', '타수': 'int',
@@ -138,7 +140,7 @@ top_col1, top_col2, top_col3 = st.columns(3)
 with top_col1:
     # st.write('')
     ## 년도 설정
-    default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
+    default_year = st.selectbox('년도', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
@@ -285,7 +287,7 @@ with tab_sn_players:
         st.write("Heatmap")
         df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict_2025rkC)
+        df['team_eng'] = df['Team'].map(team_name_dict)
         df = df.drop('Team', axis = 1).copy()  
 
         df.set_index('team_eng', inplace=True)
@@ -379,7 +381,7 @@ with tab_sn_players:
         st.write("Heatmap")
         df = pitcher_grpby_rank.copy() #drop('Team', axis = 1).copy()
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict_2025rkC)
+        df['team_eng'] = df['Team'].map(team_name_dict)
         df = df.drop('Team', axis = 1).copy()  
         df.set_index('team_eng', inplace=True)
         # 커스텀 컬러맵 생성
