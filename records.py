@@ -136,7 +136,9 @@ top_col1, top_col2, top_col3 = st.columns(3)
 
 # 첫 번째 컬럼에 내용 출력
 with top_col1:
-    st.write('')
+    # st.write('')
+    ## 년도 설정
+    default_year = st.selectbox('년도', [2025, 2024, 2023, 2022, 2021, 2020], key = 'year_selectbox')
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
