@@ -412,39 +412,41 @@ with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
 
     with tab_sn_teamwise_1: 
-        DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
-        df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-        st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
-        st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
-                     use_container_width = True, hide_index = True)
-        st.write(DATA_URL_B)
-        df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
-        df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
-        df1.insert(0, 'Type', 'Records')
-        df2.insert(0, 'Type', 'Rank')
-        st.write('Entire Mean(Hitters)')
-        st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-        st.write('Entire Median(Hitters)')
-        st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)
-        st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
-                     use_container_width = True, hide_index = True)
+        if (df_hitter.shape[0] > 0) : # data exists            
+            DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
+            df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
+            st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
+            st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
+                        use_container_width = True, hide_index = True)
+            st.write(DATA_URL_B)
+            df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+            df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
+            df1.insert(0, 'Type', 'Records')
+            df2.insert(0, 'Type', 'Rank')
+            st.write('Entire Mean(Hitters)')
+            st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+            st.write('Entire Median(Hitters)')
+            st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)
+            st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
+                        use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
-        DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
-        df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-        st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
-        st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
-                     use_container_width = True, hide_index = True)
-        st.write(DATA_URL_P)
-        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
-        df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
-        df1.insert(0, 'Type', 'Records')
-        df2.insert(0, 'Type', 'Rank')
-        st.write('Entire Mean(Pitchers)')        
-        st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-        st.write('Entire Median(Pitchers)')
-        st.markdown(span_stylesetting + str(df_p_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)        
-        st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
-                     use_container_width = True, hide_index = True)
+        if (df_pitcher.shape[0] > 0) : # data exists         
+            DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
+            df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
+            st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
+            st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
+                        use_container_width = True, hide_index = True)
+            st.write(DATA_URL_P)
+            df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+            df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
+            df1.insert(0, 'Type', 'Records')
+            df2.insert(0, 'Type', 'Rank')
+            st.write('Entire Mean(Pitchers)')        
+            st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+            st.write('Entire Median(Pitchers)')
+            st.markdown(span_stylesetting + str(df_p_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)        
+            st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
+                        use_container_width = True, hide_index = True)
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
