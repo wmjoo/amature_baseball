@@ -139,31 +139,22 @@ top_col1, top_col2, top_col3 = st.columns(3)
 
 # 첫 번째 컬럼에 내용 출력
 with top_col1:
-    # st.write('')
     ## 년도 설정
     default_year = st.selectbox('Display Year', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
-    st.write("df_hitter_{}".format(default_year))
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
 with top_col3:
-    # 토글 상태를 나타내는 변수
     hoshi_on = st.checkbox('토요 루키C[호시]')  # 기본적으로 체크박스로 토글을 구현
-    # hoshi_on = st.toggle("토요 루키C(호시탐탐)")    
-    # # 상태에 따른 텍스트 출력
-    # if hoshi_on:
-    #     st.button("ON")  # 토글이 켜지면 ON 버튼 표시
-    #     st.write("토글이 켜져 있습니다.")  # 토글이 켜져 있음을 알려주는 텍스트
-    # else:
-    #     st.button("OFF")  # 토글이 꺼지면 OFF 버튼 표시
-    #     st.write("토글이 꺼져 있습니다.")  # 토글이 꺼져 있음을 알려주는 텍스트
     if hoshi_on:
         st.write("> 호시탐탐")
+        team_groupname = "토요 루키C"
         team_id_dict = team_id_dict_2025rkC.copy()
         rank_calc_include_teams = list(team_id_dict.keys())
         rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
     else:
         st.write("> SKCC Wings")    
+        team_groupname = "토요 마이너B"
         team_id_dict = team_id_dict_2025miB.copy()
         rank_calc_include_teams = list(team_id_dict.keys())
         rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
@@ -179,7 +170,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     # Read Google WorkSheet as DataFrame
     df_hitter = conn.read(worksheet="df_hitter_{}".format(default_year))
     df_pitcher = conn.read(worksheet="df_hitter_{}".format(default_year))
-    st.write(df_hitter.shape, df_pitcher.shape)    
+    # st.write(df_hitter.shape, df_pitcher.shape)    
     time.sleep(2)    
     st.toast('Loaded Data from Cloud!', icon='✅')
 except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
@@ -254,7 +245,7 @@ with tab_sn_players:
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
                                     'HBP', 'PA', 'AB', 'SO', 'DP']
-        st.subheader('성남 : 전체타자 [{}명]'.format(df_hitter.shape[0]))
+        st.subheader('{} : 전체타자 [{}명]'.format(team_groupname, df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
         st.subheader('팀별 기록')
@@ -308,7 +299,7 @@ with tab_sn_players:
                                     'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         if df_pitcher.shape[0] > 0 : # pitcher data exists
             # 출력시 열 순서 변경
-            st.subheader('성남 : 전체투수 [{}명]'.format(df_pitcher.shape[0]))
+            st.subheader('{} : 전체투수 [{}명]'.format(team_groupname, df_pitcher.shape[0]))
             pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
             pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
 
@@ -417,7 +408,7 @@ with tab_sn_teamwise:
         if (df_hitter.shape[0] > 0) : # data exists            
             DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-            st.subheader('타자 : {} [{}명]'.format(team_name, df_hitter_team.shape[0]))
+            st.subheader('타자 : {} {} [{}명]'.format(team_groupname, team_name, df_hitter_team.shape[0]))
             st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_B)
@@ -435,7 +426,7 @@ with tab_sn_teamwise:
         if (df_pitcher.shape[0] > 0) : # data exists         
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-            st.subheader('투수 : {} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
+            st.subheader('투수 : {} {} [{}명]'.format(team_groupname, team_name, df_pitcher_team.shape[0]))
             st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_P)
