@@ -24,7 +24,7 @@ from streamlit_gsheets import GSheetsConnection
 # import pandasql as psql
 
 warnings.filterwarnings('ignore')
-st.set_page_config(page_title="사회인야구")
+st.set_page_config(page_title="성남리그 기록실")
 st.title('Sat League Data')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 딕셔너리 & 리스트
@@ -40,18 +40,8 @@ team_name_dict_2025rkC = {
     '라이노즈': 'Rhinos', '에자이갑스': 'EisaiGabs', '실버서울 야구단': 'SilverSeoul', '야호 이겨스': 'Yaho', '마자야지': 'MajaYaji', '다이아몬스터': 'Diamonster', 'HEAT': 'HEAT'
 }
 
-team_id_dict_2025miB = {
-    'SKCC Wings' : 4653, '크레이지 프렌즈': 10529, 'A-ONE CROWS': 38597, '나인거너스': 13457, '아가리 OB': 19129, 
-    '썬더버드': 31672, '팀 레볼루션': 15371, '백의종군': 39852, 'unknown`s B': 43215
-}
-
-team_name_dict_2025miB = {
-    'SKCC Wings' : 'skccWings', '크레이지 프렌즈': 'crazyfriends', 'A-ONE CROWS': 'aoneCrows', '나인거너스': 'nineGunners', '아가리 OB': 'agariOB', 
-    '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'bejg', 'unknown`s B': 'unknownB'
- }
-
-allteam_id_dict = team_id_dict_2025rkC | team_id_dict_2025miB
-allteam_name_dict = team_name_dict_2025rkC | team_name_dict_2025miB
+allteam_id_dict = team_id_dict_2025rkC #| team_id_dict_2025miB
+allteam_name_dict = team_name_dict_2025rkC #| team_name_dict_2025miB
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
@@ -140,7 +130,7 @@ top_col1, top_col2, top_col3 = st.columns(3)
 # 첫 번째 컬럼에 내용 출력
 with top_col1:
     ## 년도 설정
-    default_year = st.selectbox('Display Year', [2025, 2024, 2023, 2022], index = 1, key = 'year_selectbox')
+    default_year = st.selectbox('Display Year', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
