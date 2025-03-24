@@ -25,7 +25,7 @@ from streamlit_gsheets import GSheetsConnection
 
 warnings.filterwarnings('ignore')
 st.set_page_config(page_title="성남리그 기록실")
-st.title('Sat League Data')
+st.title('성남리그(토요) 기록실')
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 딕셔너리 & 리스트
 team_id_dict_2025rkC = {
@@ -142,12 +142,12 @@ with top_col3:
         team_id_dict = team_id_dict_2025rkC.copy()
         rank_calc_include_teams = list(team_id_dict.keys())
         rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
-    else:
-        st.write("> SKCC Wings")    
-        team_groupname = "토요 마이너B"
-        team_id_dict = team_id_dict_2025miB.copy()
-        rank_calc_include_teams = list(team_id_dict.keys())
-        rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
+    # else:
+    #     st.write("> SKCC Wings")    
+    #     team_groupname = "토요 마이너B"
+    #     team_id_dict = team_id_dict_2025miB.copy()
+    #     rank_calc_include_teams = list(team_id_dict.keys())
+    #     rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
 
 
 ################################################################
@@ -161,7 +161,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     df_hitter = conn.read(worksheet="df_hitter_{}".format(default_year))
     df_pitcher = conn.read(worksheet="df_hitter_{}".format(default_year))
     # st.write(df_hitter.shape, df_pitcher.shape)    
-    time.sleep(2)    
+    time.sleep(2)   
     st.toast('Loaded Data from Cloud!', icon='✅')
 except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     st.error(f"Failed to read data from drive: {e}", icon="🚨") 
