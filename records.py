@@ -684,9 +684,9 @@ with tab_schd:
     st.table(df_schd2.reset_index(drop=True))
 
 with tab_sn_players: # 전체 선수 탭
-    tab_sn_players_1, tab_sn_players_2 = st.tabs(["전체타자", "전체투수"])
+    tab_sn_players_1, tab_sn_players_2 = st.tabs(['전체타자[{}명]'.format(df_hitter.shape[0]), "전체투수"])
     with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
-        st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
+        # st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
         st.subheader('팀별 기록 : 타자')
