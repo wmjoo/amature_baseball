@@ -94,6 +94,78 @@ def create_heatmap(data, cmap, input_figsize = (10, 7)):
     plt.tight_layout()
     return plt
 
+# 경기 결과에 따라 각 tr에 style 적용
+def color_row_by_result(row_html: str) -> str:
+    if "<td>승</td>" in row_html:
+        return row_html.replace("<tr>", '<tr style="background-color: #d4f7d4;">')  # 연초록
+    elif "<td>콜드승</td>" in row_html:
+        return row_html.replace("<tr>", '<tr style="background-color: #d4f7d4;">')  # 연초록        
+    elif "<td>패</td>" in row_html:
+        return row_html.replace("<tr>", '<tr style="background-color: #fce2e2;">')  # 연분홍
+    elif "<td>콜드패</td>" in row_html:
+        return row_html.replace("<tr>", '<tr style="background-color: #fce2e2;">')  # 연분홍
+    elif "<td>경기전</td>" in row_html:
+        return row_html.replace("<tr>", '<tr style="background-color: #f0f0f0;">')  # 연회색
+    return row_html  # 변화 없음
+
+# tbody 내부만 찾아서 각 tr 가공
+def apply_row_styling(html: str) -> str:
+    tbody_content = re.search(r"<tbody>(.*?)</tbody>", html, re.DOTALL)
+    if not tbody_content:
+        return html
+
+    tbody_html = tbody_content.group(1)
+    styled_rows = []
+    for row_html in re.findall(r"<tr>.*?</tr>", tbody_html, re.DOTALL):
+        styled_row = color_row_by_result(row_html)
+        styled_rows.append(styled_row)
+
+    styled_tbody = "<tbody>\n" + "\n".join(styled_rows) + "\n</tbody>"
+    return re.sub(r"<tbody>.*?</tbody>", styled_tbody, html, flags=re.DOTALL)
+
+# 테이블 CSS
+table_style = """
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 10px;
+        background-color: white; /* 다크모드에서도 흰 배경 */
+        color: black; /* 글자 검정색 */
+    }
+    th, td {
+        border: 1px solid #999;
+        padding: 4px 6px;
+        text-align: center;
+    }
+    th {
+        background-color: #e6e6e6;  /* 약간 어두운 회색 */
+        font-weight: bold;
+    }
+</style>
+"""
+
+table_style_12px = """
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 12px;
+        background-color: white; /* 다크모드에서도 흰 배경 */
+        color: black; /* 글자 검정색 */
+    }
+    th, td {
+        border: 1px solid #999;
+        padding: 4px 6px;
+        text-align: center;
+    }
+    th {
+        background-color: #e6e6e6;  /* 약간 어두운 회색 */
+        font-weight: bold;
+    }
+</style>
+"""
+
 @st.cache_data
 def load_data(team_name, team_id, default_year):
     urls = {
@@ -685,64 +757,8 @@ with tab_schd:
     schd_html_str = df_schd2.to_html(index=False, escape=False)
     # '코메츠 호시탐탐' 강조 처리
     schd_html_str = schd_html_str.replace(highlight_team, highlighted_team)
-
-    # 경기 결과에 따라 각 tr에 style 적용
-    def color_row_by_result(row_html: str) -> str:
-        if "<td>승</td>" in row_html:
-            return row_html.replace("<tr>", '<tr style="background-color: #d4f7d4;">')  # 연초록
-        elif "<td>콜드승</td>" in row_html:
-            return row_html.replace("<tr>", '<tr style="background-color: #d4f7d4;">')  # 연초록        
-        elif "<td>패</td>" in row_html:
-            return row_html.replace("<tr>", '<tr style="background-color: #fce2e2;">')  # 연분홍
-        elif "<td>콜드패</td>" in row_html:
-            return row_html.replace("<tr>", '<tr style="background-color: #fce2e2;">')  # 연분홍
-        elif "<td>경기전</td>" in row_html:
-            return row_html.replace("<tr>", '<tr style="background-color: #f0f0f0;">')  # 연회색
-        return row_html  # 변화 없음
-
-    # tbody 내부만 찾아서 각 tr 가공
-    def apply_row_styling(html: str) -> str:
-        tbody_content = re.search(r"<tbody>(.*?)</tbody>", html, re.DOTALL)
-        if not tbody_content:
-            return html
-
-        tbody_html = tbody_content.group(1)
-        styled_rows = []
-        for row_html in re.findall(r"<tr>.*?</tr>", tbody_html, re.DOTALL):
-            styled_row = color_row_by_result(row_html)
-            styled_rows.append(styled_row)
-
-        styled_tbody = "<tbody>\n" + "\n".join(styled_rows) + "\n</tbody>"
-        return re.sub(r"<tbody>.*?</tbody>", styled_tbody, html, flags=re.DOTALL)
-
-    # 테이블 CSS
-    table_style = """
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            font-size: 10px;
-            background-color: white; /* 다크모드에서도 흰 배경 */
-            color: black; /* 글자 검정색 */
-        }
-        th, td {
-            border: 1px solid #999;
-            padding: 4px 6px;
-            text-align: center;
-        }
-        th {
-            background-color: #e6e6e6;  /* 약간 어두운 회색 */
-            font-weight: bold;
-        }
-    </style>
-    """
-
-    # 전체 HTML 구성
-    styled_html = table_style + apply_row_styling(schd_html_str)
-
     # 최종 HTML 조합
-    # styled_html = table_style + schd_html_str
-    st.components.v1.html(styled_html, height=500, scrolling=True)
+    st.components.v1.html(table_style + apply_row_styling(schd_html_str), height=500, scrolling=True)
     st.write(schd_url)    
 
 with tab_sn_league: # 전체 선수들의 기록을 출력해주는 탭
@@ -964,6 +980,9 @@ with tab_sn_teams: # 팀 기록 탭
             # .to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
             st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
+            # 최종 HTML 조합
+            st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
+                                  height=800, scrolling=True)            
         ############################################################
         with tab_sn_teams_team_col2:
             # 선택한 팀의 팀 수비지표 출력
@@ -977,32 +996,6 @@ with tab_sn_teams: # 팀 기록 탭
             # .to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
             st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
-
-            # 테이블 CSS
-            table_style = """
-            <style>
-                table {
-                    border-collapse: collapse;
-                    width: 100%;
-                    font-size: 10px;
-                    background-color: white; /* 다크모드에서도 흰 배경 */
-                    color: black; /* 글자 검정색 */
-                }
-                th, td {
-                    border: 1px solid #999;
-                    padding: 4px 6px;
-                    text-align: center;
-                }
-                th {
-                    background-color: #e6e6e6;  /* 약간 어두운 회색 */
-                    font-weight: bold;
-                }
-            </style>
-            """
-
-            # 전체 HTML 구성
-            styled_html = table_style + apply_row_styling(team_statrank_p_html_table)
-
             # 최종 HTML 조합
-            # styled_html = table_style + schd_html_str
-            st.components.v1.html(styled_html, height=800, scrolling=True)
+            st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
+                                  height=800, scrolling=True)
