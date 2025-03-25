@@ -498,8 +498,8 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload, tab_sn_teams = st.tabs(["선수기록", "시각화/통계", "일정", 
-                                                                                                          "전체선수", "약어", "데이터로드", "팀 기록"])
+tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
+                                                                                                          "전체선수", "약어", "데이터로딩"])
 with tab_sn_players: # (팀별)선수기록 탭
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -613,6 +613,100 @@ with tab_sn_players: # (팀별)선수기록 탭
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_p_mediandict_kr.items()]))
             st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
+
+with tab_sn_teams: # 팀 기록 탭
+    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체', '선택 팀 : {}'.format(team_name)])
+
+    with tab_sn_teams_allteams: # 전체팀 탭   
+    ############################################################
+        st.write('공격지표')
+        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
+        ## 히트맵 시각화 팀별 랭킹        
+        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+        df['team_eng'] = df['Team'].map(team_name_dict)
+        df = df.drop('Team', axis = 1).copy()  
+        df.set_index('team_eng', inplace=True)
+        # 커스텀 컬러맵 생성
+        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # 히트맵 생성
+        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+        st.pyplot(plt)
+
+        with st.expander('공격지표 순위 테이블'):
+            st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+        # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+        st.write('수비지표')
+        st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
+                        use_container_width = True, hide_index = True)
+
+        ## 히트맵 시각화 팀별 랭킹        
+        df = pitcher_grpby_rank.copy() 
+        ## 히트맵 시각화 팀별 랭킹        
+        # if df.shape[0] > 0:
+        # st.write("팀별 기록 : 수비지표 순위")
+        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+        df['team_eng'] = df['Team'].map(team_name_dict)
+        df = df.drop('Team', axis = 1).copy()  
+        df.set_index('team_eng', inplace=True)
+        # 커스텀 컬러맵 생성
+        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # 히트맵 생성
+        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+        st.pyplot(plt)
+
+        with st.expander('수비지표 순위 테이블'):   
+            st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+    with tab_sn_teams_team:
+        def format_cell(x):
+            # 정수는 그대로, float는 소수 4자리까지
+            if isinstance(x, int):
+                return f"{x}"
+            elif isinstance(x, float) and x.is_integer():
+                return f"{int(x)}"
+            elif isinstance(x, float):
+                return f"{x:.3f}"
+            else:
+                return x
+
+        tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
+        ############################################################
+        with tab_sn_teams_team_col1:
+            # 선택한 팀의 팀 공격지표 출력
+            df1_h = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+            df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
+            df1_h.insert(0, '공격지표', '기록')
+            df2_h.insert(0, '공격지표', '순위')
+            team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표')
+            # st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)  
+            team_statrank_h_html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False) 
+            # .to_html(classes='table table-striped', border=0)
+            # Streamlit에서 HTML 출력
+            # st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
+            # 최종 HTML 조합
+            st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
+                                  height=800, scrolling=True)            
+        ############################################################
+        with tab_sn_teams_team_col2:
+            # 선택한 팀의 팀 수비지표 출력
+            df1_p = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+            df2_p = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
+            df1_p.insert(0, '수비지표', '기록')
+            df2_p.insert(0, '수비지표', '순위')
+            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).set_index('수비지표')
+            # st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)   
+            team_statrank_p_html_table = team_statrank_p.T.to_html(formatters=[format_cell] * team_statrank_p.T.shape[1], escape=False) 
+            # .to_html(classes='table table-striped', border=0)
+            # Streamlit에서 HTML 출력
+            # st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
+            # 최종 HTML 조합
+            st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
+                                  height=800, scrolling=True)
+
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
@@ -959,95 +1053,3 @@ with tab_dataload:
     else:
         st.write('Wrong Password!!')
 
-with tab_sn_teams: # 팀 기록 탭
-    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체', '선택 팀 : {}'.format(team_name)])
-
-    with tab_sn_teams_allteams: # 전체팀 탭   
-    ############################################################
-        st.write('공격지표')
-        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
-        ## 히트맵 시각화 팀별 랭킹        
-        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict)
-        df = df.drop('Team', axis = 1).copy()  
-        df.set_index('team_eng', inplace=True)
-        # 커스텀 컬러맵 생성
-        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-        # 히트맵 생성
-        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(plt)
-
-        with st.expander('공격지표 순위 테이블'):
-            st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-        # 팀별로 그룹화하고 정수형 변수들의 합계 계산
-        st.write('수비지표')
-        st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
-                        use_container_width = True, hide_index = True)
-
-        ## 히트맵 시각화 팀별 랭킹        
-        df = pitcher_grpby_rank.copy() 
-        ## 히트맵 시각화 팀별 랭킹        
-        # if df.shape[0] > 0:
-        # st.write("팀별 기록 : 수비지표 순위")
-        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict)
-        df = df.drop('Team', axis = 1).copy()  
-        df.set_index('team_eng', inplace=True)
-        # 커스텀 컬러맵 생성
-        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-        # 히트맵 생성
-        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(plt)
-
-        with st.expander('수비지표 순위 테이블'):   
-            st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-    with tab_sn_teams_team:
-        def format_cell(x):
-            # 정수는 그대로, float는 소수 4자리까지
-            if isinstance(x, int):
-                return f"{x}"
-            elif isinstance(x, float) and x.is_integer():
-                return f"{int(x)}"
-            elif isinstance(x, float):
-                return f"{x:.3f}"
-            else:
-                return x
-
-        tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
-        ############################################################
-        with tab_sn_teams_team_col1:
-            # 선택한 팀의 팀 공격지표 출력
-            df1_h = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
-            df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
-            df1_h.insert(0, '공격지표', '기록')
-            df2_h.insert(0, '공격지표', '순위')
-            team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표')
-            # st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)  
-            team_statrank_h_html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False) 
-            # .to_html(classes='table table-striped', border=0)
-            # Streamlit에서 HTML 출력
-            # st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
-            # 최종 HTML 조합
-            st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
-                                  height=800, scrolling=True)            
-        ############################################################
-        with tab_sn_teams_team_col2:
-            # 선택한 팀의 팀 수비지표 출력
-            df1_p = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
-            df2_p = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
-            df1_p.insert(0, '수비지표', '기록')
-            df2_p.insert(0, '수비지표', '순위')
-            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).set_index('수비지표')
-            # st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)   
-            team_statrank_p_html_table = team_statrank_p.T.to_html(formatters=[format_cell] * team_statrank_p.T.shape[1], escape=False) 
-            # .to_html(classes='table table-striped', border=0)
-            # Streamlit에서 HTML 출력
-            # st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
-            # 최종 HTML 조합
-            st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
-                                  height=800, scrolling=True)
