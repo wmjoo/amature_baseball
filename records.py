@@ -396,7 +396,7 @@ with tab_sn_teamwise:
         if (df_hitter.shape[0] > 0) : # data exists            
             DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-            st.subheader('{} [{}명]'.format(team_name, df_hitter_team.shape[0]))
+            st.write('{} [{}명]'.format(team_name, df_hitter_team.shape[0]))
             st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_B)
@@ -447,7 +447,7 @@ with tab_sn_teamwise:
         if (df_pitcher.shape[0] > 0) : # data exists         z
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-            st.subheader('{} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
+            st.write('{} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
             st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_P)
