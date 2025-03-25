@@ -414,10 +414,22 @@ with tab_sn_teamwise:
             df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1.insert(0, 'Type', 'Records')
             df2.insert(0, 'Type', 'Rank')
-            st.write('Entire Mean(Hitters)')
-            st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-            st.write('Entire Median(Hitters)')
-            st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)
+            # 스타일 설정 (라이트/다크모드 모두에 잘 보이게)
+            span_stylesetting = """
+            <span style="
+                background-color: #f0f0f0;  /* 밝은 회색 배경 */
+                color: #111111;             /* 거의 검정색 글자 */
+                padding: 4px 8px;
+                border-radius: 5px;
+                font-family: monospace;
+                display: inline-block;
+            ">
+            """
+
+            st.write('전체 타자 평균값')
+            st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] + '</span>', unsafe_allow_html=True)
+            st.write('전체 타자 중앙값')
+            st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] + '</span>', unsafe_allow_html=True)
             st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
     with tab_sn_teamwise_2:
