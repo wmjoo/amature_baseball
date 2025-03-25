@@ -862,32 +862,31 @@ with tab_sn_terms: # 약어 설명
         </div>
     """
 
-    pitchers_term_table_html = """
-        <style>
-            .table-box {
-                font-family: Arial, sans-serif;
-                font-size: 13px;
-            }
-            h3 {
-                margin-bottom: 8px;
-                color: #333;
-            }
-            table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-            th, td {
-                border: 1px solid #999;
-                padding: 6px 8px;
-                text-align: left;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-        </style>
+        # <style>
+        #     .table-box {
+        #         font-family: Arial, sans-serif;
+        #         font-size: 13px;
+        #     }
+        #     h3 {
+        #         margin-bottom: 8px;
+        #         color: #333;
+        #     }
+        #     table {
+        #         border-collapse: collapse;
+        #         width: 100%;
+        #     }
+        #     th, td {
+        #         border: 1px solid #999;
+        #         padding: 6px 8px;
+        #         text-align: left;
+        #     }
+        #     th {
+        #         background-color: #f2f2f2;
+        #     }
+        # </style>
 
+    pitchers_term_table_html = """
         <div class="table-box">
-            <h3>투수(Pitchers) 컬럼명 약어</h3>
             <table>
                 <tr><th>ENG</th><th>KOR</th><th>Desc</th></tr>
                 <tr><td>Name</td><td>성명</td><td>Player's name</td></tr>
