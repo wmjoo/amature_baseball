@@ -328,7 +328,7 @@ with tab_sn_players: # 전체 선수 탭
                                            ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
             # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
             # st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
-            st.write(pitcher_grpby.head(5)) # 5개 팀만 출력
+            # st.write(pitcher_grpby.head(5)) # 5개 팀만 출력
             # 파생 변수 추가
             # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
             if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
@@ -361,7 +361,8 @@ with tab_sn_players: # 전체 선수 탭
             rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BAA', 'OBP', 'BF', 'AB', 'P', 'HA', 'HR', 
                                         'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
             rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP', 'K9'] # 높을수록 좋은 지표들
-            st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+            st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
+                         use_container_width = True, hide_index = True)
             pitcher_grpby_rank = pd.concat([
                                             pitcher_grpby.Team, 
                                             pitcher_grpby[rank_by_descending_cols_p].rank(method = 'min', ascending=False),
@@ -421,15 +422,15 @@ with tab_sn_teamwise:
             # 스타일 설정 (라이트/다크모드 모두에 잘 보이게)
             span_stylesetting = """
             <span style="
-                background-color: #f0f0f0;  /* 밝은 회색 배경 */
-                color: #111111;             /* 거의 검정색 글자 */
-                padding: 4px 8px;
-                border-radius: 5px;
+                background-color: #2b2b2b;  /* 어두운 회색 배경 */
+                color: #ffffff;             /* 흰색 글자 */
+                padding: 6px 10px;
+                border-radius: 6px;
                 font-family: monospace;
                 display: inline-block;
+                font-size: 9px;
             ">
             """
-
             st.write('전체 타자 평균값')
             st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] + '</span>', unsafe_allow_html=True)
             st.write('전체 타자 중앙값')
