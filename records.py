@@ -126,12 +126,12 @@ def load_data(team_name, team_id, default_year):
 # 화면 최상단을 3개의 컬럼으로 나누기
 top_col1, top_col2, top_col3 = st.columns(3)
 
+####################################
+#### 일정표 준비
+####################################
 # 일정표 크롤링 & 다음경기 출력
 with top_col1:
     this_year = 2025
-    ####################################
-    #### 일정표 준비
-    ####################################
     # 일정표 URL 설정
     schd_url = f"http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={this_year}"
     # HTTP GET 요청
@@ -406,9 +406,9 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_players, tab_sn_terms, tab_dataload = st.tabs(["팀별선수", "시각화/통계", "일정", "전체선수", "약어", "데이터 로드"])
-
-with tab_sn_teamwise: # 팀별선수 탭
+tab_sn_players, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload, tab_sn_teams = st.tabs(["선수기록", "시각화/통계", "일정", 
+                                                                                                          "전체선수", "약어", "데이터로드", "팀 기록"])
+with tab_sn_players: # (팀별)선수기록 탭
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
@@ -429,10 +429,10 @@ with tab_sn_teamwise: # 팀별선수 탭
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
         df_p_mediandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_mediandict.items()}    
 
-    tab_sn_teamwise_h, tab_sn_teamwise_p = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
-                                                    "투수 [{}명]".format(df_pitcher_team.shape[0])])
+    tab_sn_players_h, tab_sn_players_p = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
+                                                  "투수 [{}명]".format(df_pitcher_team.shape[0])])
 
-    with tab_sn_teamwise_h: # 팀별 타자 탭
+    with tab_sn_players_h: # 팀별 타자 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
         # team_id = team_id_dict[team_name]        
         if (df_hitter.shape[0] > 0) : # data exists            
@@ -441,13 +441,6 @@ with tab_sn_teamwise: # 팀별선수 탭
             st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_B)
-            df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
-            df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
-            df1.insert(0, 'Type', 'Records')
-            df2.insert(0, 'Type', 'Rank')
-
-            st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
-                        use_container_width = True, hide_index = True)
 
             # 첫 번째 div 스타일
             h_box_stylesetting_1 = """
@@ -484,7 +477,7 @@ with tab_sn_teamwise: # 팀별선수 탭
             """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
-    with tab_sn_teamwise_p: # 팀별 투수 탭
+    with tab_sn_players_p: # 팀별 투수 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
         # team_id = team_id_dict[team_name]        
         if (df_pitcher.shape[0] > 0) : # data exists         z
@@ -762,7 +755,7 @@ with tab_schd:
     st.components.v1.html(styled_html, height=500, scrolling=True)
     st.write(schd_url)    
 
-with tab_sn_players: # 전체 선수 탭
+with tab_sn_league: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
     with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
         # st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
@@ -910,8 +903,7 @@ with tab_sn_players: # 전체 선수 탭
             # 히트맵 생성
             plt = create_heatmap(df, cmap, input_figsize = (10, 6))
             st.pyplot(plt)
-  
-        
+     
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
@@ -989,7 +981,6 @@ with tab_sn_terms:
         | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
         """)
 
-
 with tab_dataload:
     user_password_update = st.text_input('Input Password for Update', type='password')
     user_password_update = str(user_password_update)
@@ -1045,3 +1036,12 @@ with tab_dataload:
             st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
     else:
         st.write('Wrong Password!!')
+
+with tab_sn_teams: # 팀 기록 탭
+    df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+    df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
+    df1.insert(0, 'Type', 'Records')
+    df2.insert(0, 'Type', 'Rank')
+
+    st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
+                use_container_width = True, hide_index = True)        
