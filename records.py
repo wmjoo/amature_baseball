@@ -945,7 +945,7 @@ with tab_sn_teams: # 팀 기록 탭
             df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1_h.insert(0, 'Type', 'Records')
             df2_h.insert(0, 'Type', 'Rank')
-            team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).reset_index()
+            team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).reset_index(drop=True)
             team_statrank_h.colunms = ['값', '순위']
             st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)     
         ############################################################
@@ -955,6 +955,6 @@ with tab_sn_teams: # 팀 기록 탭
             df2_p = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1_p.insert(0, 'Type', 'Records')
             df2_p.insert(0, 'Type', 'Rank')
-            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).reset_index()
+            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).reset_index(drop=True)
             team_statrank_p.colunms = ['값', '순위']
             st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)   
