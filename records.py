@@ -441,7 +441,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(
-                "\n".join([f"{k}: {v}," for k, v in df_h_meandict_kr.items()])
+                "\n".join([f"{k}: {v}, " for k, v in df_h_meandict_kr.items()])
             )
 
             # 두 번째 div 스타일
@@ -500,7 +500,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
                             """.format(
-                "\n".join([f"{k}: {v}," for k, v in df_p_meandict_kr.items()])
+                "\n".join([f"{k}: {v}, " for k, v in df_p_meandict_kr.items()])
             )
 
             # 두 번째 div 스타일
@@ -519,7 +519,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
                             """.format(
-                "\n".join([f"{k}: {v}," for k, v in df_p_mediandict_kr.items()])
+                "\n".join([f"{k}: {v}, " for k, v in df_p_mediandict_kr.items()])
             )
             st.markdown(p_box_stylesetting_1 + p_box_stylesetting_2, unsafe_allow_html=True)
 
