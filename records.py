@@ -357,9 +357,6 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 
     pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
                                     ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
-    # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
-    # st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
-    # st.write(pitcher_grpby.head(5)) # 5개 팀만 출력
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
     if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
@@ -399,7 +396,6 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
                                     pitcher_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
                                 ], axis = 1)
     pitcher_grpby_rank = pitcher_grpby_rank.loc[:, team_p_existing_columns]
-
 
 
 ################################################################
@@ -485,12 +481,6 @@ with tab_sn_players: # (팀별)선수기록 탭
             st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_P)
-            df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
-            df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
-            df1.insert(0, 'Type', 'Records')
-            df2.insert(0, 'Type', 'Rank')
-            st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
-                        use_container_width = True, hide_index = True)
             
             # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
             p_box_stylesetting_1 = """
@@ -765,7 +755,6 @@ with tab_sn_league: # 전체 선수들의 기록을 출력해주는 탭
         if df_pitcher.shape[0] > 0 : # pitcher data exists
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
-
      
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
@@ -901,14 +890,13 @@ with tab_dataload:
         st.write('Wrong Password!!')
 
 with tab_sn_teams: # 팀 기록 탭
+    ############
     df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
     df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
     df1.insert(0, 'Type', 'Records')
     df2.insert(0, 'Type', 'Rank')
-
-    st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
-                use_container_width = True, hide_index = True)        
-
+    team_statrank_h = pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False)
+    st.dataframe(team_statrank_h, use_container_width = True, hide_index = True)        
     st.write('팀별 기록 : 타자')
     st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
     st.write('Ranking')
@@ -928,7 +916,13 @@ with tab_sn_teams: # 팀 기록 탭
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
-
+    ############    ############    ############    ############    ############
+    df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+    df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
+    df1.insert(0, 'Type', 'Records')
+    df2.insert(0, 'Type', 'Rank')
+    team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
+    st.dataframe(pitcher_data_EnKr, use_container_width = True, hide_index = True)
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     st.write('팀별 기록 : 투수')
     st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
