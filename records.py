@@ -295,160 +295,8 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms, tab_dataload = st.tabs(["전체선수", "팀별선수", "시각화/통계", "일정", "약어", "데이터 로드"])
+tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_players, tab_sn_terms, tab_dataload = st.tabs(["팀별선수", "시각화/통계", "일정", "전체선수", "약어", "데이터 로드"])
 
-with tab_sn_players: # 전체 선수 탭
-    tab_sn_players_1, tab_sn_players_2 = st.tabs(["전체타자", "전체투수"])
-    with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
-        # 출력시 열 순서 변경
-        rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
-                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
-                                    'HBP', 'PA', 'AB', 'SO', 'DP']
-        st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
-        st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
-                     use_container_width = True, hide_index = True)
-        st.subheader('팀별 기록 : 타자')
-        # hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
-        # hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
-
-        # # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
-        # hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
-        # hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
-        # hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
-        # hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
-        
-        # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-        # for col in ['OPS', 'SLG', 'OBP', 'AVG']:
-        #     team_idx = hitter_grpby.columns.get_loc('Team') + 1
-        #     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
-  
-        # rank_by_ascending, rank_by_descending columns 
-        rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
-        rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
-                    '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
-        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        hitter_grpby_rank = pd.concat([
-                                        hitter_grpby.Team, 
-                                        hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
-                                        hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
-                                    ], axis = 1)
-        hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
-        st.write('Ranking')
-        st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
-        ## 히트맵 시각화 팀별 랭킹        
-        if df.shape[0] > 0:
-            st.write("Heatmap")
-            # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-            df['team_eng'] = df['Team'].map(team_name_dict)
-            df = df.drop('Team', axis = 1).copy()  
-
-            df.set_index('team_eng', inplace=True)
-            # 커스텀 컬러맵 생성
-            colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-            cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-            # 히트맵 생성
-            plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-            st.pyplot(plt)
-
-
-    with tab_sn_players_2: # 전체 선수 탭 > "성남:전체투수" 탭
-        # rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
-        #                             'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
-        if df_pitcher.shape[0] > 0 : # pitcher data exists
-        #     # 출력시 열 순서 변경
-        #     st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
-        #     pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
-        #     pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
-
-        #     # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
-        #     if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-        #         df_pitcher['SO/IP'] = (df_pitcher['SO'] / df_pitcher['IP']).round(2)
-        #         df_pitcher['BB/IP'] = (df_pitcher['BB'] / df_pitcher['IP']).round(2)
-        #         df_pitcher['H/IP'] = (df_pitcher['HA'] / df_pitcher['IP']).round(2)
-            
-        #     # WHIP 계산: (볼넷 + 피안타) / 이닝
-        #     if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-        #         df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
-        #         df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
-        #         # df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
-        #         # df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
-
-        #     # None, '', '-'를 NaN으로 변환
-        #     df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
-        #     # 필요한 컬럼을 정의
-        #     p_required_columns = ['No', 'Name'] + rank_by_cols_p_sorted
-        #     # 존재하는 컬럼만 선택
-        #     p_existing_columns = [col for col in p_required_columns if col in df_pitcher.columns]
-        #     team_p_existing_columns = [col for col in rank_by_cols_p_sorted if col in df_pitcher.columns]
-            st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-            # 팀별로 그룹화하고 정수형 변수들의 합계 계산
-            st.subheader('팀별 기록 : 투수')
-            # st.write('rank_calc_except_teams ~ ', rank_calc_except_teams)
-            # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].shape)
-            # pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
-            #                                ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
-            # # 파생 변수 추가
-            # # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
-            # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
-            #     pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(3)
-            
-            # # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
-            # if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-            #     pitcher_grpby['SO/IP'] = (pitcher_grpby['SO'] / pitcher_grpby['IP']).round(2)
-            #     pitcher_grpby['BB/IP'] = (pitcher_grpby['BB'] / pitcher_grpby['IP']).round(2)
-            #     pitcher_grpby['H/IP'] = (pitcher_grpby['HA'] / pitcher_grpby['IP']).round(2)
-            #     pitcher_grpby['K9'] = (pitcher_grpby['SO/IP'] * 9)
-            
-            # # WHIP 계산: (볼넷 + 피안타) / 이닝
-            # if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-            #     pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
-            #     pitcher_grpby['BAA'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
-            #     pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF']).round(3)
-            #     # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
-            #     # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
-
-            # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-            # new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OBP'] # , 'OPS', 'OBP', 'SLG']
-            # for col in new_cols:
-            #     if col in pitcher_grpby.columns:
-            #         team_idx = pitcher_grpby.columns.get_loc('Team') + 1
-            #         pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
-
-            # 결과 확인
-            # rank_by_ascending, rank_by_descending columns  
-            rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BAA', 'OBP', 'BF', 'AB', 'P', 'HA', 'HR', 
-                                        'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
-            rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP', 'K9'] # 높을수록 좋은 지표들
-            st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
-                         use_container_width = True, hide_index = True)
-            pitcher_grpby_rank = pd.concat([
-                                            pitcher_grpby.Team, 
-                                            pitcher_grpby[rank_by_descending_cols_p].rank(method = 'min', ascending=False),
-                                            pitcher_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
-                                        ], axis = 1)
-            st.write('Ranking')
-            pitcher_grpby_rank = pitcher_grpby_rank.loc[:, team_p_existing_columns]
-            st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-            ## 히트맵 시각화 팀별 랭킹        
-            df = pitcher_grpby_rank.copy() 
-            ## 히트맵 시각화 팀별 랭킹        
-            # if df.shape[0] > 0:
-            st.write("Heatmap")        
-            # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-            df['team_eng'] = df['Team'].map(team_name_dict)
-            df = df.drop('Team', axis = 1).copy()  
-            df.set_index('team_eng', inplace=True)
-            # 커스텀 컬러맵 생성
-            colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-            cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-            # 히트맵 생성
-            plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-            st.pyplot(plt)
-    
 with tab_sn_teamwise:
     # HTML display Setting
     span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'    
@@ -807,6 +655,158 @@ with tab_schd:
     # st.dataframe(df_schd2)
     st.table(df_schd2.reset_index(drop=True))
 
+with tab_sn_players: # 전체 선수 탭
+    tab_sn_players_1, tab_sn_players_2 = st.tabs(["전체타자", "전체투수"])
+    with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
+        # 출력시 열 순서 변경
+        rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
+                                    '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
+                                    'HBP', 'PA', 'AB', 'SO', 'DP']
+        st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
+        st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
+                     use_container_width = True, hide_index = True)
+        st.subheader('팀별 기록 : 타자')
+        # hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
+        # hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+
+        # # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
+        # hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
+        # hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
+        # hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
+        # hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
+        
+        # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+        # for col in ['OPS', 'SLG', 'OBP', 'AVG']:
+        #     team_idx = hitter_grpby.columns.get_loc('Team') + 1
+        #     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
+  
+        # rank_by_ascending, rank_by_descending columns 
+        rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
+        rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
+                    '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
+        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+        hitter_grpby_rank = pd.concat([
+                                        hitter_grpby.Team, 
+                                        hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
+                                        hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
+                                    ], axis = 1)
+        hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
+        st.write('Ranking')
+        st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
+        ## 히트맵 시각화 팀별 랭킹        
+        if df.shape[0] > 0:
+            st.write("Heatmap")
+            # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+            df['team_eng'] = df['Team'].map(team_name_dict)
+            df = df.drop('Team', axis = 1).copy()  
+
+            df.set_index('team_eng', inplace=True)
+            # 커스텀 컬러맵 생성
+            colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+            cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+            # 히트맵 생성
+            plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+            st.pyplot(plt)
+
+
+    with tab_sn_players_2: # 전체 선수 탭 > "성남:전체투수" 탭
+        # rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
+        #                             'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
+        if df_pitcher.shape[0] > 0 : # pitcher data exists
+        #     # 출력시 열 순서 변경
+        #     st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
+        #     pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
+        #     pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
+
+        #     # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+        #     if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        #         df_pitcher['SO/IP'] = (df_pitcher['SO'] / df_pitcher['IP']).round(2)
+        #         df_pitcher['BB/IP'] = (df_pitcher['BB'] / df_pitcher['IP']).round(2)
+        #         df_pitcher['H/IP'] = (df_pitcher['HA'] / df_pitcher['IP']).round(2)
+            
+        #     # WHIP 계산: (볼넷 + 피안타) / 이닝
+        #     if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        #         df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
+        #         df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
+        #         # df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
+        #         # df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
+
+        #     # None, '', '-'를 NaN으로 변환
+        #     df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
+        #     # 필요한 컬럼을 정의
+        #     p_required_columns = ['No', 'Name'] + rank_by_cols_p_sorted
+        #     # 존재하는 컬럼만 선택
+        #     p_existing_columns = [col for col in p_required_columns if col in df_pitcher.columns]
+        #     team_p_existing_columns = [col for col in rank_by_cols_p_sorted if col in df_pitcher.columns]
+            st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+            # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+            st.subheader('팀별 기록 : 투수')
+            # st.write('rank_calc_except_teams ~ ', rank_calc_except_teams)
+            # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].shape)
+            # pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
+            #                                ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
+            # # 파생 변수 추가
+            # # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
+            # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
+            #     pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(3)
+            
+            # # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+            # if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            #     pitcher_grpby['SO/IP'] = (pitcher_grpby['SO'] / pitcher_grpby['IP']).round(2)
+            #     pitcher_grpby['BB/IP'] = (pitcher_grpby['BB'] / pitcher_grpby['IP']).round(2)
+            #     pitcher_grpby['H/IP'] = (pitcher_grpby['HA'] / pitcher_grpby['IP']).round(2)
+            #     pitcher_grpby['K9'] = (pitcher_grpby['SO/IP'] * 9)
+            
+            # # WHIP 계산: (볼넷 + 피안타) / 이닝
+            # if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            #     pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
+            #     pitcher_grpby['BAA'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
+            #     pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF']).round(3)
+            #     # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
+            #     # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
+
+            # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+            # new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OBP'] # , 'OPS', 'OBP', 'SLG']
+            # for col in new_cols:
+            #     if col in pitcher_grpby.columns:
+            #         team_idx = pitcher_grpby.columns.get_loc('Team') + 1
+            #         pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
+
+            # 결과 확인
+            # rank_by_ascending, rank_by_descending columns  
+            rank_by_ascending_cols_p = ['ERA', 'WHIP', 'H/IP', 'BB/IP', 'BAA', 'OBP', 'BF', 'AB', 'P', 'HA', 'HR', 
+                                        'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER'] # 낮을수록 좋은 지표들
+            rank_by_descending_cols_p = ['IP', 'G', 'W', 'L', 'SV', 'HLD', 'SO', 'SO/IP', 'K9'] # 높을수록 좋은 지표들
+            st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
+                         use_container_width = True, hide_index = True)
+            pitcher_grpby_rank = pd.concat([
+                                            pitcher_grpby.Team, 
+                                            pitcher_grpby[rank_by_descending_cols_p].rank(method = 'min', ascending=False),
+                                            pitcher_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
+                                        ], axis = 1)
+            st.write('Ranking')
+            pitcher_grpby_rank = pitcher_grpby_rank.loc[:, team_p_existing_columns]
+            st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+            ## 히트맵 시각화 팀별 랭킹        
+            df = pitcher_grpby_rank.copy() 
+            ## 히트맵 시각화 팀별 랭킹        
+            # if df.shape[0] > 0:
+            st.write("Heatmap")        
+            # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+            df['team_eng'] = df['Team'].map(team_name_dict)
+            df = df.drop('Team', axis = 1).copy()  
+            df.set_index('team_eng', inplace=True)
+            # 커스텀 컬러맵 생성
+            colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+            cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+            # 히트맵 생성
+            plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+            st.pyplot(plt)
+  
         
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
