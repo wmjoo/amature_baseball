@@ -220,7 +220,7 @@ with top_col3:
     # st.write(next_game['일시'])
     # st.write('{} [{}]'.format(next_game['일시'][0], next_game['구장'][0]))
     # st.write('{} vs {}'.format(next_game['선공'][0], next_game['후공'][0]))
-    st.write(f"{next_game['일시'][0]} [{next_game['구장'][0]}]\n\n{next_game['선공'][0]} vs {next_game['후공'][0]}")    
+    st.write(f"{next_game['일시'][0]} [{next_game['구장'][0]}] \n {next_game['선공'][0]} vs {next_game['후공'][0]}")    
 
 ################################################################
 ## Data Loading
