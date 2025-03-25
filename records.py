@@ -905,7 +905,7 @@ with tab_dataload:
         st.write('Wrong Password!!')
 
 with tab_sn_teams: # 팀 기록 탭
-    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체', '선택 팀'])
+    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체', '선택 팀 : {}'.format(team_name)])
 
     with tab_sn_teams_allteams: # 전체팀 탭   
     ############################################################
@@ -979,7 +979,7 @@ with tab_sn_teams: # 팀 기록 탭
             team_statrank_h_html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False) 
             # .to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
-            st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
+            # st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
                                   height=800, scrolling=True)            
@@ -995,7 +995,7 @@ with tab_sn_teams: # 팀 기록 탭
             team_statrank_p_html_table = team_statrank_p.T.to_html(formatters=[format_cell] * team_statrank_p.T.shape[1], escape=False) 
             # .to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
-            st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
+            # st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
                                   height=800, scrolling=True)
