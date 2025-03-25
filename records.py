@@ -741,7 +741,7 @@ with tab_schd:
     <style>
         table {
             border-collapse: collapse;
-            width: 90%;
+            width: 100%;
             font-size: 10px;
             background-color: white; /* 다크모드에서도 흰 배경 */
             color: black; /* 글자 검정색 */
