@@ -682,6 +682,7 @@ with tab_schd:
 
     df_schd2 = df_schd2.drop('결과', axis = 1)
     df_schd2.columns = ['일시', '구장', '선공', '선', '후공', '후', '결과']
+    st.write(df_schd2.loc[df_schd2['결과'] == '경기전', ['선공', '후공']].head(1)) # 임박한 경기 일정 행 필터링
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
     # st.dataframe(df_schd2)
     st.table(df_schd2.reset_index(drop=True))
