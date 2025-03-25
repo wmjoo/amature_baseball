@@ -891,13 +891,6 @@ with tab_dataload:
 
 with tab_sn_teams: # 팀 기록 탭
     ############################################################
-    df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
-    df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
-    df1.insert(0, 'Type', 'Records')
-    df2.insert(0, 'Type', 'Rank')
-    team_statrank_h = pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False)
-    st.dataframe(team_statrank_h, use_container_width = True, hide_index = True)     
-
     st.write('팀별 기록 : 타자')
     st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
     
@@ -919,14 +912,6 @@ with tab_sn_teams: # 팀 기록 탭
     if hitter_grpby_rank_on:
         st.write('팀별 기록 : 공격지표 순위')
         st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-    ############################################################
-    df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
-    df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
-    df1.insert(0, 'Type', 'Records')
-    df2.insert(0, 'Type', 'Rank')
-    team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
-    st.dataframe(team_statrank_p, use_container_width = True, hide_index = True)
 
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     st.write('팀별 기록 : 투수')
@@ -955,3 +940,27 @@ with tab_sn_teams: # 팀 기록 탭
     if pitcher_grpby_rank_on:
         st.write('팀별 기록 : 공격지표 순위')
         st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+    with st.expander("팀별 기록 : 팀별 통계량"):
+        # st.write('팀별 기록 : 타자')
+        # st.dataframe(hitter_grpby.describe().T, use_container_width = True, hide_index = False)
+        # st.write('팀별 기록 : 투수')
+        # st.dataframe(pitcher_grpby.describe().T, use_container_width = True, hide_index = False)
+
+        ############################################################
+        # 선택한 팀의 팀 공격지표 출력
+        df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+        df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
+        df1.insert(0, 'Type', 'Records')
+        df2.insert(0, 'Type', 'Rank')
+        team_statrank_h = pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False)
+        st.dataframe(team_statrank_h, use_container_width = True, hide_index = True)     
+        ################################################
+        # 선택한 팀의 팀 수비지표 출력
+        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+        df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
+        df1.insert(0, 'Type', 'Records')
+        df2.insert(0, 'Type', 'Rank')
+        team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
+        st.dataframe(team_statrank_p, use_container_width = True, hide_index = True)
+        ################################################
