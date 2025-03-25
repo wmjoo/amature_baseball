@@ -699,8 +699,8 @@ with tab_sn_teams: # 팀 기록 탭
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
                                   height=750, scrolling=True)   
-            st.write(mainteam_statrank_h)
-            if team_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
+            # st.write(mainteam_statrank_h)
+            if team_name != mainteam_name : # 사용자 입력팀이 메인팀이 아닐때 
                 st.write(mainteam_statrank_h)
                 # 두 번째 div 스타일
                 mainteam_box_stylesetting = """
@@ -717,9 +717,12 @@ with tab_sn_teams: # 팀 기록 탭
                     <b>[{}]</b><br>
                     {}
                     </div>
-                """.format(mainteam_name, ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()]))                
+                """.format(
+                    mainteam_name, 
+                    ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()])
+                )
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
-                st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
+                # st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
 
         ############################################################
         with tab_sn_teams_team_col2:
