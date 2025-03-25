@@ -896,7 +896,8 @@ with tab_sn_teams: # 팀 기록 탭
     df1.insert(0, 'Type', 'Records')
     df2.insert(0, 'Type', 'Rank')
     team_statrank_h = pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False)
-    st.dataframe(team_statrank_h, use_container_width = True, hide_index = True)        
+    st.dataframe(team_statrank_h, use_container_width = True, hide_index = True)     
+
     st.write('팀별 기록 : 타자')
     st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
     st.write('Ranking')
@@ -924,6 +925,7 @@ with tab_sn_teams: # 팀 기록 탭
     df2.insert(0, 'Type', 'Rank')
     team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
     st.dataframe(team_statrank_p, use_container_width = True, hide_index = True)
+    
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     st.write('팀별 기록 : 투수')
     st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
