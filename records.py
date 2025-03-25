@@ -232,12 +232,24 @@ for col in ['OPS', 'SLG', 'OBP', 'AVG']:
     team_idx = hitter_grpby.columns.get_loc('Team') + 1
     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
 
+# rank_by_ascending, rank_by_descending columns 
+rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
+rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
+            '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
+st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+hitter_grpby_rank = pd.concat([
+                                hitter_grpby.Team, 
+                                hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
+                                hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
+                            ], axis = 1)
+hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted] 
+
 ## 2) 투수 데이터셋
 rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
                             'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
 if df_pitcher.shape[0] > 0 : # pitcher data exists
     # 출력시 열 순서 변경
-    st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
+    # st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
     pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
     pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
 
@@ -679,17 +691,17 @@ with tab_sn_players: # 전체 선수 탭
         #     team_idx = hitter_grpby.columns.get_loc('Team') + 1
         #     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
   
-        # rank_by_ascending, rank_by_descending columns 
-        rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
-        rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
-                    '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
-        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        hitter_grpby_rank = pd.concat([
-                                        hitter_grpby.Team, 
-                                        hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
-                                        hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
-                                    ], axis = 1)
-        hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
+        # # rank_by_ascending, rank_by_descending columns 
+        # rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
+        # rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
+        #             '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
+        # st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+        # hitter_grpby_rank = pd.concat([
+        #                                 hitter_grpby.Team, 
+        #                                 hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
+        #                                 hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
+        #                             ], axis = 1)
+        # hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
         st.write('Ranking')
         st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
