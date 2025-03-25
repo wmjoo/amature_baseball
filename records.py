@@ -125,46 +125,49 @@ def apply_row_styling(html: str) -> str:
 
 # 테이블 CSS
 table_style = """
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        font-size: 10px;
-        background-color: white; /* 다크모드에서도 흰 배경 */
-        color: black; /* 글자 검정색 */
-    }
-    th, td {
-        border: 1px solid #999;
-        padding: 4px 6px;
-        text-align: center;
-    }
-    th {
-        background-color: #e6e6e6;  /* 약간 어두운 회색 */
-        font-weight: bold;
-    }
-</style>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 10px;
+            background-color: white; /* 다크모드에서도 흰 배경 */
+            color: black; /* 글자 검정색 */
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 4px 6px;
+            text-align: center;
+        }
+        th {
+            background-color: #e6e6e6;  /* 약간 어두운 회색 */
+            font-weight: bold;
+        }
+    </style>
 """
 
 table_style_12px = """
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        font-size: 12px;
-        background-color: white; /* 다크모드에서도 흰 배경 */
-        color: black; /* 글자 검정색 */
-    }
-    th, td {
-        border: 1px solid #999;
-        padding: 4px 6px;
-        text-align: center;
-    }
-    th {
-        background-color: #e6e6e6;  /* 약간 어두운 회색 */
-        font-weight: bold;
-    }
-</style>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;  /* 열 너비를 동일하게 고정 */
+            font-size: 12px;
+            background-color: white; /* 다크모드에서도 흰 배경 */
+            color: black; /* 글자 검정색 */
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 4px 6px;
+            text-align: center;
+            word-wrap: break-word;  /* 내용이 길면 줄바꿈 */
+        }
+        th {
+            background-color: #e6e6e6;  /* 약간 어두운 회색 */
+            font-weight: bold;
+        }
+    </style>
 """
+
 
 @st.cache_data
 def load_data(team_name, team_id, default_year):
@@ -959,12 +962,9 @@ with tab_sn_teams: # 팀 기록 탭
             elif isinstance(x, float) and x.is_integer():
                 return f"{int(x)}"
             elif isinstance(x, float):
-                return f"{x:.4f}"
+                return f"{x:.3f}"
             else:
                 return x
-
-        # html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False)
-
 
         tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
         ############################################################
