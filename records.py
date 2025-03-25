@@ -695,13 +695,13 @@ with tab_sn_viz:
 with tab_schd:
     st.write(schd_url)
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
-    # st.dataframe(df_schd2)
-    # st.table(df_schd2.reset_index(drop=True))
+    
+    # st.table(df_schd2)
     # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
     # st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
-    # 인덱스 없이 HTML 테이블로 출력
-    # 스타일 커스터마이징해서 가운데 정렬 + 줄 간격 조절
-    html_table = df_schd2.to_html(index=False, escape=False)
+
+    # HTML 테이블 생성: class와 border 제거
+    html_table = df_schd2.to_html(index=False, escape=False, border=0, classes='')
 
     styled_table = f"""
     <style>
