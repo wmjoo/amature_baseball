@@ -135,14 +135,15 @@ with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
 with top_col3:
-    hoshi_on = st.checkbox('토요 루키C[호시]')  # 기본적으로 체크박스로 토글을 구현
-    if hoshi_on:
-        st.write("> 호시탐탐")
-        team_groupname = "토요 루키C"
-        team_id_dict = team_id_dict_2025rkC.copy()
-        rank_calc_include_teams = list(team_id_dict.keys())
-        rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
-    # else:
+    st.write('')
+    # hoshi_on = st.checkbox('토요 루키C[호시]')  # 기본적으로 체크박스로 토글을 구현
+    # if hoshi_on:
+    #     st.write("> 호시탐탐")
+    #     team_groupname = "토요 루키C"
+    #     team_id_dict = team_id_dict_2025rkC.copy()
+    #     rank_calc_include_teams = list(team_id_dict.keys())
+    #     rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
+    # # else:
     #     st.write("> SKCC Wings")    
     #     team_groupname = "토요 마이너B"
     #     team_id_dict = team_id_dict_2025miB.copy()
