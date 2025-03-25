@@ -229,14 +229,14 @@ df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy(
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
 ## 탭 설정
-tab_dataload, tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms = st.tabs(["데이터 로드", "전체 선수", "팀별 선수", "시각화/통계", "일정", "약어"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "약어", "데이터 로드"])
 
 with tab_dataload:
     user_password_update = st.text_input('Input Password for Update', type='password')
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
-        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023, 2022], index = 1, key = 'dataload_year_selectbox')
+        dataload_year = st.selectbox('데이터 수집 년도', [2025, 2024, 2023, 2022], index = 0, key = 'dataload_year_selectbox')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
             hitters = []
