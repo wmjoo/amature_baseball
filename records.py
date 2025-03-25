@@ -462,7 +462,7 @@ with tab_sn_teamwise:
                 "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()])
             )
             # st.write(box_stylesetting)
-            st.markdown(h_box_stylesetting_1 + <br> + h_box_stylesetting_2, unsafe_allow_html=True)            
+            st.markdown(h_box_stylesetting_1 + "<br>" + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
         if (df_pitcher.shape[0] > 0) : # data exists         z
