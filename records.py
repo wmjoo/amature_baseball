@@ -457,7 +457,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
-            st.markdown(h_box_stylesetting_1 + "<br>" + h_box_stylesetting_2, unsafe_allow_html=True)            
+            st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
         if (df_pitcher.shape[0] > 0) : # data exists         z
@@ -508,7 +508,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_p_mediandict_kr.items()]))
-            st.markdown(p_box_stylesetting_1 + "<br>" + p_box_stylesetting_2, unsafe_allow_html=True)
+            st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
