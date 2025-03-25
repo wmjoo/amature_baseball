@@ -295,18 +295,14 @@ with top_col1:
 
     next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
     next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
-    st.markdown(f"[NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  \n{next_game['선공'][0]} vs {next_game['후공'][0]}")
-
     # 선공/후공 팀명에 스타일 적용
     away_team = highlight_team_name(next_game['선공'][0], highlight_team)
     home_team = highlight_team_name(next_game['후공'][0], highlight_team)
-
     # 전체 문장 구성
     markdown_text = f"""
-    [NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  
-    {away_team} vs {home_team}
+        [NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  
+        {away_team} vs {home_team}
     """
-
     # 출력
     st.markdown(markdown_text, unsafe_allow_html=True)
 with top_col2:
