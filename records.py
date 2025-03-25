@@ -462,10 +462,10 @@ with tab_sn_teamwise:
                 "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()])
             )
             # st.write(box_stylesetting)
-            st.markdown(h_box_stylesetting_1 + h_box_stylesetting_2, unsafe_allow_html=True)            
+            st.markdown(h_box_stylesetting_1 + <br> + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
-        if (df_pitcher.shape[0] > 0) : # data exists         
+        if (df_pitcher.shape[0] > 0) : # data exists         z
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
             st.subheader('투수 : {} {} [{}명]'.format(team_groupname, team_name, df_pitcher_team.shape[0]))
