@@ -742,13 +742,13 @@ with tab_schd:
         table {
             border-collapse: collapse;
             width: 100%;
-            font-size: 10px;
+            font-size: 11px;
             background-color: white; /* 다크모드에서도 흰 배경 */
             color: black; /* 글자 검정색 */
         }
         th, td {
             border: 1px solid #999;
-            padding: 6px 6px;
+            padding: 4px 6px;
             text-align: center;
         }
         th {
