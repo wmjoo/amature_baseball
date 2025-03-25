@@ -414,6 +414,10 @@ with tab_sn_teamwise:
             df2 = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1.insert(0, 'Type', 'Records')
             df2.insert(0, 'Type', 'Rank')
+
+            st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
+                        use_container_width = True, hide_index = True)
+                        
             # 스타일 설정 (라이트/다크모드 모두에 잘 보이게)
             span_stylesetting = """
             <span style="
@@ -430,8 +434,7 @@ with tab_sn_teamwise:
             st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] + '</span>', unsafe_allow_html=True)
             st.write('전체 타자 중앙값')
             st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] + '</span>', unsafe_allow_html=True)
-            st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
-                        use_container_width = True, hide_index = True)
+
     with tab_sn_teamwise_2:
         if (df_pitcher.shape[0] > 0) : # data exists         
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
