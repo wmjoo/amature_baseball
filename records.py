@@ -19,6 +19,7 @@ import plotly.graph_objects as go
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import warnings
 from sklearn.preprocessing import MinMaxScaler
+import re 
 
 from streamlit_gsheets import GSheetsConnection
 # import pandasql as psql
@@ -694,15 +695,17 @@ with tab_sn_viz:
 
 with tab_schd:
     st.write(schd_url)
-    st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
+    st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True) # 시즌 기록 출력
     
     # st.table(df_schd2)
     # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
     # st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
 
     # HTML 테이블 생성: class와 border 제거
-    html_table = df_schd2.to_html(index=False, escape=False, border=0, classes='')
+    html_table = df_schd2.to_html(index=False, escape=False, border=0)
 
+    # <table class="dataframe"> => <table> 로 정제
+    html_table = re.sub(r'<table[^>]*>', '<table>', html_table)
     styled_table = f"""
     <style>
         table {{
