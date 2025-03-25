@@ -498,8 +498,7 @@ with tab_sn_teamwise:
                 <b>[전체 투수 평균값]</b><br>
                 {}
                 </div>
-            """.format(
-                "\n".join([f"{k}: {v}, " for k, v in df_p_meandict_kr.items()])
+            """.format("\n".join([f"{k}: {v}, " for k, v in df_p_meandict_kr.items()])
             )
 
             # 두 번째 div 스타일
@@ -517,10 +516,8 @@ with tab_sn_teamwise:
                 <b>[전체 투수 중앙값]</b><br>
                 {}
                 </div>
-                            """.format(
-                "\n".join([f"{k}: {v}, " for k, v in df_p_mediandict_kr.items()])
-            )
-            st.markdown(p_box_stylesetting_1 + p_box_stylesetting_2, unsafe_allow_html=True)
+            """.format("\n".join([f"{k}: {v}, " for k, v in df_p_mediandict_kr.items()]))
+            st.markdown(p_box_stylesetting_1 + "<br>" + p_box_stylesetting_2, unsafe_allow_html=True)
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
