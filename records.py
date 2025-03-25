@@ -755,61 +755,13 @@ with tab_schd:
     st.components.v1.html(styled_html, height=500, scrolling=True)
     st.write(schd_url)    
 
-with tab_sn_league: # 전체 선수 탭
+with tab_sn_league: # 전체 선수기록을 출력해주는 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
     with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
-        # st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
-        st.subheader('팀별 기록 : 타자')
-        # hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
-        # hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
-
-        # # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
-        # hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
-        # hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
-        # hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
-        # hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
-        
-        # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-        # for col in ['OPS', 'SLG', 'OBP', 'AVG']:
-        #     team_idx = hitter_grpby.columns.get_loc('Team') + 1
-        #     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
-  
-        # # rank_by_ascending, rank_by_descending columns 
-        # rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
-        # rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
-        #             '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
-        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        # hitter_grpby_rank = pd.concat([
-        #                                 hitter_grpby.Team, 
-        #                                 hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
-        #                                 hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
-        #                             ], axis = 1)
-        # hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
-        st.write('Ranking')
-        st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
-        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
-        ## 히트맵 시각화 팀별 랭킹        
-        if df.shape[0] > 0:
-            st.write("Heatmap")
-            # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-            df['team_eng'] = df['Team'].map(team_name_dict)
-            df = df.drop('Team', axis = 1).copy()  
-
-            df.set_index('team_eng', inplace=True)
-            # 커스텀 컬러맵 생성
-            colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-            cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-            # 히트맵 생성
-            plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-            st.pyplot(plt)
-
 
     with tab_sn_players_2: # 전체 선수 탭 > "성남:전체투수" 탭
-        # rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
-        #                             'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         if df_pitcher.shape[0] > 0 : # pitcher data exists
         #     # 출력시 열 순서 변경
         #     st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
@@ -1045,3 +997,48 @@ with tab_sn_teams: # 팀 기록 탭
 
     st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                 use_container_width = True, hide_index = True)        
+
+    st.subheader('팀별 기록 : 타자')
+    # hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
+    # hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+
+    # # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
+    # hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
+    # hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
+    # hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
+    # hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
+    
+    # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+    # for col in ['OPS', 'SLG', 'OBP', 'AVG']:
+    #     team_idx = hitter_grpby.columns.get_loc('Team') + 1
+    #     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
+
+    # # rank_by_ascending, rank_by_descending columns 
+    # rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
+    # rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
+    #             '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
+    st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+    # hitter_grpby_rank = pd.concat([
+    #                                 hitter_grpby.Team, 
+    #                                 hitter_grpby[rank_by_descending_cols_h].rank(method = 'min', ascending=False),
+    #                                 hitter_grpby[rank_by_ascending_cols_h].rank(method = 'min', ascending=True)
+    #                             ], axis = 1)
+    # hitter_grpby_rank = hitter_grpby_rank.loc[:, rank_by_cols_h_sorted]                                    
+    st.write('Ranking')
+    st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+    df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
+    ## 히트맵 시각화 팀별 랭킹        
+    if df.shape[0] > 0:
+        st.write("Heatmap")
+        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+        df['team_eng'] = df['Team'].map(team_name_dict)
+        df = df.drop('Team', axis = 1).copy()  
+
+        df.set_index('team_eng', inplace=True)
+        # 커스텀 컬러맵 생성
+        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # 히트맵 생성
+        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
+        st.pyplot(plt)
