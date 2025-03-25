@@ -763,7 +763,7 @@ with tab_schd:
 
     # 최종 HTML 조합
     styled_html = table_style + schd_html_str
-    st.components.v1.html(styled_html, height=400, 
+    st.components.v1.html(styled_html, #height=500, 
                           scrolling=True)
     st.write(schd_url)    
 
