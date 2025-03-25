@@ -425,7 +425,8 @@ with tab_sn_teamwise:
                         use_container_width = True, hide_index = True)
 
             # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
-            h_box_stylesetting = """
+            # 첫 번째 div 스타일
+            h_box_stylesetting_1 = """
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  
                     color: #000000;                              
@@ -439,6 +440,12 @@ with tab_sn_teamwise:
                 <b>[전체 타자 평균값]</b><br>
                 {}
                 </div>
+            """.format(
+                "\n".join([f"{k}: {v}," for k, v in df_h_meandict_kr.items()])
+            )
+
+            # 두 번째 div 스타일
+            h_box_stylesetting_2 = """
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  
                     color: #000000;                              
@@ -453,11 +460,10 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(
-                "\n".join([f"{k}: {v} " for k, v in df_h_meandict_kr.items()]),
-                "\n".join([f"{k}: {v} " for k, v in df_h_mediandict_kr.items()][:-1])
+                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()][:-1])
             )
             # st.write(box_stylesetting)
-            st.markdown(h_box_stylesetting, unsafe_allow_html=True)            
+            st.markdown(h_box_stylesetting_1[:-2] + h_box_stylesetting_2[:-2], unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
         if (df_pitcher.shape[0] > 0) : # data exists         
@@ -479,7 +485,7 @@ with tab_sn_teamwise:
                         use_container_width = True, hide_index = True)
             
             # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
-            p_box_stylesetting = """
+            p_box_stylesetting_1 = """
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  
                     color: #000000;                              
@@ -493,6 +499,12 @@ with tab_sn_teamwise:
                 <b>[전체 투수 평균값]</b><br>
                 {}
                 </div>
+                            """.format(
+                "\n".join([f"{k}: {v}," for k, v in df_p_meandict_kr.items()])
+            )
+
+            # 두 번째 div 스타일
+            p_box_stylesetting_2 = """
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  
                     color: #000000;                              
@@ -506,12 +518,11 @@ with tab_sn_teamwise:
                 <b>[전체 투수 중앙값]</b><br>
                 {}
                 </div>
-            """.format(
-                "\n".join([f"{k}: {v} " for k, v in df_p_meandict_kr.items()]),
-                "\n".join([f"{k}: {v} " for k, v in df_p_mediandict_kr.items()])
+                            """.format(
+                "\n".join([f"{k}: {v}," for k, v in df_p_mediandict_kr.items()])
             )
-            # st.write(box_stylesetting)
-            st.markdown(p_box_stylesetting, unsafe_allow_html=True)                  
+            st.markdown(p_box_stylesetting_1 + p_box_stylesetting_2, unsafe_allow_html=True)
+
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
