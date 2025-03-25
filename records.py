@@ -731,16 +731,12 @@ with tab_schd:
     # # 출력
     # st.markdown(styled_html, unsafe_allow_html=True)
 
-    # 인덱스 없이 HTML 테이블로 출력
-    schd_html_str = df_schd2.to_html(index=False, escape=False)
-    st.markdown(schd_html_str, unsafe_allow_html=True)
-    # st.write(schd_html_str)
-    st.write(schd_url)    
-
     # 강조할 팀명
     highlight_team = "코메츠 호시탐탐"
     highlighted_team = f"<b>{highlight_team}</b>"
 
+    # 인덱스 없이 HTML 테이블로 출력
+    schd_html_str = df_schd2.to_html(index=False, escape=False)
     # '코메츠 호시탐탐' 강조 처리
     schd_html_str = schd_html_str.replace(highlight_team, highlighted_team)
 
@@ -766,13 +762,16 @@ with tab_schd:
         }
     </style>
     """
-
     # 최종 HTML 조합
     styled_html = table_style + schd_html_str
+    st.markdown(styled_html, unsafe_allow_html=True)
+    # st.write(schd_html_str)
+    st.write(schd_url)    
+
 
     # Streamlit에 출력
-    st.markdown("### 📝 경기 일정 및 결과")
-    st.markdown(styled_html, unsafe_allow_html=True)
+    # st.markdown("### 📝 경기 일정 및 결과")
+    # st.markdown(styled_html, unsafe_allow_html=True)
 
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
