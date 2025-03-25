@@ -901,19 +901,13 @@ with tab_sn_teams: # 팀 기록 탭
     st.write('팀별 기록 : 타자')
     st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
     
-    on = st.toggle("Activate feature")
-    if on:
-        st.write('Ranking')
-        st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-    
     df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
     ## 히트맵 시각화 팀별 랭킹        
     # if df.shape[0] > 0:
-    st.write("팀별 기록 : 공격지표 순위")
+    st.write("팀별 기록 : 공격지표 순위(히트맵)")
     # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
     df['team_eng'] = df['Team'].map(team_name_dict)
     df = df.drop('Team', axis = 1).copy()  
-
     df.set_index('team_eng', inplace=True)
     # 커스텀 컬러맵 생성
     colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
@@ -921,6 +915,10 @@ with tab_sn_teams: # 팀 기록 탭
     # 히트맵 생성
     plt = create_heatmap(df, cmap, input_figsize = (10, 6))
     st.pyplot(plt)
+    hitter_grpby_rank_on = st.toggle("팀별 기록 : 공격지표 순위(테이블 표시)")
+    if hitter_grpby_rank_on:
+        st.write('팀별 기록 : 공격지표 순위')
+        st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
     ############################################################
     df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
@@ -934,8 +932,8 @@ with tab_sn_teams: # 팀 기록 탭
     st.write('팀별 기록 : 투수')
     st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
                     use_container_width = True, hide_index = True)
-    st.write('Ranking')
-    st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+    # st.write('Ranking')
+    # st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
     ## 히트맵 시각화 팀별 랭킹        
     df = pitcher_grpby_rank.copy() 
@@ -952,3 +950,8 @@ with tab_sn_teams: # 팀 기록 탭
     # 히트맵 생성
     plt = create_heatmap(df, cmap, input_figsize = (10, 6))
     st.pyplot(plt)
+
+    pitcher_grpby_rank_on = st.toggle("팀별 기록 : 수비지표 순위(테이블 표시)")
+    if pitcher_grpby_rank_on:
+        st.write('팀별 기록 : 공격지표 순위')
+        st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
