@@ -204,6 +204,17 @@ top_col1, top_col2, top_col3 = st.columns(3)
 ####################################
 #### 일정표 준비
 ####################################
+# 강조할 팀명
+highlight_team = '코메츠 호시탐탐'
+
+# 스타일 적용 함수
+def highlight_team_name(team_name, highlight_target):
+    if team_name == highlight_target:
+        return f"<span style='color: navy; font-weight: bold;'>{team_name}</span>"
+    return team_name
+
+
+
 # 일정표 크롤링 & 다음경기 출력
 with top_col1:
     this_year = 2025
@@ -284,7 +295,20 @@ with top_col1:
 
     next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
     next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
-    st.markdown(f"[NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  \n{next_game['선공'][0]} vs {next_game['후공'][0]}")    
+    st.markdown(f"[NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  \n{next_game['선공'][0]} vs {next_game['후공'][0]}")
+
+    # 선공/후공 팀명에 스타일 적용
+    away_team = highlight_team_name(next_game['선공'][0], highlight_team)
+    home_team = highlight_team_name(next_game['후공'][0], highlight_team)
+
+    # 전체 문장 구성
+    markdown_text = f"""
+    [NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  
+    {away_team} vs {home_team}
+    """
+
+    # 출력
+    st.markdown(markdown_text, unsafe_allow_html=True)
 with top_col2:
     ## 년도 설정
     default_year = st.selectbox('년도 선택', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
