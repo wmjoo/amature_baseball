@@ -393,10 +393,17 @@ with tab_sn_teamwise:
     span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'    
     if (df_hitter.shape[0] > 0) & (df_pitcher.shape[0] > 0) : # pitcher data exists    
         df_h_meandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].mean(numeric_only=True).to_dict().items()}
+        df_h_meandict_kr = {hitter_data_EnKr.get(k, k): v for k, v in df_h_meandict.items()}
+
         df_h_mediandict = {k: round(v, 3) for k, v in df_hitter[rank_by_cols_h_sorted].median(numeric_only=True).to_dict().items()}
+        df_h_mediandict_kr = {hitter_data_EnKr.get(k, k): v for k, v in df_h_mediandict.items()}
+
         df_p_meandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().mean(numeric_only=True).to_dict().items()}
+        df_p_meandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_meandict.items()}
+
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
-    
+        df_p_mediandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_mediandict.items()}    
+
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_id = team_id_dict[team_name]
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
@@ -446,7 +453,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(
-                "\n".join([f"{k}: {v} " for k, v in df_h_meandict.items()]),
+                "\n".join([f"{k}: {v} " for k, v in df_h_meandict_kr.items()]),
                 "\n".join([f"{k}: {v} " for k, v in df_h_mediandict.items()][:-1])
             )
             # st.write(box_stylesetting)
