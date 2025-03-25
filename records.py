@@ -954,6 +954,5 @@ with tab_sn_teams: # 팀 기록 탭
             df2_p = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1_p.insert(0, 'Type', 'Records')
             df2_p.insert(0, 'Type', 'Rank')
-            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).reset_index(drop=True)
-            # team_statrank_p.columns = ['값', '순위']
+            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).set_index('Type')
             st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)   
