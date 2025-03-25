@@ -694,9 +694,8 @@ with tab_sn_viz:
                      use_container_width = True, hide_index = False)  
 
 with tab_schd:
-    st.write(schd_url)
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True) # 시즌 기록 출력
-    
+    st.write('') # 한줄 공백
     # st.table(df_schd2)
     # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
     # st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
@@ -732,12 +731,11 @@ with tab_schd:
     # # 출력
     # st.markdown(styled_html, unsafe_allow_html=True)
 
-        # 인덱스 없이 HTML 테이블로 출력
-    st.markdown(
-        df_schd2.to_html(index=False, escape=False), 
-        unsafe_allow_html=True
-    )
-
+    # 인덱스 없이 HTML 테이블로 출력
+    schd_html_str = df_schd2.to_html(index=False, escape=False)
+    st.markdown(schd_html_str, unsafe_allow_html=True)
+    st.write(schd_html_str)
+    st.write(schd_url)    
 
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
