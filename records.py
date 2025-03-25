@@ -615,7 +615,7 @@ with tab_sn_players: # (팀별)선수기록 탭
             st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
 
 with tab_sn_teams: # 팀 기록 탭
-    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체', '선택 팀 : {}'.format(team_name)])
+    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
 
     with tab_sn_teams_allteams: # 전체팀 탭   
     ############################################################
