@@ -387,9 +387,7 @@ with tab_sn_players: # 전체 선수 탭
             # 히트맵 생성
             plt = create_heatmap(df, cmap, input_figsize = (10, 6))
             st.pyplot(plt)
-
     
-
 with tab_sn_teamwise:
     # HTML display Setting
     span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'    
@@ -474,27 +472,27 @@ with tab_sn_teamwise:
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  
                     color: #000000;                              
-                    padding: 12px 16px;
+                    padding: 10px 12px;
                     border-radius: 8px;
                     font-family: monospace;
-                    font-size: 9px;
+                    font-size: 11px;
                     margin-bottom: 10px;
                     border: 1px solid #ccc;
                 ">
-                <b>전체 타자 평균값</b><br>
+                <b>[전체 타자 평균값]</b><br>
                 {}
                 </div>
                 <div style="
-                    background-color: rgba(240, 240, 240, 0.8);
-                    color: #000000;
-                    padding: 12px 16px;
+                    background-color: rgba(240, 240, 240, 0.8);  
+                    color: #000000;                              
+                    padding: 10px 12px;
                     border-radius: 8px;
                     font-family: monospace;
-                    font-size: 9px;
+                    font-size: 11px;
                     margin-bottom: 10px;
                     border: 1px solid #ccc;
                 ">
-                <b>전체 타자 중앙값</b><br>
+                <b>[전체 타자 중앙값]</b><br>
                 {}
                 </div>
             """.format(
