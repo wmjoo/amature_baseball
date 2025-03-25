@@ -229,7 +229,63 @@ df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy(
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
+tab_dataload, tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms = st.tabs(["데이터 로드", "전체 선수", "팀별 선수", "시각화/통계", "일정", "약어"])
+
+with tab_dataload:
+    user_password_update = st.text_input('Input Password for Update', type='password')
+    user_password_update = str(user_password_update)
+    if user_password_update == st.secrets["password_update"]: # Correct Password
+        st.write('Correct Password')
+        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023, 2022], index = 1, key = 'dataload_year_selectbox')
+        st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
+        if st.button('Data Update'):
+            hitters = []
+            pitchers = []
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {executor.submit(load_data, team_name, team_id, dataload_year): team_name for team_name, team_id in team_id_dict.items()}
+                for future in as_completed(futures):
+                    try:
+                        result = future.result()
+                        hitters.append(result['hitter'])
+                        pitchers.append(result['pitcher'])
+                    except Exception as exc:
+                        print(f'Team {futures[future]} generated an exception: {exc}')
+            # 모든 데이터를 각각의 데이터프레임으로 합침
+            final_hitters_data = pd.concat(hitters, ignore_index=True)
+            final_pitchers_data = pd.concat(pitchers, ignore_index=True)
+
+            # 데이터프레임 df의 컬럼 자료형 설정
+            df_hitter = final_hitters_data.astype(hitter_data_types)
+            # 타자 데이터프레임 컬럼명 영어로
+            df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 
+                                'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 'SB%', 'MHit', 
+                                'OPS', 'BB/K', 'XBH/H', 'Team']
+
+            final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
+
+            # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
+            df_pitcher = final_pitchers_data.astype(pitcher_data_types)
+            # 투수 데이터프레임 컬럼명 영어로
+            df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 
+                                'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
+                                'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
+            # IP 컬럼을 올바른 소수 형태로 변환
+            df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
+            
+            ###### GOOGLE SHEETS
+            # Create GSheets connection
+            conn = st.connection("gsheets", type=GSheetsConnection)
+
+            df_hitter = conn.update(worksheet="df_hitter_{}".format(dataload_year), data=df_hitter)
+            df_pitcher = conn.update(worksheet="df_pitcher_{}".format(dataload_year), data=df_pitcher)
+            time.sleep(3)
+            st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
+            st.write(df_hitter.shape, "Hitter Data SAVED!")
+            st.dataframe(df_hitter, use_container_width = True, hide_index = True)
+            st.write(df_pitcher.shape, "Pitcher Data SAVED!")
+            st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
+    else:
+        st.write('Wrong Password!!')
 
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
@@ -670,63 +726,6 @@ with tab_schd:
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
     # st.dataframe(df_schd2)
     st.table(df_schd2.reset_index(drop=True))
-
-with tab_dataload:
-    user_password_update = st.text_input('Input Password for Update', type='password')
-    user_password_update = str(user_password_update)
-    if user_password_update == st.secrets["password_update"]: # Correct Password
-        st.write('Correct Password')
-        dataload_year = st.selectbox('데이터 수집 년도(현재 기록은 24시즌 기준)', [2025, 2024, 2023, 2022], index = 1, key = 'dataload_year_selectbox')
-        st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
-        if st.button('Data Update'):
-            hitters = []
-            pitchers = []
-            with ThreadPoolExecutor(max_workers=4) as executor:
-                futures = {executor.submit(load_data, team_name, team_id, dataload_year): team_name for team_name, team_id in team_id_dict.items()}
-                for future in as_completed(futures):
-                    try:
-                        result = future.result()
-                        hitters.append(result['hitter'])
-                        pitchers.append(result['pitcher'])
-                    except Exception as exc:
-                        print(f'Team {futures[future]} generated an exception: {exc}')
-            # 모든 데이터를 각각의 데이터프레임으로 합침
-            final_hitters_data = pd.concat(hitters, ignore_index=True)
-            final_pitchers_data = pd.concat(pitchers, ignore_index=True)
-
-            # 데이터프레임 df의 컬럼 자료형 설정
-            df_hitter = final_hitters_data.astype(hitter_data_types)
-            # 타자 데이터프레임 컬럼명 영어로
-            df_hitter.columns = ['Name', 'No', 'AVG', 'G', 'PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 
-                                'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'SLG', 'OBP', 'SB%', 'MHit', 
-                                'OPS', 'BB/K', 'XBH/H', 'Team']
-
-            final_pitchers_data.loc[final_pitchers_data.방어율 == '-', '방어율'] = np.nan
-
-            # 투수 데이터프레임 df_pitcher의 컬럼 자료형 설정
-            df_pitcher = final_pitchers_data.astype(pitcher_data_types)
-            # 투수 데이터프레임 컬럼명 영어로
-            df_pitcher.columns = ['Name', 'No', 'ERA', 'G', 'W', 'L', 'SV', 'HLD', 'WPCT', 
-                                'BF', 'AB', 'P', 'IP', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'WP', 'BK', 
-                                'R', 'ER', 'WHIP', 'BAA', 'K9', 'Team']
-            # IP 컬럼을 올바른 소수 형태로 변환
-            df_pitcher['IP'] = df_pitcher['IP'].apply(lambda x: int(x) + (x % 1) * 10 / 3).round(2)
-            
-            ###### GOOGLE SHEETS
-            # Create GSheets connection
-            conn = st.connection("gsheets", type=GSheetsConnection)
-
-            df_hitter = conn.update(worksheet="df_hitter_{}".format(dataload_year), data=df_hitter)
-            df_pitcher = conn.update(worksheet="df_pitcher_{}".format(dataload_year), data=df_pitcher)
-            time.sleep(3)
-            st.toast('Saved Data from Web to Cloud! (Updated)', icon='☁️')
-            st.write(df_hitter.shape, "Hitter Data SAVED!")
-            st.dataframe(df_hitter, use_container_width = True, hide_index = True)
-            st.write(df_pitcher.shape, "Pitcher Data SAVED!")
-            st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
-    else:
-        st.write('Wrong Password!!')
-
 
         
 with tab_sn_terms:
