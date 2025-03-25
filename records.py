@@ -733,9 +733,11 @@ with tab_schd:
 
     # 강조할 팀명
     highlight_team = "코메츠 호시탐탐"
-    highlighted_team = f"<b>{highlight_team}</b>"
+    highlighted_team = f"<span style='font-weight: bold; color: navy;'>{highlight_team}</span>" 
+        #f"<b>{highlight_team}</b>"
 
     # 인덱스 없이 HTML 테이블로 출력
+    df_schd2 = df_schd2[['일시', '구장', '선공', '선', '후', '후공', '결과']]
     schd_html_str = df_schd2.to_html(index=False, escape=False)
     # '코메츠 호시탐탐' 강조 처리
     schd_html_str = schd_html_str.replace(highlight_team, highlighted_team)
