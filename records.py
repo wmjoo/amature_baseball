@@ -719,7 +719,7 @@ with tab_sn_teams: # 팀 기록 탭
                     </div>
                 """.format(
                     mainteam_name, 
-                    ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()])
+                    ", ".join([f"{k}: {v[0]} {v[1]위}" for k, v in mainteam_statrank_h.to_dict().items()[1:]])
                 )
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
                 # st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
