@@ -754,7 +754,6 @@ with tab_sn_league: # 전체 선수들의 기록을 출력해주는 탭
     with tab_sn_players_2: # 전체 선수 탭 > "성남:전체투수" 탭
         if df_pitcher.shape[0] > 0 : # pitcher data exists
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-
      
 with tab_sn_terms:
     st.subheader('야구 기록 설명')
@@ -962,3 +961,33 @@ with tab_sn_teams: # 팀 기록 탭
             team_statrank_p_html_table = team_statrank_p.T.to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
             st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
+
+            # 테이블 CSS
+            table_style = """
+            <style>
+                table {
+                    border-collapse: collapse;
+                    width: 100%;
+                    font-size: 10px;
+                    background-color: white; /* 다크모드에서도 흰 배경 */
+                    color: black; /* 글자 검정색 */
+                }
+                th, td {
+                    border: 1px solid #999;
+                    padding: 4px 6px;
+                    text-align: center;
+                }
+                th {
+                    background-color: #e6e6e6;  /* 약간 어두운 회색 */
+                    font-weight: bold;
+                }
+            </style>
+            """
+
+            # 전체 HTML 구성
+            styled_html = table_style + apply_row_styling(team_statrank_p_html_table)
+
+            # 최종 HTML 조합
+            # styled_html = table_style + schd_html_str
+            st.components.v1.html(styled_html, height=500, scrolling=True)
+            st.write(schd_url)   
