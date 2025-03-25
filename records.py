@@ -424,7 +424,6 @@ with tab_sn_teamwise:
             st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
 
-            # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
             # 첫 번째 div 스타일
             h_box_stylesetting_1 = """
                 <div style="
@@ -460,7 +459,7 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(
-                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()][:-1])
+                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()])
             )
             # st.write(box_stylesetting)
             st.markdown(h_box_stylesetting_1 + h_box_stylesetting_2, unsafe_allow_html=True)            
