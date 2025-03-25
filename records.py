@@ -698,7 +698,7 @@ with tab_sn_teams: # 팀 기록 탭
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
                                   height=800, scrolling=True)           
-            if mainteam_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
+            if team_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
                 st.write(mainteam_statrank_h)
         ############################################################
         with tab_sn_teams_team_col2:
