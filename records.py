@@ -688,7 +688,8 @@ with tab_sn_teams: # 팀 기록 탭
         df1_p.insert(0, '수비지표', '기록')
         df2_p.insert(0, '수비지표', '순위')
         mainteam_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).set_index('수비지표').reset_index()
-        
+
+
         tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
         ############################################################
         with tab_sn_teams_team_col1:
@@ -742,7 +743,7 @@ with tab_sn_teams: # 팀 기록 탭
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
                                   height=750, scrolling=True)
             if team_name != mainteam_name : # 사용자 입력팀이 메인팀이 아닐때 
-                # 두 번째 div 스타일
+                st.write(mainteam_statrank_p)
                 mainteam_box_stylesetting_p = """
                     <div style="
                         background-color: rgba(240, 240, 240, 0.8);  
