@@ -140,10 +140,9 @@ with top_col3:
     #### 일정표 준비
     ####################################
     # 일정표 URL 설정
-    url = f"http://www.gameone.kr/club/info/schedule/table?club_idx={team_id}&kind=&season={default_year}"
-    st.write(url)
+    schd_url = f"http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={default_year}"
     # HTTP GET 요청
-    response = requests.get(url)
+    response = requests.get(schd_url)
     response.raise_for_status()  # 요청이 성공했는지 확인
 
     # BeautifulSoup을 이용하여 HTML 파싱
@@ -216,7 +215,7 @@ with top_col3:
     df_schd2.columns = ['일시', '구장', '선공', '선', '후공', '후', '결과']
 
     next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
-    next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace(team_name, ''))[0]
+    next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
     # st.write('NEXT', next_game_teamname) # 임박한 경기 일정 행 필터링
     st.write(next_game)
 
@@ -691,6 +690,7 @@ with tab_sn_viz:
                      use_container_width = True, hide_index = False)  
 
 with tab_schd:
+    st.write(schd_url)
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
     # st.dataframe(df_schd2)
     st.table(df_schd2.reset_index(drop=True))
