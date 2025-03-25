@@ -804,7 +804,7 @@ with tab_sn_terms: # 약어 설명
         <style>
             .table-box {
                 font-family: Arial, sans-serif;
-                font-size: 13px;
+                font-size: 12px;
             }
             h3 {
                 margin-bottom: 8px;
@@ -825,7 +825,6 @@ with tab_sn_terms: # 약어 설명
         </style>
 
         <div class="table-box">
-            <h3>타자(Hitters) 컬럼명 약어</h3>
             <table>
                 <tr><th>ENG</th><th>KOR</th><th>Desc</th></tr>
                 <tr><td>Name</td><td>성명</td><td>Player's name</td></tr>
@@ -862,48 +861,11 @@ with tab_sn_terms: # 약어 설명
             </table>
         </div>
     """
-    st.components.v1.html(table_style_12px + apply_row_styling(hitters_term_table_html), 
-                         height=800, scrolling=True)
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
     with tab_sn_terms_col1:
         # 타자 데이터 설명
-        st.markdown("""
-        ### 타자(Hitters) 컬럼명 약어:
-        | ENG | KOR | Desc                    |
-        |--------------|-------------|--------------------------------|
-        | Name         | 성명        | Player's name                  |
-        | No           | 배번        | Jersey number                  |
-        | AVG           | 타율        | Batting average                |
-        | G            | 경기        | Games played                   |
-        | PA           | 타석        | Plate appearances              |
-        | AB           | 타수        | At bats                        |
-        | R            | 득점        | Runs                           |
-        | H            | 총안타      | Hits                           |
-        | 1B           | 1루타       | Singles                        |
-        | 2B           | 2루타       | Doubles                        |
-        | 3B           | 3루타       | Triples                        |
-        | HR           | 홈런        | Home runs                      |
-        | TB           | 루타        | Total bases                    |
-        | RBI          | 타점        | Runs batted in                 |
-        | SB           | 도루        | Stolen bases                   |
-        | CS           | 도실(도루자)| Caught stealing                |
-        | SH           | 희타        | Sacrifice hits                 |
-        | SF           | 희비        | Sacrifice flies                |
-        | BB           | 볼넷        | Walks                          |
-        | IBB          | 고의4구     | Intentional walks              |
-        | HBP          | 사구        | Hit by pitch                   |
-        | SO           | 삼진        | Strikeouts                     |
-        | DP           | 병살        | Double plays                   |
-        | SLG          | 장타율      | Slugging percentage            |
-        | OBP          | 출루율      | On-base percentage             |
-        | SB%          | 도루성공률  | Stolen base percentage         |
-        | MHit         | 멀티히트    | Multi-hit games                |
-        | OPS          | OPS         | On-base plus slugging          |
-        | BB/K         | BB/K       | Walks per strikeout            |
-        | XBH/H        | 장타/안타   | Extra base hits per hit        |
-        | Team         | 팀          | Team name                      |
-        """)
+        st.components.v1.html(table_style_12px + apply_row_styling(hitters_term_table_html), height=800, scrolling=True)
     with tab_sn_terms_col2:
         # 투수 데이터 설명
         st.markdown("""
