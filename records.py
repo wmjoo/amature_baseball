@@ -762,9 +762,8 @@ with tab_schd:
     styled_html = table_style + apply_row_styling(schd_html_str)
 
     # 최종 HTML 조합
-    styled_html = table_style + schd_html_str
-    st.components.v1.html(styled_html, #height=500, 
-                          scrolling=True)
+    # styled_html = table_style + schd_html_str
+    st.components.v1.html(styled_html, height=500, scrolling=True)
     st.write(schd_url)    
 
 with tab_sn_players: # 전체 선수 탭
