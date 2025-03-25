@@ -25,7 +25,7 @@ from streamlit_gsheets import GSheetsConnection
 
 warnings.filterwarnings('ignore')
 st.set_page_config(page_title="성남리그 기록실")
-st.title('성남리그(토요) 기록실')
+#st.title('성남리그(토요) 기록실') ### title
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 딕셔너리 & 리스트
 team_id_dict_2025rkC = {
