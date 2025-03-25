@@ -40,8 +40,8 @@ team_name_dict_2025rkC = {
     '라이노즈': 'Rhinos', '에자이갑스': 'EisaiGabs', '실버서울 야구단': 'SilverSeoul', '야호 이겨스': 'Yaho', '마자야지': 'MajaYaji', '다이아몬스터': 'Diamonster', 'HEAT': 'HEAT'
 }
 
-allteam_id_dict = team_id_dict_2025rkC #| team_id_dict_2025miB
-allteam_name_dict = team_name_dict_2025rkC #| team_name_dict_2025miB
+team_id_dict = team_id_dict_2025rkC #| team_id_dict_2025miB
+team_name_dict = team_name_dict_2025rkC #| team_name_dict_2025miB
 
 # 타자 데이터프레임 df에 적용할 자료형 / 컬럼명 딕셔너리 정의
 hitter_data_types = {
@@ -137,6 +137,7 @@ with top_col2:
 with top_col3:
     st.write('')
     rank_calc_include_teams = list(team_id_dict.keys())
+    team_groupname = "토요 루키C"
     # hoshi_on = st.checkbox('토요 루키C[호시]')  # 기본적으로 체크박스로 토글을 구현
     # if hoshi_on:
     #     st.write("> 호시탐탐")
@@ -242,7 +243,7 @@ with tab_sn_players:
                      use_container_width = True, hide_index = True)
         st.subheader('팀별 기록')
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
-        hitter_grpby = df_hitter.loc[~df_hitter['Team'].isin(rank_calc_except_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+        hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
         # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
         hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
@@ -274,7 +275,7 @@ with tab_sn_players:
         if df.shape[0] > 0:
             st.write("Heatmap")
             # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-            df['team_eng'] = df['Team'].map(allteam_name_dict)
+            df['team_eng'] = df['Team'].map(team_name_dict)
             df = df.drop('Team', axis = 1).copy()  
 
             df.set_index('team_eng', inplace=True)
@@ -322,7 +323,7 @@ with tab_sn_players:
             st.subheader('팀별 기록 : 투수')
             # st.write('rank_calc_except_teams ~ ', rank_calc_except_teams)
             # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].shape)
-            pitcher_grpby = df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
+            pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
             # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
             # st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
             st.write(pitcher_grpby.head(3))
