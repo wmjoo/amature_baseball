@@ -126,17 +126,8 @@ def load_data(team_name, team_id, default_year):
 # 화면 최상단을 3개의 컬럼으로 나누기
 top_col1, top_col2, top_col3 = st.columns(3)
 
-# 첫 번째 컬럼에 내용 출력
+# 일정표 크롤링 & 다음경기 출력
 with top_col1:
-    ## 년도 설정
-    default_year = st.selectbox('년도 선택', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
-with top_col2:
-    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
-    team_id = team_id_dict[team_name]
-    rank_calc_include_teams = list(team_id_dict.keys())
-    team_groupname = "토요 루키C"       
-# 세 번째 컬럼에 내용 출력
-with top_col3:
     ####################################
     #### 일정표 준비
     ####################################
@@ -217,11 +208,15 @@ with top_col3:
 
     next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
     next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
-    # st.write('NEXT', next_game_teamname) # 임박한 경기 일정 행 필터링
-    # st.write(next_game['일시'])
-    # st.write('{} [{}]'.format(next_game['일시'][0], next_game['구장'][0]))
-    # st.write('{} vs {}'.format(next_game['선공'][0], next_game['후공'][0]))
     st.markdown(f"[NEXT] {next_game['일시'][0]} [{next_game['구장'][0]}]  \n{next_game['선공'][0]} vs {next_game['후공'][0]}")    
+with top_col2:
+    ## 년도 설정
+    default_year = st.selectbox('년도 선택', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
+with top_col3:
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
+    team_id = team_id_dict[team_name]
+    rank_calc_include_teams = list(team_id_dict.keys())
+    team_groupname = "토요 루키C"       
 
 ################################################################
 ## Data Loading
