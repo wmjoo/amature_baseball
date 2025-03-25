@@ -953,13 +953,13 @@ with tab_sn_teams: # 팀 기록 탭
 
     with tab_sn_teams_team:
         def format_cell(x):
-            # 정수는 그대로, float는 소수 둘째 자리까지
+            # 정수는 그대로, float는 소수 4자리까지
             if isinstance(x, int):
                 return f"{x}"
             elif isinstance(x, float) and x.is_integer():
                 return f"{int(x)}"
             elif isinstance(x, float):
-                return f"{x:.2f}"
+                return f"{x:.4f}"
             else:
                 return x
 
