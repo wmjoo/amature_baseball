@@ -769,21 +769,23 @@ with tab_schd:
         styled_tbody = "<tbody>\n" + "\n".join(styled_rows) + "\n</tbody>"
         return re.sub(r"<tbody>.*?</tbody>", styled_tbody, html, flags=re.DOTALL)
 
-    # 스타일 없는 테이블 CSS
+    # 테이블 CSS
     table_style = """
     <style>
         table {
             border-collapse: collapse;
             width: 100%;
-            font-size: 14px;
+            font-size: 12px;
+            background-color: white; /* 다크모드에서도 흰 배경 */
+            color: black; /* 글자 검정색 */
         }
         th, td {
-            border: 1px solid #ddd;
+            border: 1px solid #999;
             padding: 6px 10px;
             text-align: center;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #e6e6e6;  /* 약간 어두운 회색 */
             font-weight: bold;
         }
     </style>
