@@ -936,6 +936,20 @@ with tab_sn_teams: # 팀 기록 탭
             st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
     with tab_sn_teams_team:
+        def format_cell(x):
+            # 정수는 그대로, float는 소수 둘째 자리까지
+            if isinstance(x, int):
+                return f"{x}"
+            elif isinstance(x, float) and x.is_integer():
+                return f"{int(x)}"
+            elif isinstance(x, float):
+                return f"{x:.2f}"
+            else:
+                return x
+
+        # html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False)
+
+
         tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
         ############################################################
         with tab_sn_teams_team_col1:
@@ -946,7 +960,8 @@ with tab_sn_teams: # 팀 기록 탭
             df2_h.insert(0, 'Type', 'Rank')
             team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('Type')
             # st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)  
-            team_statrank_h_html_table = team_statrank_h.T.to_html(classes='table table-striped', border=0)
+            team_statrank_h_html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False) 
+            ?.to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
             st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
         ############################################################
@@ -958,7 +973,8 @@ with tab_sn_teams: # 팀 기록 탭
             df2_p.insert(0, 'Type', 'Rank')
             team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).set_index('Type')
             # st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)   
-            team_statrank_p_html_table = team_statrank_p.T.to_html(classes='table table-striped', border=0)
+            team_statrank_p_html_table = team_statrank_p.T.to_html(formatters=[format_cell] * team_statrank_p.T.shape[1], escape=False) 
+            # .to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
             st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
 
@@ -989,5 +1005,4 @@ with tab_sn_teams: # 팀 기록 탭
 
             # 최종 HTML 조합
             # styled_html = table_style + schd_html_str
-            st.components.v1.html(styled_html, height=500, scrolling=True)
-            st.write(schd_url)   
+            st.components.v1.html(styled_html, height=800, scrolling=True)
