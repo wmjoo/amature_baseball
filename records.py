@@ -122,15 +122,13 @@ def load_data(team_name, team_id, default_year):
     return {'hitter': pd.concat(results['hitter'], ignore_index=True), 
             'pitcher': pd.concat(results['pitcher'], ignore_index=True)}
 
-
-
-# 화면 최상단을 2개의 컬럼으로 나누기
+# 화면 최상단을 3개의 컬럼으로 나누기
 top_col1, top_col2, top_col3 = st.columns(3)
 
 # 첫 번째 컬럼에 내용 출력
 with top_col1:
     ## 년도 설정
-    default_year = st.selectbox('Display Year', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
+    default_year = st.selectbox('년도 선택', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
 with top_col2:
     st.write('')
 # 세 번째 컬럼에 내용 출력
@@ -138,20 +136,6 @@ with top_col3:
     st.write('')
     rank_calc_include_teams = list(team_id_dict.keys())
     team_groupname = "토요 루키C"
-    # hoshi_on = st.checkbox('토요 루키C[호시]')  # 기본적으로 체크박스로 토글을 구현
-    # if hoshi_on:
-    #     st.write("> 호시탐탐")
-    #     team_groupname = "토요 루키C"
-    #     team_id_dict = team_id_dict_2025rkC.copy()
-    #     rank_calc_include_teams = list(team_id_dict.keys())
-    #     rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025rkC.keys())
-    # # else:
-    #     st.write("> SKCC Wings")    
-    #     team_groupname = "토요 마이너B"
-    #     team_id_dict = team_id_dict_2025miB.copy()
-    #     rank_calc_include_teams = list(team_id_dict.keys())
-    #     rank_calc_except_teams = list(team_id_dict.keys() - team_id_dict_2025miB.keys())
-
 
 ################################################################
 ## Data Loading
@@ -229,10 +213,10 @@ df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy(
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
 ## 탭 설정
-tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms, tab_dataload = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "약어", "데이터 로드"])
+tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms, tab_dataload = st.tabs(["전체선수", "팀별선수", "시각화/통계", "일정", "약어", "데이터 로드"])
 
 with tab_sn_players: # 전체 선수 탭
-    tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
+    tab_sn_players_1, tab_sn_players_2 = st.tabs(["전체타자", "전체투수"])
     with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
@@ -406,9 +390,9 @@ with tab_sn_teamwise:
 
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
     team_id = team_id_dict[team_name]
-    tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["성남:팀별타자", "성남:팀별투수"])
+    tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["타자", "투수"])
 
-    with tab_sn_teamwise_1: 
+    with tab_sn_teamwise_1: # 팀별 타자 탭
         if (df_hitter.shape[0] > 0) : # data exists            
             DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -459,7 +443,7 @@ with tab_sn_teamwise:
             """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
-    with tab_sn_teamwise_2:
+    with tab_sn_teamwise_2: # 팀별 투수 탭
         if (df_pitcher.shape[0] > 0) : # data exists         z
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
