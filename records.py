@@ -964,29 +964,6 @@ with tab_sn_terms: # 약어 설명
         </div>
     """
 
-        # <style>
-        #     .table-box {
-        #         font-family: Arial, sans-serif;
-        #         font-size: 13px;
-        #     }
-        #     h3 {
-        #         margin-bottom: 8px;
-        #         color: #333;
-        #     }
-        #     table {
-        #         border-collapse: collapse;
-        #         width: 100%;
-        #     }
-        #     th, td {
-        #         border: 1px solid #999;
-        #         padding: 6px 8px;
-        #         text-align: left;
-        #     }
-        #     th {
-        #         background-color: #f2f2f2;
-        #     }
-        # </style>
-
     pitchers_term_table_html = """
         <div class="table-box">
             <table>
