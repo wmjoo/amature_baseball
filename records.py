@@ -325,7 +325,9 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 ## 탭 설정
 tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_players, tab_sn_terms, tab_dataload = st.tabs(["팀별선수", "시각화/통계", "일정", "전체선수", "약어", "데이터 로드"])
 
-with tab_sn_teamwise:
+with tab_sn_teamwise: # 팀별선수 탭
+    DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
+    df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     # HTML display Setting
     span_stylesetting = '<span style="font-size: 11px; color: black; line-height: 5px;">'    
     if (df_hitter.shape[0] > 0) & (df_pitcher.shape[0] > 0) : # pitcher data exists    
@@ -341,15 +343,14 @@ with tab_sn_teamwise:
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
         df_p_mediandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_mediandict.items()}    
 
-    tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["타자", "투수"])
+    tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), "투수"])
 
     with tab_sn_teamwise_1: # 팀별 타자 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
         # team_id = team_id_dict[team_name]        
         if (df_hitter.shape[0] > 0) : # data exists            
-            DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
-            df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
-            st.write('{} [{}명]'.format(team_name, df_hitter_team.shape[0]))
+
+            # st.write('{} [{}명]'.format(team_name, df_hitter_team.shape[0]))
             st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_B)
@@ -684,7 +685,7 @@ with tab_schd:
     st.table(df_schd2.reset_index(drop=True))
 
 with tab_sn_players: # 전체 선수 탭
-    tab_sn_players_1, tab_sn_players_2 = st.tabs(['전체타자[{}명]'.format(df_hitter.shape[0]), "전체투수"])
+    tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
     with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
         # st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
