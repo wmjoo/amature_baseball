@@ -795,8 +795,75 @@ with tab_sn_league: # 전체 선수들의 기록을 출력해주는 탭
         if df_pitcher.shape[0] > 0 : # pitcher data exists
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
      
-with tab_sn_terms:
-    st.subheader('야구 기록 설명')
+with tab_sn_terms: # 약어 설명
+    # st.subheader('야구 기록 설명')
+    # # 최종 HTML 조합
+    # st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
+    #                     height=800, scrolling=True)
+    hitters_term_table_html = """
+        <style>
+            .table-box {
+                font-family: Arial, sans-serif;
+                font-size: 13px;
+            }
+            h3 {
+                margin-bottom: 8px;
+                color: #333;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid #999;
+                padding: 6px 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+
+        <div class="table-box">
+            <h3>타자(Hitters) 컬럼명 약어</h3>
+            <table>
+                <tr><th>ENG</th><th>KOR</th><th>Desc</th></tr>
+                <tr><td>Name</td><td>성명</td><td>Player's name</td></tr>
+                <tr><td>No</td><td>배번</td><td>Jersey number</td></tr>
+                <tr><td>AVG</td><td>타율</td><td>Batting average</td></tr>
+                <tr><td>G</td><td>경기</td><td>Games played</td></tr>
+                <tr><td>PA</td><td>타석</td><td>Plate appearances</td></tr>
+                <tr><td>AB</td><td>타수</td><td>At bats</td></tr>
+                <tr><td>R</td><td>득점</td><td>Runs</td></tr>
+                <tr><td>H</td><td>총안타</td><td>Hits</td></tr>
+                <tr><td>1B</td><td>1루타</td><td>Singles</td></tr>
+                <tr><td>2B</td><td>2루타</td><td>Doubles</td></tr>
+                <tr><td>3B</td><td>3루타</td><td>Triples</td></tr>
+                <tr><td>HR</td><td>홈런</td><td>Home runs</td></tr>
+                <tr><td>TB</td><td>루타</td><td>Total bases</td></tr>
+                <tr><td>RBI</td><td>타점</td><td>Runs batted in</td></tr>
+                <tr><td>SB</td><td>도루</td><td>Stolen bases</td></tr>
+                <tr><td>CS</td><td>도실</td><td>Caught stealing</td></tr>
+                <tr><td>SH</td><td>희타</td><td>Sacrifice hits</td></tr>
+                <tr><td>SF</td><td>희비</td><td>Sacrifice flies</td></tr>
+                <tr><td>BB</td><td>볼넷</td><td>Walks</td></tr>
+                <tr><td>IBB</td><td>고의4구</td><td>Intentional walks</td></tr>
+                <tr><td>HBP</td><td>사구</td><td>Hit by pitch</td></tr>
+                <tr><td>SO</td><td>삼진</td><td>Strikeouts</td></tr>
+                <tr><td>DP</td><td>병살</td><td>Double plays</td></tr>
+                <tr><td>SLG</td><td>장타율</td><td>Slugging percentage</td></tr>
+                <tr><td>OBP</td><td>출루율</td><td>On-base percentage</td></tr>
+                <tr><td>SB%</td><td>도루성공률</td><td>Stolen base %</td></tr>
+                <tr><td>MHit</td><td>멀티히트</td><td>Multi-hit games</td></tr>
+                <tr><td>OPS</td><td>OPS</td><td>On-base plus slugging</td></tr>
+                <tr><td>BB/K</td><td>BB/K</td><td>Walks per strikeout</td></tr>
+                <tr><td>XBH/H</td><td>장타/안타</td><td>Extra base hits per hit</td></tr>
+                <tr><td>Team</td><td>팀</td><td>Team name</td></tr>
+            </table>
+        </div>
+    """
+    st.components.v1.html(table_style_12px + apply_row_styling(hitters_term_table_html), 
+                         height=800, scrolling=True)
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
     with tab_sn_terms_col1:
