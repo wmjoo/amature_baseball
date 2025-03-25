@@ -961,7 +961,7 @@ with tab_sn_teams: # 팀 기록 탭
             team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('Type')
             # st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)  
             team_statrank_h_html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False) 
-            ?.to_html(classes='table table-striped', border=0)
+            # .to_html(classes='table table-striped', border=0)
             # Streamlit에서 HTML 출력
             st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
         ############################################################
