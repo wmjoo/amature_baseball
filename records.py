@@ -737,6 +737,43 @@ with tab_schd:
     # st.write(schd_html_str)
     st.write(schd_url)    
 
+    # 강조할 팀명
+    highlight_team = "코메츠 호시탐탐"
+    highlighted_team = f"<b>{highlight_team}</b>"
+
+    # '코메츠 호시탐탐' 강조 처리
+    schd_html_str = schd_html_str.replace(highlight_team, highlighted_team)
+
+    # 테이블 스타일 추가
+    table_style = """
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+    </style>
+    """
+
+    # 최종 HTML 조합
+    styled_html = table_style + schd_html_str
+
+    # Streamlit에 출력
+    st.markdown("### 📝 경기 일정 및 결과")
+    st.markdown(styled_html, unsafe_allow_html=True)
+
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
     with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
