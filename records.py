@@ -486,9 +486,9 @@ with tab_sn_viz:
             plt.tight_layout()
             st.pyplot(fig)
 
-                ### template_input 
-                # plotly - Plotly의 기본 템플릿.     # plotly_white - 배경이 하얀색인 깔끔한 템플릿.     # plotly_dark - 배경이 어두운색인 템플릿.
-                # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.    # simple_white - 매우 단순하고 깨끗한 템플릿.
+    ### template_input 
+    # plotly - Plotly의 기본 템플릿.     # plotly_white - 배경이 하얀색인 깔끔한 템플릿.     # plotly_dark - 배경이 어두운색인 템플릿.
+    # ggplot2 - R의 ggplot2 스타일을 모방한 템플릿.    # seaborn - Python의 seaborn 라이브러리 스타일을 모방한 템플릿.    # simple_white - 매우 단순하고 깨끗한 템플릿.
     
     with tab_sn_viz_2: # tab_sn_vs [레이더 차트]
         teams = list(sorted(team_id_dict.keys())) # Team list applied sorting
