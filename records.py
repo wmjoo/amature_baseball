@@ -663,7 +663,7 @@ with tab_sn_teams: # 팀 기록 탭
 
     with tab_sn_teams_team: # 선택 팀 기록 탭
         # 메인팀 공격/수비지표 따로 필터링해 변수에 저장
-        mainteam_name = '코메츠 호시탐탐'
+        mainteam_name = '코메츠 호시탐탐'        
         df1_h = hitter_grpby.loc[hitter_grpby.Team == mainteam_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == mainteam_name].drop('Team', axis = 1)
         df1_h.insert(0, '공격지표', '기록')
@@ -697,9 +697,26 @@ with tab_sn_teams: # 팀 기록 탭
             # st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
-                                  height=800, scrolling=True)           
+                                  height=750, scrolling=True)           
             if team_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
-                st.write(mainteam_statrank_h)
+                # st.write(mainteam_statrank_h)
+                # 두 번째 div 스타일
+                mainteam_box_stylesetting = """
+                    <div style="
+                        background-color: rgba(240, 240, 240, 0.8);  
+                        color: #000000;                              
+                        padding: 10px 12px;
+                        border-radius: 8px;
+                        font-family: monospace;
+                        font-size: 11px;
+                        margin-bottom: 10px;
+                        border: 1px solid #ccc;
+                    ">
+                    <b>[{}]</b><br>
+                    {}
+                    </div>
+                """.format(mainteam_name, ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict('records').items()]))                
+                st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
         ############################################################
         with tab_sn_teams_team_col2:
             # 선택한 팀의 팀 수비지표 출력
@@ -715,7 +732,7 @@ with tab_sn_teams: # 팀 기록 탭
             # st.markdown(team_statrank_p_html_table, unsafe_allow_html=True)
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
-                                  height=800, scrolling=True)
+                                  height=750, scrolling=True)
 
 
 with tab_sn_viz:
