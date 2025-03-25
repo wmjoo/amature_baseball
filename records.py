@@ -740,7 +740,36 @@ with tab_schd:
     # '코메츠 호시탐탐' 강조 처리
     schd_html_str = schd_html_str.replace(highlight_team, highlighted_team)
 
-    # 테이블 스타일 추가
+    # 경기 결과에 따라 각 tr에 style 적용
+    def color_row_by_result(row_html: str) -> str:
+        if "<td>승</td>" in row_html:
+            return row_html.replace("<tr>", '<tr style="background-color: #d4f7d4;">')  # 연초록
+        elif "<td>콜드승</td>" in row_html:
+            return row_html.replace("<tr>", '<tr style="background-color: #d4f7d4;">')  # 연초록        
+        elif "<td>패</td>" in row_html:
+            return row_html.replace("<tr>", '<tr style="background-color: #fce2e2;">')  # 연분홍
+        elif "<td>콜드패</td>" in row_html:
+            return row_html.replace("<tr>", '<tr style="background-color: #fce2e2;">')  # 연분홍
+        elif "<td>경기전</td>" in row_html:
+            return row_html.replace("<tr>", '<tr style="background-color: #f0f0f0;">')  # 연회색
+        return row_html  # 변화 없음
+
+    # tbody 내부만 찾아서 각 tr 가공
+    def apply_row_styling(html: str) -> str:
+        tbody_content = re.search(r"<tbody>(.*?)</tbody>", html, re.DOTALL)
+        if not tbody_content:
+            return html
+
+        tbody_html = tbody_content.group(1)
+        styled_rows = []
+        for row_html in re.findall(r"<tr>.*?</tr>", tbody_html, re.DOTALL):
+            styled_row = color_row_by_result(row_html)
+            styled_rows.append(styled_row)
+
+        styled_tbody = "<tbody>\n" + "\n".join(styled_rows) + "\n</tbody>"
+        return re.sub(r"<tbody>.*?</tbody>", styled_tbody, html, flags=re.DOTALL)
+
+    # 스타일 없는 테이블 CSS
     table_style = """
     <style>
         table {
@@ -757,22 +786,16 @@ with tab_schd:
             background-color: #f2f2f2;
             font-weight: bold;
         }
-        tbody tr:nth-child(even) {
-            background-color: #fafafa;
-        }
     </style>
     """
+
+    # 전체 HTML 구성
+    styled_html = table_style + apply_row_styling(schd_html_str)
+
     # 최종 HTML 조합
     styled_html = table_style + schd_html_str
-    # st.markdown(styled_html, unsafe_allow_html=True)
-    # st.write(schd_html_str)
-    st.write(schd_url)    
-
     st.components.v1.html(styled_html, height=600, scrolling=True)
-
-    # Streamlit에 출력
-    # st.markdown("### 📝 경기 일정 및 결과")
-    # st.markdown(styled_html, unsafe_allow_html=True)
+    st.write(schd_url)    
 
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
