@@ -437,6 +437,39 @@ with tab_sn_teamwise:
             # st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] + '</span>', unsafe_allow_html=True)
 
             # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
+            # box_stylesetting = """
+            #     <div style="
+            #         background-color: rgba(240, 240, 240, 0.8);  /* 연한 회색 배경 (라이트모드용) */
+            #         color: #000000;                              /* 검정색 글씨 */
+            #         padding: 12px 16px;
+            #         border-radius: 8px;
+            #         font-family: monospace;
+            #         font-size: 9px;
+            #         margin-bottom: 10px;
+            #         border: 1px solid #ccc;
+            #     ">
+            #     <b>전체 타자 평균값</b><br>
+            #     %s
+            #     </div>
+            #     <div style="
+            #         background-color: rgba(240, 240, 240, 0.8);
+            #         color: #000000;
+            #         padding: 12px 16px;
+            #         border-radius: 8px;
+            #         font-family: monospace;
+            #         font-size: 9px;
+            #         margin-bottom: 10px;
+            #         border: 1px solid #ccc;
+            #     ">
+            #     <b>전체 타자 중앙값</b><br>
+            #     %s
+            #     </div>
+            # """ % (str(df_h_meandict)[1:-1], str(df_h_mediandict)[1:-1])
+
+            # # 출력
+            # st.markdown(box_stylesetting, unsafe_allow_html=True)
+
+            # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
             box_stylesetting = """
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  /* 연한 회색 배경 (라이트모드용) */
@@ -449,7 +482,7 @@ with tab_sn_teamwise:
                     border: 1px solid #ccc;
                 ">
                 <b>전체 타자 평균값</b><br>
-                %s
+                {}
                 </div>
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);
@@ -462,12 +495,14 @@ with tab_sn_teamwise:
                     border: 1px solid #ccc;
                 ">
                 <b>전체 타자 중앙값</b><br>
-                %s
+                {}
                 </div>
-            """ % (str(df_h_meandict)[1:-1], str(df_h_mediandict)[1:-1])
+            """.format(
+                "\n".join([f"{k}: {v}" for k, v in df_h_meandict.items()])[1:-1],
+                "\n".join([f"{k}: {v}" for k, v in df_h_mediandict.items()])[1:-1]
+            )
 
-            # 출력
-            st.markdown(box_stylesetting, unsafe_allow_html=True)
+            st.markdown(box_stylesetting, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
         if (df_pitcher.shape[0] > 0) : # data exists         
