@@ -696,41 +696,6 @@ with tab_sn_viz:
 with tab_schd:
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True) # 시즌 기록 출력
     st.write('') # 한줄 공백
-    # st.table(df_schd2)
-    # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
-    # st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
-
-    # # HTML 테이블 생성
-    # html_table = df_schd2.to_html(index=False, escape=False, border=0)
-
-    # # 스타일 깨는 속성 제거 (오른쪽 정렬 등)
-    # html_table = html_table.replace('style="text-align: right;"', '')
-
-    # # 스타일과 HTML 함께 정의
-    # styled_html = f"""
-    # <style>
-    #     table {{
-    #         width: 100%;
-    #         border-collapse: collapse;
-    #         font-size: 14px;
-    #         margin-bottom: 1rem;
-    #     }}
-    #     th, td {{
-    #         text-align: center;
-    #         padding: 4px 8px;
-    #         border: 1px solid #ddd;
-    #         white-space: nowrap;
-    #     }}
-    #     thead {{
-    #         background-color: #f5f5f5;
-    #     }}
-    # </style>
-    # {html_table}
-    # """
-
-    # # 출력
-    # st.markdown(styled_html, unsafe_allow_html=True)
-
     # 강조할 팀명
     highlight_team = "코메츠 호시탐탐"
     highlighted_team = f"<span style='font-weight: bold; color: navy;'>{highlight_team}</span>" 
@@ -798,7 +763,8 @@ with tab_schd:
 
     # 최종 HTML 조합
     styled_html = table_style + schd_html_str
-    st.components.v1.html(styled_html, height=600, scrolling=True)
+    st.components.v1.html(styled_html, height=400, 
+                          scrolling=True)
     st.write(schd_url)    
 
 with tab_sn_players: # 전체 선수 탭
