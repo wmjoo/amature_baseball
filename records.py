@@ -82,89 +82,6 @@ pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': 
                      'SO': '탈삼진', 'WP': '폭투', 'BK': '보크', 'R': '실점', 'ER': '자책점', 'WHIP': 'WHIP', 'BAA': '피안타율', 'SLG':'피장타율', 'OBP':'피출루율', 'OPS' : '피OPS', 
                      'K9': '탈삼진율', 'Team': '팀'}
 
-####################################
-#### 일정표 준비
-####################################
-# 일정표 URL 설정
-url = f"http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={default_year}"
-st.write(url)
-# HTTP GET 요청
-response = requests.get(url)
-response.raise_for_status()  # 요청이 성공했는지 확인
-
-# BeautifulSoup을 이용하여 HTML 파싱
-soup = BeautifulSoup(response.content, 'html.parser')
-
-# 테이블 찾기
-table = soup.find('table', {'class': 'game_table'})  # 테이블의 클래스를 확인하고 지정하세요
-
-# 테이블 헤더 추출
-headers = [header.text.strip() for header in table.find_all('th')]
-
-# 테이블 데이터 추출
-rows = []
-for row in table.find_all('tr')[1:]:  # 첫 번째 행은 헤더이므로 제외
-    cells = row.find_all('td')
-    row_data = [cell.text.strip() for cell in cells]
-    rows.append(row_data)
-
-# pandas DataFrame 생성
-df_schd = pd.DataFrame(rows, columns=headers)
-df_schd = df_schd.sort_values('일시').reset_index(drop=True)
-data = df_schd.게임.str.split('\n').tolist()
-# 최대 열 개수 확인
-max_columns = max(len(row) for row in data)
-# 열 이름 설정
-column_names = [f"col{i+1}" for i in range(max_columns)]
-# DataFrame 생성
-df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
-# DataFrame 출력
-df_schd2 = pd.concat([df_schd.drop(['게임', '분류'], axis =1), df_team], axis = 1)
-# 열 갯수가 6개일 경우, '6' 컬럼을 추가
-if df_schd2.shape[1] == 6:
-    df_schd2['6'] = ''  # '' 값을 가진 빈 컬럼을 추가    
-df_schd2.columns = ['일시', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
-df_schd2.구장 = df_schd2.구장.str.replace('야구장', '')
-first_called = df_schd2.선공점수.str.contains('콜드승')
-second_called = df_schd2.후공점수.str.contains('콜드승')
-df_schd2.선공점수 = df_schd2.선공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
-df_schd2.후공점수 = df_schd2.후공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
-df_schd2['Result'] = ''
-tmp_result = list()
-for i in range(df_schd2.shape[0]):
-    # print(i, first_called[i], second_called[i])
-    if df_schd2.iloc[i]['선공점수'] > df_schd2.iloc[i]['후공점수']:
-        if first_called[i]:
-            result = df_schd2.iloc[i]['선공'] + '_콜드승'    
-        else :
-            result = df_schd2.iloc[i]['선공'] + '_승'
-    elif df_schd2.iloc[i]['선공점수'] < df_schd2.iloc[i]['후공점수']:
-        if second_called[i]:
-            result = df_schd2.iloc[i]['후공'] + '_콜드승'
-        else:
-            result = df_schd2.iloc[i]['후공'] + '_승'
-        # print(i, result)
-    elif (df_schd2.iloc[i]['결과'] != '게임대기') & (df_schd2.iloc[i]['선공점수'] == df_schd2.iloc[i]['후공점수']):
-        result = '무'
-        # print(i, result)
-    else:
-        result = '경기전'
-        # print(i, result)
-    tmp_result.append(result)
-
-df_schd2['Result'] = tmp_result
-df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_콜드승'), 'Result'] = '콜드승'
-df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_승'), 'Result'] = '승'
-df_schd2.loc[df_schd2['Result'].str.contains('_승'), 'Result'] = '패'
-df_schd2.loc[df_schd2['Result'].str.contains('_콜드승'), 'Result'] = '콜드패'
-
-df_schd2 = df_schd2.drop('결과', axis = 1)
-df_schd2.columns = ['일시', '구장', '선공', '선', '후공', '후', '결과']
-
-next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
-next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
-# st.write('NEXT', next_game_teamname) # 임박한 경기 일정 행 필터링
-
 ################################################################
 ## User def functions
 ################################################################
@@ -219,6 +136,88 @@ with top_col2:
     team_groupname = "토요 루키C"       
 # 세 번째 컬럼에 내용 출력
 with top_col3:
+    ####################################
+    #### 일정표 준비
+    ####################################
+    # 일정표 URL 설정
+    url = f"http://www.gameone.kr/club/info/schedule/table?club_idx={team_id}&kind=&season={default_year}"
+    st.write(url)
+    # HTTP GET 요청
+    response = requests.get(url)
+    response.raise_for_status()  # 요청이 성공했는지 확인
+
+    # BeautifulSoup을 이용하여 HTML 파싱
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # 테이블 찾기
+    table = soup.find('table', {'class': 'game_table'})  # 테이블의 클래스를 확인하고 지정하세요
+
+    # 테이블 헤더 추출
+    headers = [header.text.strip() for header in table.find_all('th')]
+
+    # 테이블 데이터 추출
+    rows = []
+    for row in table.find_all('tr')[1:]:  # 첫 번째 행은 헤더이므로 제외
+        cells = row.find_all('td')
+        row_data = [cell.text.strip() for cell in cells]
+        rows.append(row_data)
+
+    # pandas DataFrame 생성
+    df_schd = pd.DataFrame(rows, columns=headers)
+    df_schd = df_schd.sort_values('일시').reset_index(drop=True)
+    data = df_schd.게임.str.split('\n').tolist()
+    # 최대 열 개수 확인
+    max_columns = max(len(row) for row in data)
+    # 열 이름 설정
+    column_names = [f"col{i+1}" for i in range(max_columns)]
+    # DataFrame 생성
+    df_team = pd.DataFrame(data, columns=column_names).drop(['col3', 'col4', 'col5'], axis =1)
+    # DataFrame 출력
+    df_schd2 = pd.concat([df_schd.drop(['게임', '분류'], axis =1), df_team], axis = 1)
+    # 열 갯수가 6개일 경우, '6' 컬럼을 추가
+    if df_schd2.shape[1] == 6:
+        df_schd2['6'] = ''  # '' 값을 가진 빈 컬럼을 추가    
+    df_schd2.columns = ['일시', '구장', '결과', '선공', '선공점수', '후공', '후공점수']
+    df_schd2.구장 = df_schd2.구장.str.replace('야구장', '')
+    first_called = df_schd2.선공점수.str.contains('콜드승')
+    second_called = df_schd2.후공점수.str.contains('콜드승')
+    df_schd2.선공점수 = df_schd2.선공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
+    df_schd2.후공점수 = df_schd2.후공점수.str.replace('콜드승 ', '').str.replace('기권승 ', '').str.replace('몰수승 ', '').replace(r'^\s*$', pd.NA, regex=True).fillna(0).astype('int')  #.replace('', 0).astype('int')
+    df_schd2['Result'] = ''
+    tmp_result = list()
+    for i in range(df_schd2.shape[0]):
+        # print(i, first_called[i], second_called[i])
+        if df_schd2.iloc[i]['선공점수'] > df_schd2.iloc[i]['후공점수']:
+            if first_called[i]:
+                result = df_schd2.iloc[i]['선공'] + '_콜드승'    
+            else :
+                result = df_schd2.iloc[i]['선공'] + '_승'
+        elif df_schd2.iloc[i]['선공점수'] < df_schd2.iloc[i]['후공점수']:
+            if second_called[i]:
+                result = df_schd2.iloc[i]['후공'] + '_콜드승'
+            else:
+                result = df_schd2.iloc[i]['후공'] + '_승'
+            # print(i, result)
+        elif (df_schd2.iloc[i]['결과'] != '게임대기') & (df_schd2.iloc[i]['선공점수'] == df_schd2.iloc[i]['후공점수']):
+            result = '무'
+            # print(i, result)
+        else:
+            result = '경기전'
+            # print(i, result)
+        tmp_result.append(result)
+
+    df_schd2['Result'] = tmp_result
+    df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_콜드승'), 'Result'] = '콜드승'
+    df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_승'), 'Result'] = '승'
+    df_schd2.loc[df_schd2['Result'].str.contains('_승'), 'Result'] = '패'
+    df_schd2.loc[df_schd2['Result'].str.contains('_콜드승'), 'Result'] = '콜드패'
+
+    df_schd2 = df_schd2.drop('결과', axis = 1)
+    df_schd2.columns = ['일시', '구장', '선공', '선', '후공', '후', '결과']
+
+    next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
+    next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace(team_name, ''))[0]
+    # st.write('NEXT', next_game_teamname) # 임박한 경기 일정 행 필터링
     st.write(next_game)
 
 ################################################################
