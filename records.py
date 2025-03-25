@@ -698,7 +698,13 @@ with tab_schd:
     # st.dataframe(df_schd2)
     st.table(df_schd2.reset_index(drop=True))
     # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
-    st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
+    # st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
+    # 인덱스 없이 HTML 테이블로 출력
+    st.markdown(
+        df_schd2.to_html(index=False, escape=False), 
+        unsafe_allow_html=True
+    )
+
 
 
 with tab_sn_players: # 전체 선수 탭
