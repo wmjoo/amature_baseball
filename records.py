@@ -734,7 +734,7 @@ with tab_schd:
     # 인덱스 없이 HTML 테이블로 출력
     schd_html_str = df_schd2.to_html(index=False, escape=False)
     st.markdown(schd_html_str, unsafe_allow_html=True)
-    st.write(schd_html_str)
+    # st.write(schd_html_str)
     st.write(schd_url)    
 
 with tab_sn_players: # 전체 선수 탭
