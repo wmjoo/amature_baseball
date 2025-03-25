@@ -128,11 +128,12 @@ top_col1, top_col2, top_col3 = st.columns(3)
 
 # 일정표 크롤링 & 다음경기 출력
 with top_col1:
+    this_year = 2025
     ####################################
     #### 일정표 준비
     ####################################
     # 일정표 URL 설정
-    schd_url = f"http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={default_year}"
+    schd_url = f"http://www.gameone.kr/club/info/schedule/table?club_idx=7984&kind=&season={this_year}"
     # HTTP GET 요청
     response = requests.get(schd_url)
     response.raise_for_status()  # 요청이 성공했는지 확인
