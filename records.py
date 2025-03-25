@@ -218,7 +218,8 @@ with top_col3:
     next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
     # st.write('NEXT', next_game_teamname) # 임박한 경기 일정 행 필터링
     # st.write(next_game['일시'])
-    st.write('{} [{}]\n{}vs{}'.format(next_game['일시'][0], next_game['구장'][0], next_game['선공'][0], next_game['후공'][0]))
+    st.write('{} [{}]'.format(next_game['일시'][0], next_game['구장'][0]))
+    st.write('{} vs {}'.format(next_game['선공'][0], next_game['후공'][0]))
 
 ################################################################
 ## Data Loading
