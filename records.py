@@ -701,36 +701,43 @@ with tab_schd:
     # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
     # st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
 
-    # HTML 테이블 생성
-    html_table = df_schd2.to_html(index=False, escape=False, border=0)
+    # # HTML 테이블 생성
+    # html_table = df_schd2.to_html(index=False, escape=False, border=0)
 
-    # 스타일 깨는 속성 제거 (오른쪽 정렬 등)
-    html_table = html_table.replace('style="text-align: right;"', '')
+    # # 스타일 깨는 속성 제거 (오른쪽 정렬 등)
+    # html_table = html_table.replace('style="text-align: right;"', '')
 
-    # 스타일과 HTML 함께 정의
-    styled_html = f"""
-    <style>
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            margin-bottom: 1rem;
-        }}
-        th, td {{
-            text-align: center;
-            padding: 4px 8px;
-            border: 1px solid #ddd;
-            white-space: nowrap;
-        }}
-        thead {{
-            background-color: #f5f5f5;
-        }}
-    </style>
-    {html_table}
-    """
+    # # 스타일과 HTML 함께 정의
+    # styled_html = f"""
+    # <style>
+    #     table {{
+    #         width: 100%;
+    #         border-collapse: collapse;
+    #         font-size: 14px;
+    #         margin-bottom: 1rem;
+    #     }}
+    #     th, td {{
+    #         text-align: center;
+    #         padding: 4px 8px;
+    #         border: 1px solid #ddd;
+    #         white-space: nowrap;
+    #     }}
+    #     thead {{
+    #         background-color: #f5f5f5;
+    #     }}
+    # </style>
+    # {html_table}
+    # """
 
-    # 출력
-    st.markdown(styled_html, unsafe_allow_html=True)
+    # # 출력
+    # st.markdown(styled_html, unsafe_allow_html=True)
+
+        # 인덱스 없이 HTML 테이블로 출력
+    st.markdown(
+        df_schd2.to_html(index=False, escape=False), 
+        unsafe_allow_html=True
+    )
+
 
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
