@@ -416,56 +416,6 @@ with tab_sn_teamwise:
 
             st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
-                        
-            # # 스타일 설정 (라이트/다크모드 모두에 잘 보이게)
-            # span_stylesetting = """
-            # <span style="
-            #     background-color: #2b2b2b;  /* 어두운 회색 배경 */
-            #     color: #ffffff;             /* 흰색 글자 */
-            #     padding: 6px 10px;
-            #     border-radius: 6px;
-            #     font-family: monospace;
-            #     display: inline-block;
-            #     font-size: 9px;
-            # ">
-            # """
-            # st.write('전체 타자 평균값')
-            # st.markdown(span_stylesetting + str(df_h_meandict)[1:-1] + '</span>', unsafe_allow_html=True)
-            # st.write('전체 타자 중앙값')
-            # st.markdown(span_stylesetting + str(df_h_mediandict)[1:-1] + '</span>', unsafe_allow_html=True)
-
-            # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
-            # box_stylesetting = """
-            #     <div style="
-            #         background-color: rgba(240, 240, 240, 0.8);  /* 연한 회색 배경 (라이트모드용) */
-            #         color: #000000;                              /* 검정색 글씨 */
-            #         padding: 12px 16px;
-            #         border-radius: 8px;
-            #         font-family: monospace;
-            #         font-size: 9px;
-            #         margin-bottom: 10px;
-            #         border: 1px solid #ccc;
-            #     ">
-            #     <b>전체 타자 평균값</b><br>
-            #     %s
-            #     </div>
-            #     <div style="
-            #         background-color: rgba(240, 240, 240, 0.8);
-            #         color: #000000;
-            #         padding: 12px 16px;
-            #         border-radius: 8px;
-            #         font-family: monospace;
-            #         font-size: 9px;
-            #         margin-bottom: 10px;
-            #         border: 1px solid #ccc;
-            #     ">
-            #     <b>전체 타자 중앙값</b><br>
-            #     %s
-            #     </div>
-            # """ % (str(df_h_meandict)[1:-1], str(df_h_mediandict)[1:-1])
-
-            # # 출력
-            # st.markdown(box_stylesetting, unsafe_allow_html=True)
 
             # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
             box_stylesetting = """
@@ -496,8 +446,8 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(
-                "\n".join([f"{k}: {v}" for k, v in df_h_meandict.items()]),
-                "\n".join([f"{k}: {v}" for k, v in df_h_mediandict.items()])
+                "\n".join([f"{k}: {v}, " for k, v in df_h_meandict.items()]),
+                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict.items()])
             )
             st.write(box_stylesetting)
             st.markdown(box_stylesetting, unsafe_allow_html=True)            
@@ -514,12 +464,47 @@ with tab_sn_teamwise:
             df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1.insert(0, 'Type', 'Records')
             df2.insert(0, 'Type', 'Rank')
-            st.write('Entire Mean(Pitchers)')        
-            st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-            st.write('Entire Median(Pitchers)')
-            st.markdown(span_stylesetting + str(df_p_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)        
+            # st.write('Entire Mean(Pitchers)')        
+            # st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
+            # st.write('Entire Median(Pitchers)')
+            # st.markdown(span_stylesetting + str(df_p_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)        
             st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
+            
+            # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
+            box_stylesetting = """
+                <div style="
+                    background-color: rgba(240, 240, 240, 0.8);  
+                    color: #000000;                              
+                    padding: 10px 12px;
+                    border-radius: 8px;
+                    font-family: monospace;
+                    font-size: 11px;
+                    margin-bottom: 10px;
+                    border: 1px solid #ccc;
+                ">
+                <b>[전체 투수 평균값]</b><br>
+                {}
+                </div>
+                <div style="
+                    background-color: rgba(240, 240, 240, 0.8);  
+                    color: #000000;                              
+                    padding: 10px 12px;
+                    border-radius: 8px;
+                    font-family: monospace;
+                    font-size: 11px;
+                    margin-bottom: 10px;
+                    border: 1px solid #ccc;
+                ">
+                <b>[전체 투수 중앙값]</b><br>
+                {}
+                </div>
+            """.format(
+                "\n".join([f"{k}: {v}, " for k, v in df_p_meandict.items()]),
+                "\n".join([f"{k}: {v}, " for k, v in df_p_mediandict.items()])
+            )
+            st.write(box_stylesetting)
+            st.markdown(box_stylesetting, unsafe_allow_html=True)                  
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
     with tab_sn_viz_1: # 개인 선수별 기록 분포 시각화
