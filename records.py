@@ -217,7 +217,7 @@ with top_col3:
     next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
     next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace('코메츠 호시탐탐', ''))[0]
     # st.write('NEXT', next_game_teamname) # 임박한 경기 일정 행 필터링
-    st.write(next_game)
+    st.write('{}[{}]{}vs{}'.format(next_game['일시'], next_game['구장'], next_game['선공'], next_game['후공']))
 
 ################################################################
 ## Data Loading
