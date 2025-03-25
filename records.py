@@ -916,13 +916,14 @@ with tab_sn_teams: # 팀 기록 탭
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
+
     ############    ############    ############    ############    ############
     df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
     df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
     df1.insert(0, 'Type', 'Records')
     df2.insert(0, 'Type', 'Rank')
     team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
-    st.dataframe(pitcher_data_EnKr, use_container_width = True, hide_index = True)
+    st.dataframe(team_statrank_p, use_container_width = True, hide_index = True)
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
     st.write('팀별 기록 : 투수')
     st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
