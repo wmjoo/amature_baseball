@@ -669,7 +669,7 @@ with tab_sn_teams: # 팀 기록 탭
         df1_h.insert(0, '공격지표', '기록')
         df2_h.insert(0, '공격지표', '순위')
         mainteam_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표')
-
+        st.write(type(mainteam_statrank_h))
         def format_cell(x):
             # 정수는 그대로, float는 소수 4자리까지
             if isinstance(x, int):
