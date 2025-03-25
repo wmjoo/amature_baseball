@@ -210,7 +210,7 @@ highlight_team = '코메츠 호시탐탐'
 # 스타일 적용 함수
 def highlight_team_name(team_name, highlight_target):
     if team_name == highlight_target:
-        return f"<span style='color: navy; font-weight: bold;'>{team_name}</span>"
+        return f"<span style='color: skyblue; font-weight: bold;'>{team_name}</span>"
     return team_name
 
 
