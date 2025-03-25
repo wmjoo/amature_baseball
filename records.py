@@ -223,7 +223,7 @@ with tab_sn_players: # 전체 선수 탭
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
                                     'HBP', 'PA', 'AB', 'SO', 'DP']
-        st.subheader('{} : 전체타자 [{}명]'.format(team_groupname, df_hitter.shape[0]))
+        st.write('전체타자 [{}명]'.format(df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
         st.subheader('팀별 기록 : 타자')
@@ -277,7 +277,7 @@ with tab_sn_players: # 전체 선수 탭
                                     'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         if df_pitcher.shape[0] > 0 : # pitcher data exists
             # 출력시 열 순서 변경
-            st.subheader('{} : 전체투수 [{}명]'.format(team_groupname, df_pitcher.shape[0]))
+            st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
             pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
             pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
 
