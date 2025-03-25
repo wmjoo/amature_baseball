@@ -720,7 +720,7 @@ with tab_sn_teams: # 팀 기록 탭
                     </div>
                 """.format(
                     mainteam_name, 
-                    ", ".join([f"{k}: {v[0]} [{int(v[1])}위]" for k, v in list(mainteam_statrank_h.to_dict().items())[1:]])
+                    ", ".join([f"{k}: {v[0]:.3f} [{int(v[1])}위]" for k, v in list(mainteam_statrank_h.to_dict().items())[1:]])
                                 #mainteam_statrank_h.to_dict().items()])
                 )
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
@@ -759,7 +759,7 @@ with tab_sn_teams: # 팀 기록 탭
                     </div>
                 """.format(
                     mainteam_name, 
-                    ", ".join([f"{k}: {v[0]} [{int(v[1])}위]" for k, v in list(mainteam_statrank_p.to_dict().items())[1:]])
+                    ", ".join([f"{k}: {v[0]:.3f} [{int(v[1])}위]" for k, v in list(mainteam_statrank_p.to_dict().items())[1:]])
                                 #mainteam_statrank_h.to_dict().items()])
                 )
                 st.markdown(mainteam_box_stylesetting_p, unsafe_allow_html=True)
