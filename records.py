@@ -861,45 +861,71 @@ with tab_sn_terms: # 약어 설명
             </table>
         </div>
     """
+
+    pitchers_term_table_html = """
+        <style>
+            .table-box {
+                font-family: Arial, sans-serif;
+                font-size: 13px;
+            }
+            h3 {
+                margin-bottom: 8px;
+                color: #333;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            th, td {
+                border: 1px solid #999;
+                padding: 6px 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+
+        <div class="table-box">
+            <h3>투수(Pitchers) 컬럼명 약어</h3>
+            <table>
+                <tr><th>ENG</th><th>KOR</th><th>Desc</th></tr>
+                <tr><td>Name</td><td>성명</td><td>Player's name</td></tr>
+                <tr><td>No</td><td>배번</td><td>Jersey number</td></tr>
+                <tr><td>ERA</td><td>방어율</td><td>Earned run average</td></tr>
+                <tr><td>WHIP</td><td>WHIP</td><td>Walks plus hits per inning</td></tr>
+                <tr><td>SO/IP</td><td>이닝 당 탈삼진</td><td>Strikeouts per inning</td></tr>
+                <tr><td>GS</td><td>경기수</td><td>Games started</td></tr>
+                <tr><td>W</td><td>승</td><td>Wins</td></tr>
+                <tr><td>L</td><td>패</td><td>Losses</td></tr>
+                <tr><td>SV</td><td>세</td><td>Saves</td></tr>
+                <tr><td>HLD</td><td>홀드</td><td>Holds</td></tr>
+                <tr><td>BF</td><td>타자</td><td>Batters faced</td></tr>
+                <tr><td>AB</td><td>타수</td><td>At bats against</td></tr>
+                <tr><td>P</td><td>투구수</td><td>Pitches thrown</td></tr>
+                <tr><td>HA</td><td>피안타</td><td>Hits allowed</td></tr>
+                <tr><td>HR</td><td>피홈런</td><td>Home runs allowed</td></tr>
+                <tr><td>SH</td><td>희생타</td><td>Sacrifice hits allowed</td></tr>
+                <tr><td>SF</td><td>희생플라이</td><td>Sacrifice flies allowed</td></tr>
+                <tr><td>BB</td><td>볼넷</td><td>Walks allowed</td></tr>
+                <tr><td>IBB</td><td>고의4구</td><td>Intentional walks allowed</td></tr>
+                <tr><td>HBP</td><td>사구</td><td>Hit by pitch allowed</td></tr>
+                <tr><td>SO</td><td>탈삼진</td><td>Strikeouts</td></tr>
+                <tr><td>WP</td><td>폭투</td><td>Wild pitches</td></tr>
+                <tr><td>BK</td><td>보크</td><td>Balks</td></tr>
+                <tr><td>R</td><td>실점</td><td>Runs allowed</td></tr>
+                <tr><td>ER</td><td>자책점</td><td>Earned runs allowed</td></tr>
+                <tr><td>IP</td><td>이닝</td><td>Innings pitched</td></tr>
+            </table>
+        </div>
+    """
+
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
-    with tab_sn_terms_col1:
-        # 타자 데이터 설명
+    with tab_sn_terms_col1:        # 타자 데이터 설명
         st.components.v1.html(table_style_12px + apply_row_styling(hitters_term_table_html), height=800, scrolling=True)
-    with tab_sn_terms_col2:
-        # 투수 데이터 설명
-        st.markdown("""
-        ### 투수(Pitchers) 컬럼명 약어:
-        | ENG | KOR | Desc                    |
-        |--------------|-------------|--------------------------------|
-        | Name         | 성명        | Player's name                  |
-        | No           | 배번        | Jersey number                  |
-        | ERA          | 방어율      | Earned run average             |
-        | WHIP         | WHIP        | Walks plus hits per inning    |
-        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
-        | GS           | 경기수      | Games started                  |
-        | W            | 승          | Wins                           |
-        | L            | 패          | Losses                         |
-        | SV           | 세          | Saves                          |
-        | HLD          | 홀드        | Holds                          |
-        | BF           | 타자        | Batters faced                  |
-        | AB           | 타수        | At bats against                |
-        | P            | 투구수      | Pitches thrown                 |
-        | HA           | 피안타      | Hits owed                   |
-        | HR           | 피홈런      | Home runs allowed              |
-        | SH           | 희생타        | Sacrifice hits allowed         |
-        | SF           | 희생플라이     | Sacrifice flies allowed        |
-        | BB           | 볼넷        | Walks allowed                  |
-        | IBB          | 고의4구     | Intentional walks allowed      |
-        | HBP          | 사구        | Hit by pitch allowed           |
-        | SO           | 탈삼진      | Strikeouts                     |
-        | WP           | 폭투        | Wild pitches                   |
-        | BK           | 보크        | Balks                          |
-        | R            | 실점        | Runs allowed                   |
-        | ER           | 자책점      | Earned runs allowed            |
-        | IP           | 이닝        | Innings pitched                |    
-        | SO/IP        | 이닝 당 탈삼진 | Strikeouts per 1 Inning       |
-        """)
+    with tab_sn_terms_col2:        # 투수 데이터 설명
+        st.components.v1.html(table_style_12px + apply_row_styling(pitchers_term_table_html), height=800, scrolling=True)
 
 with tab_dataload:
     user_password_update = st.text_input('Input Password for Update', type='password')
