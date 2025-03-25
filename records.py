@@ -697,6 +697,9 @@ with tab_schd:
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True)
     # st.dataframe(df_schd2)
     st.table(df_schd2.reset_index(drop=True))
+    # dataframe 전체 출력하되 인덱스 숨기기 (st.dataframe 이용)
+    st.dataframe(df_schd2.reset_index(drop=True), use_container_width=True, hide_index=True)
+
 
 with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(['타자 [{}명]'.format(df_hitter.shape[0]), '투수 [{}명]'.format(df_pitcher.shape[0])])
