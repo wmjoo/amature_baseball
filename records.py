@@ -231,9 +231,9 @@ df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].co
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_dataload, tab_sn_terms = st.tabs(["전체 선수", "팀별 선수", "시각화/통계", "일정", "업데이트", "약어"])
 
-with tab_sn_players:
+with tab_sn_players: # 전체 선수 탭
     tab_sn_players_1, tab_sn_players_2 = st.tabs(["성남:전체타자", "성남:전체투수"])
-    with tab_sn_players_1:
+    with tab_sn_players_1: # 전체 선수 탭 > "성남:전체타자" 탭
         # 출력시 열 순서 변경
         rank_by_cols_h_sorted = ['Team', 'AVG', 'OBP', 'SLG', 'OPS', 'HR', 'SB', 'R', 'H', 'MHit', 
                                     '1B', '2B', '3B', 'TB', 'RBI', 'CS', 'SH', 'SF', 'BB', 'IBB', 
@@ -287,7 +287,7 @@ with tab_sn_players:
             st.pyplot(plt)
 
 
-    with tab_sn_players_2:
+    with tab_sn_players_2: # 전체 선수 탭 > "성남:전체투수" 탭
         rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
                                     'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         if df_pitcher.shape[0] > 0 : # pitcher data exists
@@ -375,7 +375,7 @@ with tab_sn_players:
             # if df.shape[0] > 0:
             st.write("Heatmap")        
             # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-            df['team_eng'] = df['Team'].map(allteam_name_dict)
+            df['team_eng'] = df['Team'].map(team_name_dict)
             df = df.drop('Team', axis = 1).copy()  
             df.set_index('team_eng', inplace=True)
             # 커스텀 컬러맵 생성
