@@ -130,7 +130,8 @@ with top_col1:
     ## 년도 설정
     default_year = st.selectbox('년도 선택', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
 with top_col2:
-    st.write('')
+    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
+    team_id = team_id_dict[team_name]   
 # 세 번째 컬럼에 내용 출력
 with top_col3:
     st.write('')
@@ -391,8 +392,8 @@ with tab_sn_teamwise:
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["타자", "투수"])
 
     with tab_sn_teamwise_1: # 팀별 타자 탭
-        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
-        team_id = team_id_dict[team_name]        
+        # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+        # team_id = team_id_dict[team_name]        
         if (df_hitter.shape[0] > 0) : # data exists            
             DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -444,8 +445,8 @@ with tab_sn_teamwise:
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2: # 팀별 투수 탭
-        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
-        team_id = team_id_dict[team_name]        
+        # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
+        # team_id = team_id_dict[team_name]        
         if (df_pitcher.shape[0] > 0) : # data exists         z
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
