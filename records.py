@@ -208,12 +208,13 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
         st.toast('Saved Data from Web to Cloud!', icon='💾')
 
 ################################################################
-## UI Tab
+## DATASET PREPARE
 ################################################################
 df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
 # 팀별 데이터셋 그룹바이로 준비
+## 1) 타자 데이터셋
 hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
 hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
@@ -228,6 +229,71 @@ for col in ['OPS', 'SLG', 'OBP', 'AVG']:
     team_idx = hitter_grpby.columns.get_loc('Team') + 1
     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
 
+## 2) 투수 데이터셋
+rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
+                            'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
+if df_pitcher.shape[0] > 0 : # pitcher data exists
+    # 출력시 열 순서 변경
+    st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
+    pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
+    pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
+
+    # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+    if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        df_pitcher['SO/IP'] = (df_pitcher['SO'] / df_pitcher['IP']).round(2)
+        df_pitcher['BB/IP'] = (df_pitcher['BB'] / df_pitcher['IP']).round(2)
+        df_pitcher['H/IP'] = (df_pitcher['HA'] / df_pitcher['IP']).round(2)
+    
+    # WHIP 계산: (볼넷 + 피안타) / 이닝
+    if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
+        df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
+        # df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
+        # df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
+
+    # None, '', '-'를 NaN으로 변환
+    df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
+    # 필요한 컬럼을 정의
+    p_required_columns = ['No', 'Name'] + rank_by_cols_p_sorted
+    # 존재하는 컬럼만 선택
+    p_existing_columns = [col for col in p_required_columns if col in df_pitcher.columns]
+    team_p_existing_columns = [col for col in rank_by_cols_p_sorted if col in df_pitcher.columns]
+
+    pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
+                                    ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
+    # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
+    # st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
+    # st.write(pitcher_grpby.head(5)) # 5개 팀만 출력
+    # 파생 변수 추가
+    # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
+    if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
+        pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(3)
+
+    # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+    if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        pitcher_grpby['SO/IP'] = (pitcher_grpby['SO'] / pitcher_grpby['IP']).round(2)
+        pitcher_grpby['BB/IP'] = (pitcher_grpby['BB'] / pitcher_grpby['IP']).round(2)
+        pitcher_grpby['H/IP'] = (pitcher_grpby['HA'] / pitcher_grpby['IP']).round(2)
+        pitcher_grpby['K9'] = (pitcher_grpby['SO/IP'] * 9)
+
+    # WHIP 계산: (볼넷 + 피안타) / 이닝
+    if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
+        pitcher_grpby['BAA'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
+        pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF']).round(3)
+        # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
+        # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
+
+    # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+    new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OBP'] # , 'OPS', 'OBP', 'SLG']
+    for col in new_cols:
+        if col in pitcher_grpby.columns:
+            team_idx = pitcher_grpby.columns.get_loc('Team') + 1
+            pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
+
+################################################################
+## UI Tab
+################################################################
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms, tab_dataload = st.tabs(["전체선수", "팀별선수", "시각화/통계", "일정", "약어", "데이터 로드"])
 
@@ -288,73 +354,68 @@ with tab_sn_players: # 전체 선수 탭
 
 
     with tab_sn_players_2: # 전체 선수 탭 > "성남:전체투수" 탭
-        rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
-                                    'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
+        # rank_by_cols_p_sorted = ['Team', 'IP', 'ERA', 'WHIP', 'H/IP', 'BB/IP', 'SO/IP', 'BAA', 'OBP', 'G', 'W', 'L', 'SV', 'HLD', 
+        #                             'SO', 'BF', 'AB', 'P', 'HA', 'HR', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'WP', 'BK', 'R', 'ER', 'K9']  
         if df_pitcher.shape[0] > 0 : # pitcher data exists
-            # 출력시 열 순서 변경
-            st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
-            pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
-            pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
+        #     # 출력시 열 순서 변경
+        #     st.subheader('전체투수 [{}명]'.format(df_pitcher.shape[0]))
+        #     pitcher_sumcols = df_pitcher.select_dtypes(include=['int64', 'float64']).columns.tolist() # + ['IP'] # Sum 컬럼 선택
+        #     pitcher_sumcols = [col for col in pitcher_sumcols if col != 'No'] # No 열 제외하기
 
-            # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
-            if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-                df_pitcher['SO/IP'] = (df_pitcher['SO'] / df_pitcher['IP']).round(2)
-                df_pitcher['BB/IP'] = (df_pitcher['BB'] / df_pitcher['IP']).round(2)
-                df_pitcher['H/IP'] = (df_pitcher['HA'] / df_pitcher['IP']).round(2)
+        #     # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+        #     if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        #         df_pitcher['SO/IP'] = (df_pitcher['SO'] / df_pitcher['IP']).round(2)
+        #         df_pitcher['BB/IP'] = (df_pitcher['BB'] / df_pitcher['IP']).round(2)
+        #         df_pitcher['H/IP'] = (df_pitcher['HA'] / df_pitcher['IP']).round(2)
             
-            # WHIP 계산: (볼넷 + 피안타) / 이닝
-            if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-                df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
-                df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
-                # df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
-                # df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
+        #     # WHIP 계산: (볼넷 + 피안타) / 이닝
+        #     if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+        #         df_pitcher['WHIP'] = ((df_pitcher['BB'] + df_pitcher['HA']) / df_pitcher['IP']).round(3)
+        #         df_pitcher['OBP'] = (df_pitcher['HA'] + df_pitcher['BB'] + df_pitcher['HBP']) / (df_pitcher['AB'] + df_pitcher['BB'] + df_pitcher['HBP'] + df_pitcher['SF'])
+        #         # df_pitcher['SLG'] = (df_pitcher['HA'] + df_pitcher['2B']*2 + df_pitcher['3B']*3 + df_pitcher['HR']*4) / df_pitcher['AB']
+        #         # df_pitcher['OPS'] = df_pitcher['OBP'] + df_pitcher['SLG']
 
-            # None, '', '-'를 NaN으로 변환
-            df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
-            # 필요한 컬럼을 정의
-            p_required_columns = ['No', 'Name'] + rank_by_cols_p_sorted
-            # 존재하는 컬럼만 선택
-            p_existing_columns = [col for col in p_required_columns if col in df_pitcher.columns]
-            team_p_existing_columns = [col for col in rank_by_cols_p_sorted if col in df_pitcher.columns]
+        #     # None, '', '-'를 NaN으로 변환
+        #     df_pitcher = df_pitcher.replace({None: np.nan, '': np.nan, '-': np.nan}) #, inplace=True)
+        #     # 필요한 컬럼을 정의
+        #     p_required_columns = ['No', 'Name'] + rank_by_cols_p_sorted
+        #     # 존재하는 컬럼만 선택
+        #     p_existing_columns = [col for col in p_required_columns if col in df_pitcher.columns]
+        #     team_p_existing_columns = [col for col in rank_by_cols_p_sorted if col in df_pitcher.columns]
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-            # st.write(df_pitcher.head(3))
-            # st.write(df_pitcher.dtypes)
-            # st.write(pitcher_sumcols)
+
             # 팀별로 그룹화하고 정수형 변수들의 합계 계산
             st.subheader('팀별 기록 : 투수')
             # st.write('rank_calc_except_teams ~ ', rank_calc_except_teams)
             # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].shape)
-            pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
-                                           ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
-            # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
-            # st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
-            # st.write(pitcher_grpby.head(5)) # 5개 팀만 출력
-            # 파생 변수 추가
-            # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
-            if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
-                pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(3)
+            # pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
+            #                                ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
+            # # 파생 변수 추가
+            # # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
+            # if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
+            #     pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(3)
             
-            # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
-            if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-                pitcher_grpby['SO/IP'] = (pitcher_grpby['SO'] / pitcher_grpby['IP']).round(2)
-                pitcher_grpby['BB/IP'] = (pitcher_grpby['BB'] / pitcher_grpby['IP']).round(2)
-                pitcher_grpby['H/IP'] = (pitcher_grpby['HA'] / pitcher_grpby['IP']).round(2)
-                pitcher_grpby['K9'] = (pitcher_grpby['SO/IP'] * 9)
+            # # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+            # if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            #     pitcher_grpby['SO/IP'] = (pitcher_grpby['SO'] / pitcher_grpby['IP']).round(2)
+            #     pitcher_grpby['BB/IP'] = (pitcher_grpby['BB'] / pitcher_grpby['IP']).round(2)
+            #     pitcher_grpby['H/IP'] = (pitcher_grpby['HA'] / pitcher_grpby['IP']).round(2)
+            #     pitcher_grpby['K9'] = (pitcher_grpby['SO/IP'] * 9)
             
-            # WHIP 계산: (볼넷 + 피안타) / 이닝
-            if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
-                pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
-                pitcher_grpby['BAA'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
-                pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF']).round(3)
-                # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
-                # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
+            # # WHIP 계산: (볼넷 + 피안타) / 이닝
+            # if 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
+            #     pitcher_grpby['WHIP'] = ((pitcher_grpby['BB'] + pitcher_grpby['HA']) / pitcher_grpby['IP']).round(3)
+            #     pitcher_grpby['BAA'] = (pitcher_grpby['HA'] / pitcher_grpby['AB']).round(3)
+            #     pitcher_grpby['OBP'] = (pitcher_grpby['HA'] + pitcher_grpby['BB'] + pitcher_grpby['HBP']) / (pitcher_grpby['AB'] + pitcher_grpby['BB'] + pitcher_grpby['HBP'] + pitcher_grpby['SF']).round(3)
+            #     # pitcher_grpby['SLG'] = (pitcher_grpby['HA'] + pitcher_grpby['2B']*2 + pitcher_grpby['3B']*3 + pitcher_grpby['HR']*4) / pitcher_grpby['AB']
+            #     # pitcher_grpby['OPS'] = pitcher_grpby['OBP'] + pitcher_grpby['SLG']
 
-            # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-            new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OBP'] # , 'OPS', 'OBP', 'SLG']
-            for col in new_cols:
-                if col in pitcher_grpby.columns:
-                    team_idx = pitcher_grpby.columns.get_loc('Team') + 1
-                    pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
+            # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+            # new_cols = ['K/IP', 'BB/IP', 'H/IP', 'WHIP', 'ERA', 'BAA', 'OBP'] # , 'OPS', 'OBP', 'SLG']
+            # for col in new_cols:
+            #     if col in pitcher_grpby.columns:
+            #         team_idx = pitcher_grpby.columns.get_loc('Team') + 1
+            #         pitcher_grpby.insert(team_idx, col, pitcher_grpby.pop(col))
 
             # 결과 확인
             # rank_by_ascending, rank_by_descending columns  
