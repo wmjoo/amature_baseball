@@ -936,9 +936,10 @@ with tab_sn_teams: # 팀 기록 탭
     plt = create_heatmap(df, cmap, input_figsize = (10, 6))
     st.pyplot(plt)
 
-    pitcher_grpby_rank_on = st.toggle("팀별 기록 : 수비지표 순위(테이블 표시)")
-    if pitcher_grpby_rank_on:
-        st.write('팀별 기록 : 공격지표 순위')
+    # pitcher_grpby_rank_on = st.toggle("팀별 기록 : 수비지표 순위(테이블 표시)")
+    # if pitcher_grpby_rank_on:
+    with st.expander('팀별 기록 : 수비지표 순위'):   
+        # st.write('팀별 기록 : 수비지표 순위')
         st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
     with st.expander("팀별 기록 : 팀별 통계량"):
