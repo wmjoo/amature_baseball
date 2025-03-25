@@ -124,6 +124,18 @@ def apply_row_styling(html: str) -> str:
     styled_tbody = "<tbody>\n" + "\n".join(styled_rows) + "\n</tbody>"
     return re.sub(r"<tbody>.*?</tbody>", styled_tbody, html, flags=re.DOTALL)
 
+def format_cell(x):
+    # 정수는 그대로, float는 소수 4자리까지
+    if isinstance(x, int):
+        return f"{x}"
+    elif isinstance(x, float) and x.is_integer():
+        return f"{int(x)}"
+    elif isinstance(x, float):
+        return f"{x:.3f}"
+    else:
+        return x
+
+
 # 테이블 CSS
 table_style = """
     <style>
@@ -669,17 +681,6 @@ with tab_sn_teams: # 팀 기록 탭
         df1_h.insert(0, '공격지표', '기록')
         df2_h.insert(0, '공격지표', '순위')
         mainteam_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표').reset_index()
-        # st.write(mainteam_statrank_h)
-        def format_cell(x):
-            # 정수는 그대로, float는 소수 4자리까지
-            if isinstance(x, int):
-                return f"{x}"
-            elif isinstance(x, float) and x.is_integer():
-                return f"{int(x)}"
-            elif isinstance(x, float):
-                return f"{x:.3f}"
-            else:
-                return x
 
         tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
         ############################################################
@@ -700,24 +701,8 @@ with tab_sn_teams: # 팀 기록 탭
                                   height=750, scrolling=True)   
             st.write(mainteam_statrank_h)
             if team_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
-                # st.write(mainteam_statrank_h)
-                # # 두 번째 div 스타일
-                # mainteam_box_stylesetting = """
-                #     <div style="
-                #         background-color: rgba(240, 240, 240, 0.8);  
-                #         color: #000000;                              
-                #         padding: 10px 12px;
-                #         border-radius: 8px;
-                #         font-family: monospace;
-                #         font-size: 11px;
-                #         margin-bottom: 10px;
-                #         border: 1px solid #ccc;
-                #     ">
-                #     <b>[{}]</b><br>
-                #     {}
-                #     </div>
-                # """.format(mainteam_name, ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()]))                
-                # st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
+                st.write(mainteam_statrank_h)
+                # 두 번째 div 스타일
                 mainteam_box_stylesetting = """
                     <div style="
                         background-color: rgba(240, 240, 240, 0.8);  
@@ -732,13 +717,8 @@ with tab_sn_teams: # 팀 기록 탭
                     <b>[{}]</b><br>
                     {}
                     </div>
-                """.format(
-                    mainteam_name,
-                    ", ".join([
-                        f"{k}: {v['기록']:.3f} [{int(v['순위'])}위]"
-                        for k, v in mainteam_statrank_h.to_dict(orient='index').items()
-                    ])
-                )
+                """.format(mainteam_name, ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()]))                
+                st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
 
         ############################################################
