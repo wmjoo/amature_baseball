@@ -706,6 +706,8 @@ with tab_schd:
 
     # <table class="dataframe"> => <table> 로 정제
     html_table = re.sub(r'<table[^>]*>', '<table>', html_table)
+    st.write(html_table)
+    
     styled_table = f"""
     <style>
         table {{
