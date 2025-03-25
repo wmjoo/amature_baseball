@@ -946,10 +946,7 @@ with tab_sn_teams: # 팀 기록 탭
             df1_h.insert(0, 'Type', 'Records')
             df2_h.insert(0, 'Type', 'Rank')
             team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('Type')
-            # team_statrank_h.colunms = ['값', '순위']
-            # st.write(team_statrank_h)
-            # st.write(team_statrank_h.T.columns)
-            st.table(team_statrank_h.T) #, use_container_width = True, hide_index = True)     
+            st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)     
         ############################################################
         with tab_sn_teams_team_col2:
             # 선택한 팀의 팀 수비지표 출력
