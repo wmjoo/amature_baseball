@@ -909,7 +909,7 @@ with tab_sn_teams: # 팀 기록 탭
     st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False), 
                 use_container_width = True, hide_index = True)        
 
-    st.subheader('팀별 기록 : 타자')
+    st.write('팀별 기록 : 타자')
     st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
     st.write('Ranking')
     st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
@@ -930,7 +930,7 @@ with tab_sn_teams: # 팀 기록 탭
         st.pyplot(plt)
 
     # 팀별로 그룹화하고 정수형 변수들의 합계 계산
-    st.subheader('팀별 기록 : 투수')
+    st.write('팀별 기록 : 투수')
     st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
                     use_container_width = True, hide_index = True)
     st.write('Ranking')
