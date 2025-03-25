@@ -675,13 +675,20 @@ with tab_sn_teams: # 팀 기록 탭
 
     with tab_sn_teams_team: # 선택 팀 기록 탭
         # 메인팀 공격/수비지표 따로 필터링해 변수에 저장
-        mainteam_name = '코메츠 호시탐탐'        
+        mainteam_name = '코메츠 호시탐탐'      
         df1_h = hitter_grpby.loc[hitter_grpby.Team == mainteam_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == mainteam_name].drop('Team', axis = 1)
         df1_h.insert(0, '공격지표', '기록')
         df2_h.insert(0, '공격지표', '순위')
         mainteam_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표').reset_index()
-
+        
+        # 선택한 팀의 팀 수비지표 출력
+        df1_p = pitcher_grpby.loc[pitcher_grpby.Team == mainteam_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+        df2_p = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == mainteam_name].drop('Team', axis = 1)
+        df1_p.insert(0, '수비지표', '기록')
+        df2_p.insert(0, '수비지표', '순위')
+        mainteam_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).set_index('수비지표').reset_index()
+        
         tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
         ############################################################
         with tab_sn_teams_team_col1:
@@ -691,17 +698,11 @@ with tab_sn_teams: # 팀 기록 탭
             df1_h.insert(0, '공격지표', '기록')
             df2_h.insert(0, '공격지표', '순위')
             team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표')
-            # st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)  
             team_statrank_h_html_table = team_statrank_h.T.to_html(formatters=[format_cell] * team_statrank_h.T.shape[1], escape=False) 
-            # .to_html(classes='table table-striped', border=0)
-            # Streamlit에서 HTML 출력
-            # st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
                                   height=750, scrolling=True)   
-            # st.write(mainteam_statrank_h)
             if team_name != mainteam_name : # 사용자 입력팀이 메인팀이 아닐때 
-                st.write(mainteam_statrank_h)
                 # 두 번째 div 스타일
                 mainteam_box_stylesetting = """
                     <div style="
@@ -723,7 +724,6 @@ with tab_sn_teams: # 팀 기록 탭
                                 #mainteam_statrank_h.to_dict().items()])
                 )
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
-                # st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
 
         ############################################################
         with tab_sn_teams_team_col2:
@@ -741,7 +741,28 @@ with tab_sn_teams: # 팀 기록 탭
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
                                   height=750, scrolling=True)
-
+            if team_name != mainteam_name : # 사용자 입력팀이 메인팀이 아닐때 
+                # 두 번째 div 스타일
+                mainteam_box_stylesetting_p = """
+                    <div style="
+                        background-color: rgba(240, 240, 240, 0.8);  
+                        color: #000000;                              
+                        padding: 10px 12px;
+                        border-radius: 8px;
+                        font-family: monospace;
+                        font-size: 11px;
+                        margin-bottom: 10px;
+                        border: 1px solid #ccc;
+                    ">
+                    <b>[{}]</b><br>
+                    {}
+                    </div>
+                """.format(
+                    mainteam_name, 
+                    ", ".join([f"{k}: {v[0]} [{int(v[1])}위]" for k, v in list(mainteam_statrank_p.to_dict().items())[1:]])
+                                #mainteam_statrank_h.to_dict().items()])
+                )
+                st.markdown(mainteam_box_stylesetting_p, unsafe_allow_html=True)
 
 with tab_sn_viz:
     tab_sn_viz_1, tab_sn_viz_2, tab_sn_viz_3 = st.tabs(["선수별분포", "팀별비교", "통계량"])
