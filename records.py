@@ -801,29 +801,6 @@ with tab_sn_terms: # 약어 설명
     # st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
     #                     height=800, scrolling=True)
     hitters_term_table_html = """
-        <style>
-            .table-box {
-                font-family: Arial, sans-serif;
-                font-size: 12px;
-            }
-            h3 {
-                margin-bottom: 8px;
-                color: #333;
-            }
-            table {
-                border-collapse: collapse;
-                width: 100%;
-            }
-            th, td {
-                border: 1px solid #999;
-                padding: 6px 8px;
-                text-align: left;
-            }
-            th {
-                background-color: #f2f2f2;
-            }
-        </style>
-
         <div class="table-box">
             <table>
                 <tr><th>ENG</th><th>KOR</th><th>Desc</th></tr>
@@ -922,7 +899,7 @@ with tab_sn_terms: # 약어 설명
     tab_sn_terms_col1, tab_sn_terms_col2 = st.columns(2)
     # 스트림릿 페이지 제목 설정
     with tab_sn_terms_col1:        # 타자 데이터 설명
-        st.components.v1.html(table_style_12px + apply_row_styling(hitters_term_table_html), height=800, scrolling=True)
+        st.components.v1.html(table_style + apply_row_styling(hitters_term_table_html), height=800, scrolling=True)
     with tab_sn_terms_col2:        # 투수 데이터 설명
         st.components.v1.html(table_style + apply_row_styling(pitchers_term_table_html), height=800, scrolling=True)
 
