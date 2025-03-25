@@ -444,7 +444,7 @@ with tab_sn_teamwise:
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2: # 팀별 투수 탭
-        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
         team_id = team_id_dict[team_name]        
         if (df_pitcher.shape[0] > 0) : # data exists         z
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
