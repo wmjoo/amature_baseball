@@ -241,7 +241,7 @@ with tab_sn_players: # 전체 선수 탭
         st.subheader('{} : 전체타자 [{}명]'.format(team_groupname, df_hitter.shape[0]))
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
-        st.subheader('팀별 기록')
+        st.subheader('팀별 기록 : 타자')
         hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
         hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
@@ -323,7 +323,8 @@ with tab_sn_players: # 전체 선수 탭
             st.subheader('팀별 기록 : 투수')
             # st.write('rank_calc_except_teams ~ ', rank_calc_except_teams)
             # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), ['Team']+pitcher_sumcols].shape)
-            pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계
+            pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
+                                           ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index(drop=True)  # 팀별 합계
             # st.write(df_pitcher.loc[~df_pitcher['Team'].isin(rank_calc_except_teams), :].groupby('Team'))
             # st.write('pitcher_grpby.shape ~ ', pitcher_grpby.shape)        
             st.write(pitcher_grpby.head(3))
@@ -681,7 +682,7 @@ with tab_dataload:
             hitters = []
             pitchers = []
             with ThreadPoolExecutor(max_workers=4) as executor:
-                futures = {executor.submit(load_data, team_name, team_id, dataload_year): team_name for team_name, team_id in allteam_id_dict.items()}
+                futures = {executor.submit(load_data, team_name, team_id, dataload_year): team_name for team_name, team_id in team_id_dict.items()}
                 for future in as_completed(futures):
                     try:
                         result = future.result()
@@ -789,7 +790,7 @@ with tab_sn_terms:
         | BF           | 타자        | Batters faced                  |
         | AB           | 타수        | At bats against                |
         | P            | 투구수      | Pitches thrown                 |
-        | HA           | 피안타      | Hits allowed                   |
+        | HA           | 피안타      | Hits owed                   |
         | HR           | 피홈런      | Home runs allowed              |
         | SH           | 희생타        | Sacrifice hits allowed         |
         | SF           | 희생플라이     | Sacrifice flies allowed        |
