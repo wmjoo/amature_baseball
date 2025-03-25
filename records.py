@@ -742,7 +742,7 @@ with tab_schd:
         table {
             border-collapse: collapse;
             width: 100%;
-            font-size: 11px;
+            font-size: 10px;
             background-color: white; /* 다크모드에서도 흰 배경 */
             color: black; /* 글자 검정색 */
         }
