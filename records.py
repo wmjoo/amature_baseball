@@ -162,7 +162,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
     df_hitter = conn.read(worksheet="df_hitter_{}".format(default_year))
-    df_pitcher = conn.read(worksheet="df_hitter_{}".format(default_year))
+    df_pitcher = conn.read(worksheet="df_pitcher_{}".format(default_year))
     # st.write(df_hitter.shape, df_pitcher.shape)    
     time.sleep(2)   
     st.toast('Loaded Data from Cloud!', icon='✅')
