@@ -439,7 +439,7 @@ with tab_sn_teamwise:
                 <b>[전체 타자 평균값]</b><br>
                 {}
                 </div>
-            """.format(", ".join([f"{k}: {v}, " for k, v in df_h_meandict_kr.items()]))
+            """.format(", ".join([f"{k}: {v}" for k, v in df_h_meandict_kr.items()]))
 
             # 두 번째 div 스타일
             h_box_stylesetting_2 = """
@@ -456,7 +456,7 @@ with tab_sn_teamwise:
                 <b>[전체 타자 중앙값]</b><br>
                 {}
                 </div>
-            """.format(", ".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()]))
+            """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
             st.markdown(h_box_stylesetting_1 + "<br>" + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
@@ -489,7 +489,7 @@ with tab_sn_teamwise:
                 <b>[전체 투수 평균값]</b><br>
                 {}
                 </div>
-            """.format(", ".join([f"{k}: {v}, " for k, v in df_p_meandict_kr.items()])
+            """.format(", ".join([f"{k}: {v}" for k, v in df_p_meandict_kr.items()])
             )
 
             # 두 번째 div 스타일
@@ -507,7 +507,7 @@ with tab_sn_teamwise:
                 <b>[전체 투수 중앙값]</b><br>
                 {}
                 </div>
-            """.format(", ".join([f"{k}: {v}, " for k, v in df_p_mediandict_kr.items()]))
+            """.format(", ".join([f"{k}: {v}" for k, v in df_p_mediandict_kr.items()]))
             st.markdown(p_box_stylesetting_1 + "<br>" + p_box_stylesetting_2, unsafe_allow_html=True)
 
 with tab_sn_viz:
