@@ -213,6 +213,21 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
+# 팀별 데이터셋 그룹바이로 준비
+hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
+hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+
+# 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
+hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
+hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
+hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
+hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
+
+# 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+for col in ['OPS', 'SLG', 'OBP', 'AVG']:
+    team_idx = hitter_grpby.columns.get_loc('Team') + 1
+    hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
+
 ## 탭 설정
 tab_sn_players, tab_sn_teamwise, tab_sn_viz, tab_schd, tab_sn_terms, tab_dataload = st.tabs(["전체선수", "팀별선수", "시각화/통계", "일정", "약어", "데이터 로드"])
 
@@ -227,19 +242,19 @@ with tab_sn_players: # 전체 선수 탭
         st.dataframe(df_hitter[['No', 'Name'] + rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), 
                      use_container_width = True, hide_index = True)
         st.subheader('팀별 기록 : 타자')
-        hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
-        hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+        # hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
+        # hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
-        # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
-        hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
-        hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
-        hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
-        hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
+        # # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
+        # hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
+        # hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
+        # hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
+        # hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
         
-        # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
-        for col in ['OPS', 'SLG', 'OBP', 'AVG']:
-            team_idx = hitter_grpby.columns.get_loc('Team') + 1
-            hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
+        # # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
+        # for col in ['OPS', 'SLG', 'OBP', 'AVG']:
+        #     team_idx = hitter_grpby.columns.get_loc('Team') + 1
+        #     hitter_grpby.insert(team_idx, col, hitter_grpby.pop(col))
   
         # rank_by_ascending, rank_by_descending columns 
         rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
