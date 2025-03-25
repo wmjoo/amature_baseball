@@ -388,11 +388,11 @@ with tab_sn_teamwise:
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
         df_p_mediandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_mediandict.items()}    
 
-    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
-    team_id = team_id_dict[team_name]
     tab_sn_teamwise_1, tab_sn_teamwise_2 = st.tabs(["타자", "투수"])
 
     with tab_sn_teamwise_1: # 팀별 타자 탭
+        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+        team_id = team_id_dict[team_name]        
         if (df_hitter.shape[0] > 0) : # data exists            
             DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -444,6 +444,8 @@ with tab_sn_teamwise:
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2: # 팀별 투수 탭
+        team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
+        team_id = team_id_dict[team_name]        
         if (df_pitcher.shape[0] > 0) : # data exists         z
             DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
             df_pitcher_team = df_pitcher.loc[df_pitcher.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
