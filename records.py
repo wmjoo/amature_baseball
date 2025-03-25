@@ -764,10 +764,11 @@ with tab_schd:
     """
     # 최종 HTML 조합
     styled_html = table_style + schd_html_str
-    st.markdown(styled_html, unsafe_allow_html=True)
+    # st.markdown(styled_html, unsafe_allow_html=True)
     # st.write(schd_html_str)
     st.write(schd_url)    
 
+    st.components.v1.html(styled_html, height=600, scrolling=True)
 
     # Streamlit에 출력
     # st.markdown("### 📝 경기 일정 및 결과")
