@@ -944,7 +944,7 @@ with tab_sn_teams: # 팀 기록 탭
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
         team_statrank_h = pd.concat([df1, df2], axis = 0).rename(columns = hitter_data_EnKr, inplace=False)
-        st.dataframe(team_statrank_h.T, use_container_width = True, hide_index = True)     
+        st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)     
         ################################################
         # 선택한 팀의 팀 수비지표 출력
         df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
@@ -952,5 +952,5 @@ with tab_sn_teams: # 팀 기록 탭
         df1.insert(0, 'Type', 'Records')
         df2.insert(0, 'Type', 'Rank')
         team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
-        st.dataframe(team_statrank_p.T, use_container_width = True, hide_index = True)
+        st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)
         ################################################
