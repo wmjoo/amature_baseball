@@ -439,9 +439,7 @@ with tab_sn_teamwise:
                 <b>[전체 타자 평균값]</b><br>
                 {}
                 </div>
-            """.format(
-                "\n".join([f"{k}: {v}, " for k, v in df_h_meandict_kr.items()])
-            )
+            """.format(", ".join([f"{k}: {v}, " for k, v in df_h_meandict_kr.items()]))
 
             # 두 번째 div 스타일
             h_box_stylesetting_2 = """
@@ -458,10 +456,7 @@ with tab_sn_teamwise:
                 <b>[전체 타자 중앙값]</b><br>
                 {}
                 </div>
-            """.format(
-                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()])
-            )
-            # st.write(box_stylesetting)
+            """.format(", ".join([f"{k}: {v}, " for k, v in df_h_mediandict_kr.items()]))
             st.markdown(h_box_stylesetting_1 + "<br>" + h_box_stylesetting_2, unsafe_allow_html=True)            
 
     with tab_sn_teamwise_2:
@@ -476,10 +471,6 @@ with tab_sn_teamwise:
             df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
             df1.insert(0, 'Type', 'Records')
             df2.insert(0, 'Type', 'Rank')
-            # st.write('Entire Mean(Pitchers)')        
-            # st.markdown(span_stylesetting + str(df_p_meandict)[1:-1] +'</span>', unsafe_allow_html=True)
-            # st.write('Entire Median(Pitchers)')
-            # st.markdown(span_stylesetting + str(df_p_mediandict)[1:-1] +'</span>', unsafe_allow_html=True)        
             st.dataframe(pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             
@@ -498,7 +489,7 @@ with tab_sn_teamwise:
                 <b>[전체 투수 평균값]</b><br>
                 {}
                 </div>
-            """.format("\n".join([f"{k}: {v}, " for k, v in df_p_meandict_kr.items()])
+            """.format(", ".join([f"{k}: {v}, " for k, v in df_p_meandict_kr.items()])
             )
 
             # 두 번째 div 스타일
@@ -516,7 +507,7 @@ with tab_sn_teamwise:
                 <b>[전체 투수 중앙값]</b><br>
                 {}
                 </div>
-            """.format("\n".join([f"{k}: {v}, " for k, v in df_p_mediandict_kr.items()]))
+            """.format(", ".join([f"{k}: {v}, " for k, v in df_p_mediandict_kr.items()]))
             st.markdown(p_box_stylesetting_1 + "<br>" + p_box_stylesetting_2, unsafe_allow_html=True)
 
 with tab_sn_viz:
