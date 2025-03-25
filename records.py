@@ -894,13 +894,10 @@ with tab_sn_teams: # 팀 기록 탭
 
     with tab_sn_teams_allteams: # 전체팀 탭   
     ############################################################
-        st.write('팀별 기록 : 타자')
+        st.write('공격지표')
         st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        
         df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
         ## 히트맵 시각화 팀별 랭킹        
-        # if df.shape[0] > 0:
-        st.write("팀별 기록 : 공격지표 순위(히트맵)")
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
         df['team_eng'] = df['Team'].map(team_name_dict)
         df = df.drop('Team', axis = 1).copy()  
@@ -912,21 +909,19 @@ with tab_sn_teams: # 팀 기록 탭
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
 
-        with st.expander('팀별 기록 : 공격지표 순위'):
+        with st.expander('공격지표 순위 테이블'):
             st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
         # 팀별로 그룹화하고 정수형 변수들의 합계 계산
-        st.write('팀별 기록 : 투수')
+        st.write('수비지표')
         st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
-        # st.write('Ranking')
-        # st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
         ## 히트맵 시각화 팀별 랭킹        
         df = pitcher_grpby_rank.copy() 
         ## 히트맵 시각화 팀별 랭킹        
         # if df.shape[0] > 0:
-        st.write("팀별 기록 : 수비지표 순위")
+        # st.write("팀별 기록 : 수비지표 순위")
         # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
         df['team_eng'] = df['Team'].map(team_name_dict)
         df = df.drop('Team', axis = 1).copy()  
@@ -938,16 +933,10 @@ with tab_sn_teams: # 팀 기록 탭
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
 
-        with st.expander('팀별 기록 : 수비지표 순위'):   
+        with st.expander('수비지표 순위 테이블'):   
             st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
     with tab_sn_teams_team:
-        # st.expander("팀별 기록 : 팀별 통계량"):
-        # st.write('팀별 기록 : 타자')
-        # st.dataframe(hitter_grpby.describe().T, use_container_width = True, hide_index = False)
-        # st.write('팀별 기록 : 투수')
-        # st.dataframe(pitcher_grpby.describe().T, use_container_width = True, hide_index = False)
-
         ############################################################
         # 선택한 팀의 팀 공격지표 출력
         df1 = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
