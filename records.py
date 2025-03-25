@@ -617,7 +617,7 @@ with tab_sn_players: # (팀별)선수기록 탭
 with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
 
-    with tab_sn_teams_allteams: # 전체팀 탭   
+    with tab_sn_teams_allteams: # 전체 팀 탭   
     ############################################################
         st.write('공격지표')
         st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
@@ -661,7 +661,15 @@ with tab_sn_teams: # 팀 기록 탭
         with st.expander('수비지표 순위 테이블'):   
             st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
-    with tab_sn_teams_team:
+    with tab_sn_teams_team: # 선택 팀 기록 탭
+        # 메인팀 공격/수비지표 따로 필터링해 변수에 저장
+        mainteam_name = '코메츠 호시탐탐'
+        df1_h = hitter_grpby.loc[hitter_grpby.Team == mainteam_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+        df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == mainteam_name].drop('Team', axis = 1)
+        df1_h.insert(0, '공격지표', '기록')
+        df2_h.insert(0, '공격지표', '순위')
+        mainteam_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).set_index('공격지표'
+
         def format_cell(x):
             # 정수는 그대로, float는 소수 4자리까지
             if isinstance(x, int):
@@ -689,7 +697,9 @@ with tab_sn_teams: # 팀 기록 탭
             # st.markdown(team_statrank_h_html_table, unsafe_allow_html=True)
             # 최종 HTML 조합
             st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_h_html_table), 
-                                  height=800, scrolling=True)            
+                                  height=800, scrolling=True)           
+            if mainteam_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
+                st.write(mainteam_statrank_h)
         ############################################################
         with tab_sn_teams_team_col2:
             # 선택한 팀의 팀 수비지표 출력
