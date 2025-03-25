@@ -715,7 +715,13 @@ with tab_sn_teams: # 팀 기록 탭
                     <b>[{}]</b><br>
                     {}
                     </div>
-                """.format(mainteam_name, ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()]))                
+                """.format(mainteam_name, 
+                          #", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()])
+                          ", ".join([
+                                f"{k}: {v['기록']} [{int(v['순위'])}위]"
+                                for k, v in mainteam_statrank_h.to_dict(orient='index').items()
+                            ])
+                          )
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
         ############################################################
         with tab_sn_teams_team_col2:
