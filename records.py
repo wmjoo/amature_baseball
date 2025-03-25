@@ -446,8 +446,8 @@ with tab_sn_teamwise:
                 {}
                 </div>
             """.format(
-                "\n".join([f"{k}: {v}, " for k, v in df_h_meandict.items()]),
-                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict.items()])
+                "\n".join([f"{k}: {v}, " for k, v in df_h_meandict.items()])[:-1],
+                "\n".join([f"{k}: {v}, " for k, v in df_h_mediandict.items()][:-1])
             )
             # st.write(box_stylesetting)
             st.markdown(h_box_stylesetting, unsafe_allow_html=True)            
