@@ -424,7 +424,7 @@ with tab_sn_players: # 전체 선수 탭
                                             pitcher_grpby[rank_by_ascending_cols_p].rank(method = 'min', ascending=True)
                                         ], axis = 1)
             st.write('Ranking')
-            pitcher_grpby_rank = pitcher_grpby_rank.loc[:, p_existing_columns]
+            pitcher_grpby_rank = pitcher_grpby_rank.loc[:, team_p_existing_columns]
             st.dataframe(pitcher_grpby_rank.rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
             ## 히트맵 시각화 팀별 랭킹        
