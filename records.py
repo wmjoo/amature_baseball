@@ -91,6 +91,7 @@ def create_heatmap(data, cmap, input_figsize = (10, 7)):
     sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
     plt.xticks(rotation=45)  # x축 레이블 회전
     plt.yticks(rotation=0)   # y축 레이블 회전
+    plt.ylabel('')  # ✅ y축 라벨 제거    
     plt.tight_layout()
     return plt
 
