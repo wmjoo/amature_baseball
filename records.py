@@ -890,7 +890,7 @@ with tab_dataload:
         st.write('Wrong Password!!')
 
 with tab_sn_teams: # 팀 기록 탭
-    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체팀', '선택한 팀'])
+    tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체팀', '선택 팀'])
 
     with tab_sn_teams_allteams: # 전체팀 탭   
     ############################################################
@@ -937,19 +937,24 @@ with tab_sn_teams: # 팀 기록 탭
             st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
     with tab_sn_teams_team:
+        tab_sn_teams_team_col1, tab_sn_teams_team_col2 = st.columns(2)
         ############################################################
-        # 선택한 팀의 팀 공격지표 출력
-        df1_h = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
-        df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
-        df1_h.insert(0, 'Type', 'Records')
-        df2_h.insert(0, 'Type', 'Rank')
-        team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).reset_index()
-        st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)     
+        with tab_sn_teams_team_col1:
+            # 선택한 팀의 팀 공격지표 출력
+            df1_h = hitter_grpby.loc[hitter_grpby.Team == team_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
+            df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == team_name].drop('Team', axis = 1)
+            df1_h.insert(0, 'Type', 'Records')
+            df2_h.insert(0, 'Type', 'Rank')
+            team_statrank_h = pd.concat([df1_h, df2_h], axis = 0).rename(columns = hitter_data_EnKr, inplace=False).reset_index()
+            team_statrank_h.colunms = ['값', '순위']
+            st.dataframe(team_statrank_h.T) #, use_container_width = True, hide_index = True)     
         ############################################################
-        # 선택한 팀의 팀 수비지표 출력
-        df1 = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
-        df2 = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
-        df1.insert(0, 'Type', 'Records')
-        df2.insert(0, 'Type', 'Rank')
-        team_statrank_p = pd.concat([df1, df2], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False)
-        st.dataframe(team_statrank_p) #, use_container_width = True, hide_index = True)
+        with tab_sn_teams_team_col2:
+            # 선택한 팀의 팀 수비지표 출력
+            df1_p = pitcher_grpby.loc[pitcher_grpby.Team == team_name, rank_by_cols_p_sorted].drop('Team', axis = 1)
+            df2_p = pitcher_grpby_rank.loc[pitcher_grpby_rank.Team == team_name].drop('Team', axis = 1)
+            df1_p.insert(0, 'Type', 'Records')
+            df2_p.insert(0, 'Type', 'Rank')
+            team_statrank_p = pd.concat([df1_p, df2_p], axis = 0).rename(columns = pitcher_data_EnKr, inplace=False).reset_index()
+            team_statrank_p.colunms = ['값', '순위']
+            st.dataframe(team_statrank_p.T) #, use_container_width = True, hide_index = True)   
