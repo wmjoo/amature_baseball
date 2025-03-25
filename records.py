@@ -700,7 +700,23 @@ with tab_sn_teams: # 팀 기록 탭
                                   height=750, scrolling=True)           
             if team_name != mainteam_name : # 메인팀이 아닐때 사용자 입력팀이
                 # st.write(mainteam_statrank_h)
-                # 두 번째 div 스타일
+                # # 두 번째 div 스타일
+                # mainteam_box_stylesetting = """
+                #     <div style="
+                #         background-color: rgba(240, 240, 240, 0.8);  
+                #         color: #000000;                              
+                #         padding: 10px 12px;
+                #         border-radius: 8px;
+                #         font-family: monospace;
+                #         font-size: 11px;
+                #         margin-bottom: 10px;
+                #         border: 1px solid #ccc;
+                #     ">
+                #     <b>[{}]</b><br>
+                #     {}
+                #     </div>
+                # """.format(mainteam_name, ", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()]))                
+                # st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
                 mainteam_box_stylesetting = """
                     <div style="
                         background-color: rgba(240, 240, 240, 0.8);  
@@ -715,14 +731,15 @@ with tab_sn_teams: # 팀 기록 탭
                     <b>[{}]</b><br>
                     {}
                     </div>
-                """.format(mainteam_name, 
-                          #", ".join([f"{k}: {v}" for k, v in mainteam_statrank_h.to_dict().items()])
-                          ", ".join([
-                                f"{k}: {v['기록']} [{int(v['순위'])}위]"
-                                for k, v in mainteam_statrank_h.to_dict(orient='index').items()
-                            ])
-                          )
+                """.format(
+                    mainteam_name,
+                    ", ".join([
+                        f"{k}: {v['기록']:.3f} [{int(v['순위'])}위]"
+                        for k, v in mainteam_statrank_h.to_dict(orient='index').items()
+                    ])
+                )
                 st.markdown(mainteam_box_stylesetting, unsafe_allow_html=True)
+
         ############################################################
         with tab_sn_teams_team_col2:
             # 선택한 팀의 팀 수비지표 출력
