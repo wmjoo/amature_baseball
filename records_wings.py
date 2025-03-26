@@ -226,7 +226,7 @@ highlight_team = 'SKCC Wings'
 # 스타일 적용 함수
 def highlight_team_name(team_name, highlight_target):
     if team_name == highlight_target:
-        return f"<span style='color: skyblue; font-weight: bold;'>{team_name}</span>"
+        return f"<span style='color: orange; font-weight: bold;'>{team_name}</span>"
     return team_name
 
 # 일정표 크롤링 & 다음경기 출력
