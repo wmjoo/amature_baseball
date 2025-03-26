@@ -1100,4 +1100,6 @@ with tab_test:
         df_pitcher['Year'] = i
         tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
     st.write(tot_df_hitter.shape)
+    st.dataframe(tot_df_hitter)
     st.write(tot_df_pitcher.shape)
+    st.dataframe(tot_df_pitcher)
