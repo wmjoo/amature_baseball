@@ -556,7 +556,7 @@ grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitche
 # 파생 변수 추가
 # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
 if 'ER' in grouped_pitcher.columns and 'IP' in grouped_pitcher.columns:
-    grouped_pitcher['ERA'] = ((grouped_pitcher['ER'] / grouped_pitcher['IP']) * 9).round(3)
+    grouped_pitcher['ERA'] = ((grouped_pitcher['ER'] / grouped_pitcher['IP']) * 9).round(2)
 
 # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
 if 'SO' in grouped_pitcher.columns and 'BB' in grouped_pitcher.columns and 'HA' in df_pitcher.columns:
@@ -660,7 +660,7 @@ with tab_sn_players: # (팀별)선수기록 탭
         # team_id = team_id_dict[team_name]        
         if (df_pitcher.shape[0] > 0) : # data exists         z
             # st.write('{} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
-            st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False), 
+            st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False), 
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_P)
             
@@ -702,7 +702,7 @@ with tab_sn_players: # (팀별)선수기록 탭
 
         filtered_grouped_pitcher = grouped_pitcher.loc[
             grouped_pitcher['Team'] == team_name, 
-            ['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False).reset_index(drop=True)
+            ['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False).reset_index(drop=True)
         
         st.write('')
         st.write(f'{team_name} : 투수 누적기록 [{len(filtered_grouped_pitcher)}명]')
