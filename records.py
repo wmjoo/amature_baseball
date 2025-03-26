@@ -646,6 +646,7 @@ with tab_sn_teams: # 팀 기록 탭
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
+        plt.close(plt)  # 리소스 해제
 
         with st.expander('공격지표 순위 테이블'):
             st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
@@ -670,7 +671,8 @@ with tab_sn_teams: # 팀 기록 탭
         # 히트맵 생성
         plt = create_heatmap(df, cmap, input_figsize = (10, 6))
         st.pyplot(plt)
-
+        plt.close(plt)  # 리소스 해제
+        
         with st.expander('수비지표 순위 테이블'):   
             st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
