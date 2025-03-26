@@ -534,13 +534,13 @@ sum_cols_hitter = [ "G", "PA", "AB", "R", "H", "1B", "2B", "3B", "HR", "TB", "RB
 grouped_hitter = tot_df_hitter.groupby(["Team", "Name", "No"])[sum_cols_hitter].sum().reset_index()
 
 # 타자 비율 지표 재계산
-grouped_hitter["AVG"] = grouped_hitter["H"] / grouped_hitter["AB"]
+grouped_hitter["AVG"] = (grouped_hitter["H"] / grouped_hitter["AB"]).round(3)
 grouped_hitter["OBP"] = (
     (grouped_hitter["H"] + grouped_hitter["BB"] + grouped_hitter["HBP"]) /
     (grouped_hitter["AB"] + grouped_hitter["BB"] + grouped_hitter["HBP"] + grouped_hitter["SF"])
-)
-grouped_hitter["SLG"] = grouped_hitter["TB"] / grouped_hitter["AB"]
-grouped_hitter["OPS"] = grouped_hitter["OBP"] + grouped_hitter["SLG"]
+).round(3)
+grouped_hitter["SLG"] = (grouped_hitter["TB"] / grouped_hitter["AB"]).round(3)
+grouped_hitter["OPS"] = (grouped_hitter["OBP"] + grouped_hitter["SLG"]).round(3)
 grouped_hitter["SB%"] = grouped_hitter["SB"] / (grouped_hitter["SB"] + grouped_hitter["CS"])
 grouped_hitter["BB/K"] = grouped_hitter["BB"] / grouped_hitter["SO"]
 grouped_hitter["XBH/H"] = (
