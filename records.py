@@ -86,14 +86,28 @@ pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': 
 ################################################################
 ## User def functions
 ################################################################
-def create_heatmap(data, cmap, input_figsize = (10, 7)):
-    plt.figure(figsize=input_figsize)
-    sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
-    plt.xticks(rotation=45)  # x축 레이블 회전
-    plt.yticks(rotation=0)   # y축 레이블 회전
-    plt.ylabel('')  # ✅ y축 라벨 제거    
-    plt.tight_layout()
-    return plt
+# def create_heatmap(data, cmap, input_figsize = (10, 7)):
+#     plt.figure(figsize=input_figsize)
+#     sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
+#     plt.xticks(rotation=45)  # x축 레이블 회전
+#     plt.yticks(rotation=0)   # y축 레이블 회전
+#     plt.ylabel('')  # y축 라벨 제거    
+#     plt.tight_layout()
+#     return plt
+
+def create_heatmap(data, cmap, input_figsize=(10, 7)):
+    fig, ax = plt.subplots(figsize=input_figsize)
+    sns.heatmap(
+        data, annot=True, fmt=".0f", cmap=cmap,
+        annot_kws={'color': 'black'},
+        yticklabels=data.index, cbar=False,
+        ax=ax
+    )
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=45)
+    ax.set_yticklabels(ax.get_yticklabels(), rotation=0)
+    ax.set_ylabel('')
+    fig.tight_layout()
+    return fig  # ✅ Figure 객체 반환
 
 # 경기 결과에 따라 각 tr에 style 적용
 def color_row_by_result(row_html: str) -> str:
