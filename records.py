@@ -635,7 +635,9 @@ with tab_sn_players: # (팀별)선수기록 탭
             """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
-        filtered_grouped_hitter = grouped_hitter.loc[grouped_hitter['Team'] == team_name].reset_index(drop=True).drop('Team', axis = 1)    
+        filtered_grouped_hitter = grouped_hitter.loc[
+            grouped_hitter['Team'] == team_name, 
+            ['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False).reset_index(drop=True).drop('Team', axis = 1)    
         st.write(f'{team_name} 타자 누적기록 [{len(filtered_grouped_hitter)}명]')
         st.dataframe(filtered_grouped_hitter, use_container_width = True, hide_index = True)
 
