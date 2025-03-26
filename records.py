@@ -327,6 +327,7 @@ with top_col3:
     rank_calc_include_teams = list(team_id_dict.keys())
     team_groupname = "토요 루키C"       
 
+
 ################################################################
 ## Data Loading
 ################################################################
@@ -381,17 +382,17 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
     # click button to update worksheet / This is behind a button to avoid exceeding Google API Quota
     if st.button("Loading Dataset"):
         try:
-            df_hitter = conn.create(worksheet="df_hitter", data=df_hitter)
+            df_hitter = conn.create(worksheet="df_hitter_{}".format(default_year), data=df_hitter)
         except Exception as e:
             st.error(f"Failed to save df_hitter: {e}", icon="🚨")        
-            df_hitter = conn.update(worksheet="df_hitter", data=df_hitter)
+            df_hitter = conn.update(worksheet="df_hitter_{}".format(default_year), data=df_hitter)
             st.toast('Updete Hitter Data from Web to Cloud!', icon='💾')
         
         try:
-            df_pitcher = conn.create(worksheet="df_pitcher", data=df_pitcher)
+            df_pitcher = conn.create(worksheet="df_pitcher_{}".format(default_year), data=df_pitcher)
         except Exception as e:
             st.error(f"Failed to save df_pitcher: {e}", icon="🚨")        
-            df_pitcher = conn.update(worksheet="df_pitcher", data=df_pitcher)               
+            df_pitcher = conn.update(worksheet="df_pitcher_{}".format(default_year), data=df_pitcher)               
             st.toast('Updete Pitcher Data from Web to Cloud!', icon='💾')
         time.sleep(2)
         st.toast('Saved Data from Web to Cloud!', icon='💾')
@@ -947,10 +948,22 @@ with tab_sn_league: # 전체 선수들의 기록을 출력해주는 탭
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
      
 with tab_sn_terms: # 약어 설명
+    # try: # 2022-2024 3개년 데이터 시트 로드
+    tot_df_hitter = pd.DataFrame()
+    tot_df_pitcher = pd.DataFrame()
+    for i in [2025, 2024, 2023, 2022]:
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        # Read Google WorkSheet as DataFrame
+        df_hitter = conn.read(worksheet="df_hitter_{}".format(i))
+        df_hitter['Year'] = i
+        tot_df_hitter = pd.concat([tot_df_hitter, df_hitter], axis = 0).reset_index(drop=True)
+        
+        df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
+        df_pitcher['Year'] = i
+        tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
+    st.write(tot_df_hitter.shape)
+    st.write(tot_df_pitcher.shape)
     # st.subheader('야구 기록 설명')
-    # # 최종 HTML 조합
-    # st.components.v1.html(table_style_12px + apply_row_styling(team_statrank_p_html_table), 
-    #                     height=800, scrolling=True)
     hitters_term_table_html = """
         <div class="table-box">
             <table>
