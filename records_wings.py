@@ -34,8 +34,8 @@ team_id_dict_2025miB = {
 }
 
 team_name_dict_2025miB = {
-    'SKCC Wings' : 'skccWings', '크레이지 프렌즈': 'crazyfriends', 'A-ONE CROWS': 'aoneCrows', '나인거너스': 'nineGunners', '아가리 OB': 'agariOB', 
-    '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'bejg', 'unknown`s B': 'unknownB'
+    'SKCC Wings' : 'SKCCWings', '크레이지 프렌즈': 'crazyfriends', 'A-ONE CROWS': 'aoneCrows', '나인거너스': 'nineGunners', '아가리 OB': 'agariOB', 
+    '썬더버드': 'thunderBird', '팀 레볼루션': 'teamRevolution', '백의종군': 'baekUiJongGun', 'unknown`s B': 'unknownB'
  }
 
 team_id_dict = team_id_dict_2025miB #| team_id_dict_2025miB
@@ -298,8 +298,8 @@ with top_col1:
         tmp_result.append(result)
 
     df_schd2['Result'] = tmp_result
-    df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_콜드승'), 'Result'] = '콜드승'
-    df_schd2.loc[df_schd2['Result'].str.contains('호시탐탐_승'), 'Result'] = '승'
+    df_schd2.loc[df_schd2['Result'].str.contains('SKCC Wings_콜드승'), 'Result'] = '콜드승'
+    df_schd2.loc[df_schd2['Result'].str.contains('SKCC Wings_승'), 'Result'] = '승'
     df_schd2.loc[df_schd2['Result'].str.contains('_승'), 'Result'] = '패'
     df_schd2.loc[df_schd2['Result'].str.contains('_콜드승'), 'Result'] = '콜드패'
 
@@ -924,7 +924,7 @@ with tab_sn_viz:
         teams = list(sorted(team_id_dict.keys())) # Team list applied sorting
         template_input = 'plotly_white'    
         try:
-            # '호시탐탐'의 인덱스 찾기
+            # 'SKCC Wings'의 인덱스 찾기
             idx_hstt = teams.index('SKCC Wings')
         except ValueError:
             idx_hstt = 0
@@ -1026,7 +1026,7 @@ with tab_schd:
     st.write('') # 한줄 공백
     # 강조할 팀명
     highlight_team = "SKCC Wings"
-    highlighted_team = f"<span style='font-weight: bold; color: navy;'>{highlight_team}</span>" 
+    highlighted_team = f"<span style='font-weight: bold; color: darkred;'>{highlight_team}</span>" 
         #f"<b>{highlight_team}</b>"
 
     # 인덱스 없이 HTML 테이블로 출력
