@@ -576,8 +576,8 @@ if 'BB' in grouped_pitcher.columns and 'HA' in grouped_pitcher.columns:
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload, tab_test = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
-                                                                                                          "전체선수", "약어", "데이터로딩", "TEST"])
+tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
+                                                                                                          "전체선수", "약어", "데이터로딩"])
 with tab_sn_players: # (팀별)선수기록 탭
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -1188,59 +1188,3 @@ with tab_dataload:
             st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
     else:
         st.write('Wrong Password!!')
-
-with tab_test:
-    # 2022-2025 데이터 시트 로드 기능 추가
-    tot_df_hitter = pd.DataFrame()
-    tot_df_pitcher = pd.DataFrame()
-    for i in [2025, 2024, 2023, 2022]:
-        conn = st.connection("gsheets", type=GSheetsConnection)
-        # Read Google WorkSheet as DataFrame
-        df_hitter = conn.read(worksheet="df_hitter_{}".format(i))
-        df_hitter['Year'] = i
-        tot_df_hitter = pd.concat([tot_df_hitter, df_hitter], axis = 0).reset_index(drop=True)
-        
-        df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
-        df_pitcher['Year'] = i
-        tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
-
-    ### === 타자 데이터 처리 === ###
-    # 타자 누적합 가능한 컬럼
-    sum_cols_hitter = [ "G", "PA", "AB", "R", "H", "1B", "2B", "3B", "HR", "TB", "RBI", 
-                        "SB", "CS", "SH", "SF", "BB", "IBB", "HBP", "SO", "DP", "MHit"]
-
-    # 타자 데이터 그룹화 및 합계
-    grouped_hitter = tot_df_hitter.groupby(["Team", "Name", "No"])[sum_cols_hitter].sum().reset_index()
-
-    # 타자 비율 지표 재계산
-    grouped_hitter["AVG"] = grouped_hitter["H"] / grouped_hitter["AB"]
-    grouped_hitter["OBP"] = (
-        (grouped_hitter["H"] + grouped_hitter["BB"] + grouped_hitter["HBP"]) /
-        (grouped_hitter["AB"] + grouped_hitter["BB"] + grouped_hitter["HBP"] + grouped_hitter["SF"])
-    )
-    grouped_hitter["SLG"] = grouped_hitter["TB"] / grouped_hitter["AB"]
-    grouped_hitter["OPS"] = grouped_hitter["OBP"] + grouped_hitter["SLG"]
-    grouped_hitter["SB%"] = grouped_hitter["SB"] / (grouped_hitter["SB"] + grouped_hitter["CS"])
-    grouped_hitter["BB/K"] = grouped_hitter["BB"] / grouped_hitter["SO"]
-    grouped_hitter["XBH/H"] = (
-        (grouped_hitter["2B"] + grouped_hitter["3B"] + grouped_hitter["HR"]) / grouped_hitter["H"]
-    )
-    st.dataframe(grouped_hitter)
-
-    ### === 투수 데이터 처리 === ###
-    # 투수 누적합 가능한 컬럼
-    sum_cols_pitcher = [
-        "G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR", "SH", "SF",
-        "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"
-    ]
-
-    # 투수 데이터 그룹화 및 합계
-    grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
-
-    # 투수 비율 지표 재계산
-    grouped_pitcher["WPCT"] = grouped_pitcher["W"] / (grouped_pitcher["W"] + grouped_pitcher["L"])
-    grouped_pitcher["ERA"] = grouped_pitcher["ER"] * 9 / grouped_pitcher["IP"]
-    grouped_pitcher["WHIP"] = (grouped_pitcher["BB"] + grouped_pitcher["HA"]) / grouped_pitcher["IP"]
-    grouped_pitcher["BAA"] = grouped_pitcher["HA"] / grouped_pitcher["AB"]
-    grouped_pitcher["K9"] = grouped_pitcher["SO"] * 9 / grouped_pitcher["IP"]
-    st.dataframe(grouped_pitcher)
