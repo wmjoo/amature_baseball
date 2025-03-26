@@ -407,9 +407,8 @@ df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy(
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
 # 팀별 데이터셋 그룹바이로 준비
-## 1) 타자 데이터셋
-# 출력시 열 순서 변경
-rank_by_cols_h_sorted = ['Team', 'PA', 'AB', 'SO', 'BB', 'H', 'RBI', 'R',  'AVG', 'OBP', 'SLG', 'OPS', 
+## 1) 타자 데이터셋 / 출력시 열 순서 변경
+rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 
                          'SB', 'MHit', '1B', '2B', '3B', 'HR', 'TB', 'CS', 'SH', 'SF', 'IBB', 'HBP', 'DP']
 hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
 hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
@@ -553,12 +552,6 @@ sum_cols_pitcher = ["G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR
                     "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"]
 # 투수 데이터 그룹화 및 합계
 grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
-# 투수 비율 지표 재계산
-# grouped_pitcher["WPCT"] = grouped_pitcher["W"] / (grouped_pitcher["W"] + grouped_pitcher["L"])
-# grouped_pitcher["ERA"] = grouped_pitcher["ER"] * 9 / grouped_pitcher["IP"]
-# grouped_pitcher["WHIP"] = (grouped_pitcher["BB"] + grouped_pitcher["HA"]) / grouped_pitcher["IP"]
-# grouped_pitcher["BAA"] = grouped_pitcher["HA"] / grouped_pitcher["AB"]
-# grouped_pitcher["K9"] = grouped_pitcher["SO"] * 9 / grouped_pitcher["IP"]
 
 # 파생 변수 추가
 # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
