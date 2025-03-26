@@ -726,15 +726,32 @@ with tab_sn_teams: # 팀 기록 탭
         # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
         hitter_heatmap_df = hitter_heatmap_df.drop('Team', axis=1).copy()
         hitter_heatmap_df.set_index('team_eng', inplace=True)
+    
+        # 수비지표 히트맵용 데이터프레임 준비
+        pitcher_heatmap_df = pitcher_grpby_rank.copy()
+        # 팀명을 영어로 매핑하여 'team_eng' 컬럼 생성
+        pitcher_heatmap_df['team_eng'] = pitcher_heatmap_df['Team'].map(team_name_dict)
+        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
+        pitcher_heatmap_df = pitcher_heatmap_df.drop('Team', axis=1).copy()
+        pitcher_heatmap_df.set_index('team_eng', inplace=True)
 
         # 커스텀 컬러맵 설정 (어두운 빨강 → 흰색)
         colors = ["#8b0000", "#ffffff"]
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
 
-        # 공격지표 히트맵 생성 및 출력
-        fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 6))
-        st.pyplot(fig_hitter)
-        # plt.close(fig_hitter)  # 필요시 리소스 해제
+        tab_sn_teams_allteams_heatmap_left, tab_sn_teams_allteams_heatmap_right = st.colunms(2)
+        with tab_sn_teams_allteams_heatmap_left:
+            # 공격지표 히트맵 생성 및 출력
+            fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 6))
+            st.pyplot(fig_hitter)
+            # plt.close(fig_hitter)  # 필요시 리소스 해제
+
+        with tab_sn_teams_allteams_heatmap_right:
+            # 수비지표 히트맵 생성 및 출력
+            fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 6))
+            st.pyplot(fig_pitcher)
+            plt.close(fig_pitcher)  # 히트맵 리소스 해제
+
 
         # 공격지표 순위 테이블 확장 영역
         with st.expander('공격지표 순위 테이블'):
@@ -752,19 +769,6 @@ with tab_sn_teams: # 팀 기록 탭
             use_container_width=True,
             hide_index=True
         )
-
-        # 수비지표 히트맵용 데이터프레임 준비
-        pitcher_heatmap_df = pitcher_grpby_rank.copy()
-        # 팀명을 영어로 매핑하여 'team_eng' 컬럼 생성
-        pitcher_heatmap_df['team_eng'] = pitcher_heatmap_df['Team'].map(team_name_dict)
-        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
-        pitcher_heatmap_df = pitcher_heatmap_df.drop('Team', axis=1).copy()
-        pitcher_heatmap_df.set_index('team_eng', inplace=True)
-
-        # 수비지표 히트맵 생성 및 출력
-        fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 6))
-        st.pyplot(fig_pitcher)
-        plt.close(fig_pitcher)  # 히트맵 리소스 해제
         
         # 수비지표 순위 테이블 확장 영역
         with st.expander('수비지표 순위 테이블'):
@@ -1026,7 +1030,7 @@ with tab_schd:
     st.write('') # 한줄 공백
     # 강조할 팀명
     highlight_team = "SKCC Wings"
-    highlighted_team = f"<span style='font-weight: bold; color: darkred;'>{highlight_team}</span>" 
+    highlighted_team = f"<span style='font-weight: bold; color: orange;'>{highlight_team}</span>" 
         #f"<b>{highlight_team}</b>"
 
     # 인덱스 없이 HTML 테이블로 출력
