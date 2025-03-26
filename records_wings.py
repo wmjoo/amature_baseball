@@ -739,7 +739,7 @@ with tab_sn_teams: # 팀 기록 탭
         colors = ["#8b0000", "#ffffff"]
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
 
-        tab_sn_teams_allteams_heatmap_left, tab_sn_teams_allteams_heatmap_right = st.colunms(2)
+        tab_sn_teams_allteams_heatmap_left, tab_sn_teams_allteams_heatmap_right = st.columns(2)
         with tab_sn_teams_allteams_heatmap_left:
             # 공격지표 히트맵 생성 및 출력
             fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 6))
