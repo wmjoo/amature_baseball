@@ -711,14 +711,6 @@ with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
 
     with tab_sn_teams_allteams: # 전체 팀 탭   
-        # 공격지표 테이블 출력
-        st.write('공격지표')
-        st.dataframe(
-            hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns=hitter_data_EnKr, inplace=False),
-            use_container_width=True,
-            hide_index=True
-        )
-
         # 공격지표 히트맵용 데이터프레임 준비
         hitter_heatmap_df = hitter_grpby_rank.copy()
         # 팀명 컬럼을 영어 팀명으로 매핑하여 'team_eng' 컬럼 생성
@@ -742,17 +734,23 @@ with tab_sn_teams: # 팀 기록 탭
         tab_sn_teams_allteams_heatmap_left, tab_sn_teams_allteams_heatmap_right = st.columns(2)
         with tab_sn_teams_allteams_heatmap_left:
             # 공격지표 히트맵 생성 및 출력
-            fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 6))
+            fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 5))
             st.pyplot(fig_hitter)
             # plt.close(fig_hitter)  # 필요시 리소스 해제
 
         with tab_sn_teams_allteams_heatmap_right:
             # 수비지표 히트맵 생성 및 출력
-            fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 6))
+            fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 5))
             st.pyplot(fig_pitcher)
             plt.close(fig_pitcher)  # 히트맵 리소스 해제
 
-
+        # 공격지표 테이블 출력
+        st.write('공격지표')
+        st.dataframe(
+            hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns=hitter_data_EnKr, inplace=False),
+            use_container_width=True,
+            hide_index=True
+        )
         # 공격지표 순위 테이블 확장 영역
         with st.expander('공격지표 순위 테이블'):
             st.dataframe(
