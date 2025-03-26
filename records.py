@@ -343,7 +343,7 @@ try:        # Create GSheets connection AND Load Data from google sheets
     df_pitcher = conn.read(worksheet="df_pitcher_{}".format(default_year))
     st.write()    
     time.sleep(1.5)   
-    st.toast(f'Loaded Data from Cloud! [{df_hitter.shape[0]}]. [{df_pitcher.shape[0]}]', icon='✅')
+    st.toast(f'Loaded Data from Cloud!', icon='✅')
 except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 발생하면 병렬로 데이터 로딩
     st.error(f"Failed to read data from drive: {e}", icon="🚨") 
     hitters = []
