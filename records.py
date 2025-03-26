@@ -688,6 +688,14 @@ with tab_sn_players: # (팀별)선수기록 탭
             """.format(", ".join([f"{k}: {v}" for k, v in df_p_mediandict_kr.items()]))
             st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
 
+        filtered_grouped_pitcher = grouped_pitcher.loc[
+            grouped_pitcher['Team'] == team_name, 
+            ['No', 'Name'] + rank_by_cols_p_sorted[1:]].rename(columns = pitcher_data_EnKr, inplace=False).reset_index(drop=True)
+        
+        st.write('')
+        st.write(f'{team_name} : 투수 누적기록 [{len(filtered_grouped_pitcher)}명]')
+        st.dataframe(filtered_grouped_pitcher, use_container_width = True, hide_index = True)
+
 with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
 
