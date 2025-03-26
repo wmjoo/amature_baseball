@@ -326,7 +326,8 @@ with top_col3:
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
     team_id = team_id_dict[team_name]
     rank_calc_include_teams = list(team_id_dict.keys())
-    team_groupname = "토요 루키C"       
+    st.write(rank_calc_include_teams)
+    team_groupname = "토요 마이너B"       
 
 
 ################################################################
