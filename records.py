@@ -638,7 +638,9 @@ with tab_sn_players: # (팀별)선수기록 탭
         filtered_grouped_hitter = grouped_hitter.loc[
             grouped_hitter['Team'] == team_name, 
             ['No', 'Name'] + rank_by_cols_h_sorted[1:]].rename(columns = hitter_data_EnKr, inplace=False).reset_index(drop=True)
-        st.write(f'{team_name} 타자 누적기록 [{len(filtered_grouped_hitter)}명]')
+        
+        st.write('')
+        st.write(f'{team_name} : 타자 누적기록 [{len(filtered_grouped_hitter)}명]')
         st.dataframe(filtered_grouped_hitter, use_container_width = True, hide_index = True)
 
     with tab_sn_players_p: # 팀별 투수 탭
