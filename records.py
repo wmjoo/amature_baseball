@@ -645,7 +645,7 @@ with tab_sn_players: # (팀별)선수기록 탭
                 {}
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
-            with st.expander('리그 전체 평균/중앙값(참고용)'):
+            with st.expander(f'{default_year}시즌 리그 전체 평균/중앙값(참고용)'):
                 st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
         filtered_grouped_hitter = grouped_hitter.loc[
@@ -699,7 +699,7 @@ with tab_sn_players: # (팀별)선수기록 탭
                 {}
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_p_mediandict_kr.items()]))
-            with st.expander('리그 전체 평균/중앙값(참고용)'):
+            with st.expander(f'{default_year}시즌 리그 전체 평균/중앙값(참고용)'):
                 st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
 
         filtered_grouped_pitcher = grouped_pitcher.loc[
