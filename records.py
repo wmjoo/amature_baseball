@@ -644,9 +644,9 @@ with tab_sn_teams: # 팀 기록 탭
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
         # 히트맵 생성
-        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(plt)
-        plt.close(plt)  # 리소스 해제
+        fig1 = create_heatmap(df, cmap, input_figsize = (10, 6))
+        st.pyplot(fig1)
+        plt.close(fig1)  # fig1 객체를 닫음
 
         with st.expander('공격지표 순위 테이블'):
             st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
@@ -669,10 +669,10 @@ with tab_sn_teams: # 팀 기록 탭
         colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
         # 히트맵 생성
-        plt = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(plt)
-        plt.close(plt)  # 리소스 해제
-        
+        fig2 = create_heatmap(df, cmap, input_figsize = (10, 6))
+        st.pyplot(fig2)
+        plt.close(fig2)  # fig2 리소스 해제
+
         with st.expander('수비지표 순위 테이블'):   
             st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 
