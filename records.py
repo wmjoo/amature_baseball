@@ -510,7 +510,7 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
     pitcher_grpby_rank = pitcher_grpby_rank.loc[:, team_p_existing_columns]
 
 ##################################
-# 2022-2025 누적합 데이터 계산
+# 2022-2025 누적지표 데이터 계산
 ##################################
 tot_df_hitter = pd.DataFrame()
 tot_df_pitcher = pd.DataFrame()
@@ -554,11 +554,30 @@ sum_cols_pitcher = ["G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR
 # 투수 데이터 그룹화 및 합계
 grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
 # 투수 비율 지표 재계산
-grouped_pitcher["WPCT"] = grouped_pitcher["W"] / (grouped_pitcher["W"] + grouped_pitcher["L"])
-grouped_pitcher["ERA"] = grouped_pitcher["ER"] * 9 / grouped_pitcher["IP"]
-grouped_pitcher["WHIP"] = (grouped_pitcher["BB"] + grouped_pitcher["HA"]) / grouped_pitcher["IP"]
-grouped_pitcher["BAA"] = grouped_pitcher["HA"] / grouped_pitcher["AB"]
-grouped_pitcher["K9"] = grouped_pitcher["SO"] * 9 / grouped_pitcher["IP"]
+# grouped_pitcher["WPCT"] = grouped_pitcher["W"] / (grouped_pitcher["W"] + grouped_pitcher["L"])
+# grouped_pitcher["ERA"] = grouped_pitcher["ER"] * 9 / grouped_pitcher["IP"]
+# grouped_pitcher["WHIP"] = (grouped_pitcher["BB"] + grouped_pitcher["HA"]) / grouped_pitcher["IP"]
+# grouped_pitcher["BAA"] = grouped_pitcher["HA"] / grouped_pitcher["AB"]
+# grouped_pitcher["K9"] = grouped_pitcher["SO"] * 9 / grouped_pitcher["IP"]
+
+# 파생 변수 추가
+# 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
+if 'ER' in grouped_pitcher.columns and 'IP' in grouped_pitcher.columns:
+    grouped_pitcher['ERA'] = ((grouped_pitcher['ER'] / grouped_pitcher['IP']) * 9).round(3)
+
+# 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
+if 'SO' in grouped_pitcher.columns and 'BB' in grouped_pitcher.columns and 'HA' in df_pitcher.columns:
+    grouped_pitcher['SO/IP'] = (grouped_pitcher['SO'] / grouped_pitcher['IP']).round(2)
+    grouped_pitcher['BB/IP'] = (grouped_pitcher['BB'] / grouped_pitcher['IP']).round(2)
+    grouped_pitcher['H/IP'] = (grouped_pitcher['HA'] / grouped_pitcher['IP']).round(2)
+    grouped_pitcher['K9'] = (grouped_pitcher['SO/IP'] * 9)
+
+# WHIP 계산: (볼넷 + 피안타) / 이닝
+if 'BB' in grouped_pitcher.columns and 'HA' in grouped_pitcher.columns:
+    grouped_pitcher['WHIP'] = ((grouped_pitcher['BB'] + grouped_pitcher['HA']) / grouped_pitcher['IP']).round(3)
+    grouped_pitcher['BAA'] = (grouped_pitcher['HA'] / grouped_pitcher['AB']).round(3)
+    grouped_pitcher['OBP'] = (grouped_pitcher['HA'] + grouped_pitcher['BB'] + grouped_pitcher['HBP']) / (grouped_pitcher['AB'] + grouped_pitcher['BB'] + grouped_pitcher['HBP'] + grouped_pitcher['SF']).round(3)
+
 
 ################################################################
 ## UI Tab
