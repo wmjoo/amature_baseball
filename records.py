@@ -1100,8 +1100,49 @@ with tab_test:
         df_pitcher['Year'] = i
         tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
     st.write(tot_df_hitter.shape)
-    st.write(list(tot_df_hitter.columns))
+    # st.write(list(tot_df_hitter.columns))
     st.dataframe(tot_df_hitter)
     st.write(tot_df_pitcher.shape)
-    st.write(list(tot_df_pitcher.columns))
+    # st.write(list(tot_df_pitcher.columns))
     st.dataframe(tot_df_pitcher)
+
+    ### === 타자 데이터 처리 === ###
+    # 타자 누적합 가능한 컬럼
+    sum_cols_hitter = [ "G", "PA", "AB", "R", "H", "1B", "2B", "3B", "HR", "TB", "RBI", 
+                        "SB", "CS", "SH", "SF", "BB", "IBB", "HBP", "SO", "DP", "MHit"]
+
+    # 타자 데이터 그룹화 및 합계
+    grouped_hitter = tot_df_hitter.groupby(["Team", "Name", "No"])[sum_cols_hitter].sum().reset_index()
+
+    # 타자 비율 지표 재계산
+    grouped_hitter["AVG"] = grouped_hitter["H"] / grouped_hitter["AB"]
+    grouped_hitter["OBP"] = (
+        (grouped_hitter["H"] + grouped_hitter["BB"] + grouped_hitter["HBP"]) /
+        (grouped_hitter["AB"] + grouped_hitter["BB"] + grouped_hitter["HBP"] + grouped_hitter["SF"])
+    )
+    grouped_hitter["SLG"] = grouped_hitter["TB"] / grouped_hitter["AB"]
+    grouped_hitter["OPS"] = grouped_hitter["OBP"] + grouped_hitter["SLG"]
+    grouped_hitter["SB%"] = grouped_hitter["SB"] / (grouped_hitter["SB"] + grouped_hitter["CS"])
+    grouped_hitter["BB/K"] = grouped_hitter["BB"] / grouped_hitter["SO"]
+    grouped_hitter["XBH/H"] = (
+        (grouped_hitter["2B"] + grouped_hitter["3B"] + grouped_hitter["HR"]) / grouped_hitter["H"]
+    )
+    st.dataframe(grouped_hitter)
+
+    ### === 투수 데이터 처리 === ###
+    # 투수 누적합 가능한 컬럼
+    sum_cols_pitcher = [
+        "G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR", "SH", "SF",
+        "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"
+    ]
+
+    # 투수 데이터 그룹화 및 합계
+    grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
+
+    # 투수 비율 지표 재계산
+    grouped_pitcher["WPCT"] = grouped_pitcher["W"] / (grouped_pitcher["W"] + grouped_pitcher["L"])
+    grouped_pitcher["ERA"] = grouped_pitcher["ER"] * 9 / grouped_pitcher["IP"]
+    grouped_pitcher["WHIP"] = (grouped_pitcher["BB"] + grouped_pitcher["HA"]) / grouped_pitcher["IP"]
+    grouped_pitcher["BAA"] = grouped_pitcher["HA"] / grouped_pitcher["AB"]
+    grouped_pitcher["K9"] = grouped_pitcher["SO"] * 9 / grouped_pitcher["IP"]
+    st.dataframe(grouped_pitcher)
