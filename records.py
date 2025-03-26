@@ -511,8 +511,8 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 ## UI Tab
 ################################################################
 ## 탭 설정
-tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
-                                                                                                          "전체선수", "약어", "데이터로딩"])
+tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload, tab_test = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
+                                                                                                          "전체선수", "약어", "데이터로딩", "TEST"])
 with tab_sn_players: # (팀별)선수기록 탭
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
@@ -948,21 +948,6 @@ with tab_sn_league: # 전체 선수들의 기록을 출력해주는 탭
             st.dataframe(df_pitcher[p_existing_columns].rename(columns = pitcher_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
      
 with tab_sn_terms: # 약어 설명
-    # try: # 2022-2024 3개년 데이터 시트 로드
-    tot_df_hitter = pd.DataFrame()
-    tot_df_pitcher = pd.DataFrame()
-    for i in [2025, 2024, 2023, 2022]:
-        conn = st.connection("gsheets", type=GSheetsConnection)
-        # Read Google WorkSheet as DataFrame
-        df_hitter = conn.read(worksheet="df_hitter_{}".format(i))
-        df_hitter['Year'] = i
-        tot_df_hitter = pd.concat([tot_df_hitter, df_hitter], axis = 0).reset_index(drop=True)
-        
-        df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
-        df_pitcher['Year'] = i
-        tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
-    st.write(tot_df_hitter.shape)
-    st.write(tot_df_pitcher.shape)
     # st.subheader('야구 기록 설명')
     hitters_term_table_html = """
         <div class="table-box">
@@ -1100,3 +1085,19 @@ with tab_dataload:
     else:
         st.write('Wrong Password!!')
 
+with tab_test:
+        # try: # 2022-2024 3개년 데이터 시트 로드 기능 추가
+    tot_df_hitter = pd.DataFrame()
+    tot_df_pitcher = pd.DataFrame()
+    for i in [2025, 2024, 2023, 2022]:
+        conn = st.connection("gsheets", type=GSheetsConnection)
+        # Read Google WorkSheet as DataFrame
+        df_hitter = conn.read(worksheet="df_hitter_{}".format(i))
+        df_hitter['Year'] = i
+        tot_df_hitter = pd.concat([tot_df_hitter, df_hitter], axis = 0).reset_index(drop=True)
+        
+        df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
+        df_pitcher['Year'] = i
+        tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
+    st.write(tot_df_hitter.shape)
+    st.write(tot_df_pitcher.shape)
