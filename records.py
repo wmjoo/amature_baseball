@@ -86,15 +86,6 @@ pitcher_data_EnKr = {'Name': '성명', 'No': '배번', 'ERA': '방어율', 'G': 
 ################################################################
 ## User def functions
 ################################################################
-# def create_heatmap(data, cmap, input_figsize = (10, 7)):
-#     plt.figure(figsize=input_figsize)
-#     sns.heatmap(data, annot=True, fmt=".0f", cmap=cmap, annot_kws={'color': 'black'}, yticklabels=data.index, cbar=False)
-#     plt.xticks(rotation=45)  # x축 레이블 회전
-#     plt.yticks(rotation=0)   # y축 레이블 회전
-#     plt.ylabel('')  # y축 라벨 제거    
-#     plt.tight_layout()
-#     return plt
-
 def create_heatmap(data, cmap, input_figsize=(10, 7)):
     fig, ax = plt.subplots(figsize=input_figsize)
     sns.heatmap(
@@ -239,8 +230,6 @@ def highlight_team_name(team_name, highlight_target):
     if team_name == highlight_target:
         return f"<span style='color: skyblue; font-weight: bold;'>{team_name}</span>"
     return team_name
-
-
 
 # 일정표 크롤링 & 다음경기 출력
 with top_col1:
@@ -520,6 +509,56 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
                                 ], axis = 1)
     pitcher_grpby_rank = pitcher_grpby_rank.loc[:, team_p_existing_columns]
 
+##################################
+# 2022-2025 누적합 데이터 계산
+##################################
+tot_df_hitter = pd.DataFrame()
+tot_df_pitcher = pd.DataFrame()
+for i in [2025, 2024, 2023, 2022]:
+    conn = st.connection("gsheets", type=GSheetsConnection)
+    # Read Google WorkSheet as DataFrame
+    df_hitter = conn.read(worksheet="df_hitter_{}".format(i))
+    df_hitter['Year'] = i
+    tot_df_hitter = pd.concat([tot_df_hitter, df_hitter], axis = 0).reset_index(drop=True)
+    
+    df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
+    df_pitcher['Year'] = i
+    tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
+
+### === 타자 데이터 처리 === ###
+# 타자 누적합 가능한 컬럼
+sum_cols_hitter = [ "G", "PA", "AB", "R", "H", "1B", "2B", "3B", "HR", "TB", "RBI", 
+                    "SB", "CS", "SH", "SF", "BB", "IBB", "HBP", "SO", "DP", "MHit"]
+
+# 타자 데이터 그룹화 및 합계
+grouped_hitter = tot_df_hitter.groupby(["Team", "Name", "No"])[sum_cols_hitter].sum().reset_index()
+
+# 타자 비율 지표 재계산
+grouped_hitter["AVG"] = grouped_hitter["H"] / grouped_hitter["AB"]
+grouped_hitter["OBP"] = (
+    (grouped_hitter["H"] + grouped_hitter["BB"] + grouped_hitter["HBP"]) /
+    (grouped_hitter["AB"] + grouped_hitter["BB"] + grouped_hitter["HBP"] + grouped_hitter["SF"])
+)
+grouped_hitter["SLG"] = grouped_hitter["TB"] / grouped_hitter["AB"]
+grouped_hitter["OPS"] = grouped_hitter["OBP"] + grouped_hitter["SLG"]
+grouped_hitter["SB%"] = grouped_hitter["SB"] / (grouped_hitter["SB"] + grouped_hitter["CS"])
+grouped_hitter["BB/K"] = grouped_hitter["BB"] / grouped_hitter["SO"]
+grouped_hitter["XBH/H"] = (
+    (grouped_hitter["2B"] + grouped_hitter["3B"] + grouped_hitter["HR"]) / grouped_hitter["H"]
+)
+
+### === 투수 데이터 처리 === ###
+# 투수 누적합 가능한 컬럼
+sum_cols_pitcher = ["G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR", "SH", "SF",
+                    "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"]
+# 투수 데이터 그룹화 및 합계
+grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
+# 투수 비율 지표 재계산
+grouped_pitcher["WPCT"] = grouped_pitcher["W"] / (grouped_pitcher["W"] + grouped_pitcher["L"])
+grouped_pitcher["ERA"] = grouped_pitcher["ER"] * 9 / grouped_pitcher["IP"]
+grouped_pitcher["WHIP"] = (grouped_pitcher["BB"] + grouped_pitcher["HA"]) / grouped_pitcher["IP"]
+grouped_pitcher["BAA"] = grouped_pitcher["HA"] / grouped_pitcher["AB"]
+grouped_pitcher["K9"] = grouped_pitcher["SO"] * 9 / grouped_pitcher["IP"]
 
 ################################################################
 ## UI Tab
@@ -595,6 +634,10 @@ with tab_sn_players: # (팀별)선수기록 탭
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_h_mediandict_kr.items()]))
             st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
+
+        filtered_grouped_hitter = grouped_hitter.loc[grouped_hitter['Team'] == team_name].reset_index(drop=True).drop('Team', axis = 1)    
+        st.write('{team_name} 타자 누적기록 [{len(filtered_grouped_hitter)}명]')
+        st.dataframe(filtered_grouped_hitter)
 
     with tab_sn_players_p: # 팀별 투수 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
@@ -1165,7 +1208,7 @@ with tab_dataload:
         st.write('Wrong Password!!')
 
 with tab_test:
-        # try: # 2022-2024 3개년 데이터 시트 로드 기능 추가
+    # 2022-2025 데이터 시트 로드 기능 추가
     tot_df_hitter = pd.DataFrame()
     tot_df_pitcher = pd.DataFrame()
     for i in [2025, 2024, 2023, 2022]:
@@ -1178,12 +1221,6 @@ with tab_test:
         df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
         df_pitcher['Year'] = i
         tot_df_pitcher = pd.concat([tot_df_pitcher, df_pitcher], axis = 0).reset_index(drop=True)
-    st.write(tot_df_hitter.shape)
-    # st.write(list(tot_df_hitter.columns))
-    st.dataframe(tot_df_hitter)
-    st.write(tot_df_pitcher.shape)
-    # st.write(list(tot_df_pitcher.columns))
-    st.dataframe(tot_df_pitcher)
 
     ### === 타자 데이터 처리 === ###
     # 타자 누적합 가능한 컬럼
