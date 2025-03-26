@@ -631,50 +631,113 @@ with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
 
     with tab_sn_teams_allteams: # 전체 팀 탭   
-    ############################################################
+        # st.write('공격지표')
+        # st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+        # df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
+        # ## 히트맵 시각화 팀별 랭킹        
+        # # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+        # df['team_eng'] = df['Team'].map(team_name_dict)
+        # df = df.drop('Team', axis = 1).copy()  
+        # df.set_index('team_eng', inplace=True)
+        # # 커스텀 컬러맵 생성
+        # colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        # cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # # 히트맵 생성
+        # fig1 = create_heatmap(df, cmap, input_figsize = (10, 6))
+        # st.pyplot(fig1)
+        # # plt.close(fig1)  # fig1 객체를 닫음
+
+        # with st.expander('공격지표 순위 테이블'):
+        #     st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+
+        # # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+        # st.write('수비지표')
+        # st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
+        #                 use_container_width = True, hide_index = True)
+
+        # ## 히트맵 시각화 팀별 랭킹        
+        # df = pitcher_grpby_rank.copy() 
+        # ## 히트맵 시각화 팀별 랭킹        
+        # # if df.shape[0] > 0:
+        # # st.write("팀별 기록 : 수비지표 순위")
+        # # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
+        # df['team_eng'] = df['Team'].map(team_name_dict)
+        # df = df.drop('Team', axis = 1).copy()  
+        # df.set_index('team_eng', inplace=True)
+        # # 커스텀 컬러맵 생성
+        # colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
+        # cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+        # # 히트맵 생성
+        # fig2 = create_heatmap(df, cmap, input_figsize = (10, 6))
+        # st.pyplot(fig2)
+        # plt.close(fig2)  # fig2 리소스 해제
+
+        # with st.expander('수비지표 순위 테이블'):   
+        #     st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+        ############################################################
+        # 공격지표 테이블 출력
         st.write('공격지표')
-        st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
-        df = hitter_grpby_rank.copy() # .drop('Team', axis = 1).copy()  
-        ## 히트맵 시각화 팀별 랭킹        
-        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict)
-        df = df.drop('Team', axis = 1).copy()  
-        df.set_index('team_eng', inplace=True)
-        # 커스텀 컬러맵 생성
-        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-        # 히트맵 생성
-        fig1 = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(fig1)
-        plt.close(fig1)  # fig1 객체를 닫음
+        st.dataframe(
+            hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns=hitter_data_EnKr, inplace=False),
+            use_container_width=True,
+            hide_index=True
+        )
 
+        # 공격지표 히트맵용 데이터프레임 준비
+        hitter_heatmap_df = hitter_grpby_rank.copy()
+        # 팀명 컬럼을 영어 팀명으로 매핑하여 'team_eng' 컬럼 생성
+        hitter_heatmap_df['team_eng'] = hitter_heatmap_df['Team'].map(team_name_dict)
+        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
+        hitter_heatmap_df = hitter_heatmap_df.drop('Team', axis=1).copy()
+        hitter_heatmap_df.set_index('team_eng', inplace=True)
+
+        # 커스텀 컬러맵 설정 (어두운 빨강 → 흰색)
+        colors = ["#8b0000", "#ffffff"]
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+
+        # 공격지표 히트맵 생성 및 출력
+        fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 6))
+        st.pyplot(fig_hitter)
+        # plt.close(fig_hitter)  # 필요시 리소스 해제
+
+        # 공격지표 순위 테이블 확장 영역
         with st.expander('공격지표 순위 테이블'):
-            st.dataframe(hitter_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+            st.dataframe(
+                hitter_grpby_rank.rename(columns=hitter_data_EnKr, inplace=False),
+                use_container_width=True,
+                hide_index=True
+            )
 
-        # 팀별로 그룹화하고 정수형 변수들의 합계 계산
+        ############################################################
+        # 수비지표 테이블 출력
         st.write('수비지표')
-        st.dataframe(pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns = pitcher_data_EnKr, inplace=False), 
-                        use_container_width = True, hide_index = True)
+        st.dataframe(
+            pitcher_grpby.loc[:, rank_by_cols_p_sorted].rename(columns=pitcher_data_EnKr, inplace=False),
+            use_container_width=True,
+            hide_index=True
+        )
 
-        ## 히트맵 시각화 팀별 랭킹        
-        df = pitcher_grpby_rank.copy() 
-        ## 히트맵 시각화 팀별 랭킹        
-        # if df.shape[0] > 0:
-        # st.write("팀별 기록 : 수비지표 순위")
-        # 팀 이름을 기준으로 영어 팀명을 찾아서 df['team_eng'] 열에 대입         # df['team_eng'] = team_englist 기존
-        df['team_eng'] = df['Team'].map(team_name_dict)
-        df = df.drop('Team', axis = 1).copy()  
-        df.set_index('team_eng', inplace=True)
-        # 커스텀 컬러맵 생성
-        colors = ["#8b0000", "#ffffff"]  # 어두운 빨간색에서 하얀색으로
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-        # 히트맵 생성
-        fig2 = create_heatmap(df, cmap, input_figsize = (10, 6))
-        st.pyplot(fig2)
-        plt.close(fig2)  # fig2 리소스 해제
+        # 수비지표 히트맵용 데이터프레임 준비
+        pitcher_heatmap_df = pitcher_grpby_rank.copy()
+        # 팀명을 영어로 매핑하여 'team_eng' 컬럼 생성
+        pitcher_heatmap_df['team_eng'] = pitcher_heatmap_df['Team'].map(team_name_dict)
+        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
+        pitcher_heatmap_df = pitcher_heatmap_df.drop('Team', axis=1).copy()
+        pitcher_heatmap_df.set_index('team_eng', inplace=True)
 
-        with st.expander('수비지표 순위 테이블'):   
-            st.dataframe(pitcher_grpby_rank.rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
+        # 수비지표 히트맵 생성 및 출력
+        fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 6))
+        st.pyplot(fig_pitcher)
+        plt.close(fig_pitcher)  # 히트맵 리소스 해제
+        
+        # 수비지표 순위 테이블 확장 영역
+        with st.expander('수비지표 순위 테이블'):
+            st.dataframe(
+                pitcher_grpby_rank.rename(columns=pitcher_data_EnKr, inplace=False),
+                use_container_width=True,
+                hide_index=True
+            )
+
 
     with tab_sn_teams_team: # 선택 팀 기록 탭
         # 메인팀 공격/수비지표 따로 필터링해 변수에 저장
