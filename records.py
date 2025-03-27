@@ -407,6 +407,7 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
+st.write(df_hitter)
 # 팀별 데이터셋 그룹바이로 준비
 ## 1) 타자 데이터셋 / 출력시 열 순서 변경
 rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 
