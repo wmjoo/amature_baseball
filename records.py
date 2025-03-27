@@ -416,6 +416,7 @@ hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hi
 
 # 팀명을 기준으로 우리팀이 맨위에 오도록 설정
 hitter_grpby = hitter_grpby.sort_values(by='Team')        # 1. Team 명 기준 오름차순 정렬
+st.write(hitter_grpby)
 target = hitter_grpby[hitter_grpby['Team'].str.contains(highlight_team)]  # 2. 특정 문자열이 있는 행 필터링
 others = hitter_grpby[~hitter_grpby['Team'].str.contains(highlight_team)]         # 3. 나머지 행 필터링
 hitter_grpby = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
