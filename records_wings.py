@@ -715,16 +715,16 @@ with tab_sn_teams: # 팀 기록 탭
         hitter_heatmap_df = hitter_grpby_rank.copy()
         # 팀명 컬럼을 영어 팀명으로 매핑하여 'team_eng' 컬럼 생성
         hitter_heatmap_df['team_eng'] = hitter_heatmap_df['Team'].map(team_name_dict)
+
+        hitter_heatmap_df = hitter_heatmap_df.sort_values(by='Team')        # 1. Team 명 기준 오름차순 정렬
+        target = hitter_heatmap_df[hitter_heatmap_df['Team'].str.contains('SKCC')]  # 2. 특정 문자열이 있는 행 필터링
+        others = hitter_heatmap_df[~hitter_heatmap_df['Team'].str.contains('SKCC')]         # 3. 나머지 행 필터링
+        hitter_heatmap_df = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
+        
         st.write(hitter_heatmap_df)        
         # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
         hitter_heatmap_df = hitter_heatmap_df.drop('Team', axis=1).copy()
         hitter_heatmap_df.set_index('team_eng', inplace=True)
-
-        # 1. score 기준 오름차순 정렬
-        hitter_heatmap_df = hitter_heatmap_df.sort_values(by='team_eng')
-        target = hitter_heatmap_df[hitter_heatmap_df['team_eng'].str.contains('SKCC')]  # 2. 특정 문자열이 있는 행 필터링
-        others = hitter_heatmap_df[~hitter_heatmap_df['team_eng'].str.contains('SKCC')]         # 3. 나머지 행 필터링
-        hitter_heatmap_df = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
     
         # 수비지표 히트맵용 데이터프레임 준비
         pitcher_heatmap_df = pitcher_grpby_rank.copy()
