@@ -530,11 +530,11 @@ tot_df_pitcher = pd.DataFrame()
 for i in year_list:
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
-    tmp_df_hitter = conn.read(worksheet="df_sk_hitter_{}".format(i))
+    tmp_df_hitter = conn.read(worksheet="df_hitter_{}".format(i))
     tmp_df_hitter['Year'] = i
     tot_df_hitter = pd.concat([tot_df_hitter, tmp_df_hitter], axis = 0).reset_index(drop=True)
     
-    tmp_df_pitcher = conn.read(worksheet="df_sk_pitcher_{}".format(i))
+    tmp_df_pitcher = conn.read(worksheet="df_pitcher_{}".format(i))
     tmp_df_pitcher['Year'] = i
     tot_df_pitcher = pd.concat([tot_df_pitcher, tmp_df_pitcher], axis = 0).reset_index(drop=True)
 
