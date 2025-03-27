@@ -806,7 +806,7 @@ with tab_sn_teams: # 팀 기록 탭
 
     with tab_sn_teams_team: # 선택 팀 기록 탭
         # 메인팀 공격/수비지표 따로 필터링해 변수에 저장
-        mainteam_name = 'SKCC Wings'      
+        mainteam_name = highlight_team 
         df1_h = hitter_grpby.loc[hitter_grpby.Team == mainteam_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == mainteam_name].drop('Team', axis = 1)
         df1_h.insert(0, '공격지표', '기록')
@@ -1053,8 +1053,7 @@ with tab_sn_viz:
 with tab_schd:
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True) # 시즌 기록 출력
     st.write('') # 한줄 공백
-    # 강조할 팀명
-    highlight_team = "SKCC Wings"
+    # 강조할 팀명에 서식 적용
     highlighted_team = f"<span style='font-weight: bold; color: orange;'>{highlight_team}</span>" 
         #f"<b>{highlight_team}</b>"
 

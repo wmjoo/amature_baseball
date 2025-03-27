@@ -323,7 +323,7 @@ with top_col1:
     st.markdown(markdown_text, unsafe_allow_html=True)
 with top_col2:
     ## 년도 설정
-    year_list = [2025, 2024, 2023, 2022]
+    year_list = [2025, 2024, 2023, 2022, 2021]
     default_year = st.selectbox('년도 선택', year_list, index = 0, key = 'year_selectbox')
 with top_col3:
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
@@ -727,6 +727,52 @@ with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
 
     with tab_sn_teams_allteams: # 전체 팀 탭   
+        # 공격지표 히트맵용 데이터프레임 준비
+        hitter_heatmap_df = hitter_grpby_rank.copy()
+        # 팀명 컬럼을 영어 팀명으로 매핑하여 'team_eng' 컬럼 생성
+        hitter_heatmap_df['team_eng'] = hitter_heatmap_df['Team'].map(team_name_dict)
+        # 팀명을 기준으로 우리팀이 맨위에 오도록 설정
+        hitter_heatmap_df = hitter_heatmap_df.sort_values(by='Team')        # 1. Team 명 기준 오름차순 정렬
+        target = hitter_heatmap_df[hitter_heatmap_df['Team'].str.contains(highlight_team)]  # 2. 특정 문자열이 있는 행 필터링
+        others = hitter_heatmap_df[~hitter_heatmap_df['Team'].str.contains(highlight_team)]         # 3. 나머지 행 필터링
+        hitter_heatmap_df = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
+        
+        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
+        hitter_heatmap_df = hitter_heatmap_df.drop(['Team', 'PA', 'AB'], axis=1).copy()
+        hitter_heatmap_df.set_index('team_eng', inplace=True)
+    
+        # 수비지표 히트맵용 데이터프레임 준비
+        pitcher_heatmap_df = pitcher_grpby_rank.copy()
+        # 팀명을 영어로 매핑하여 'team_eng' 컬럼 생성
+        pitcher_heatmap_df['team_eng'] = pitcher_heatmap_df['Team'].map(team_name_dict)
+        # 팀명을 기준으로 우리팀이 맨위에 오도록 설정
+        pitcher_heatmap_df = pitcher_heatmap_df.sort_values(by='Team')        # 1. Team 명 기준 오름차순 정렬
+        target = pitcher_heatmap_df[pitcher_heatmap_df['Team'].str.contains(highlight_team)]  # 2. 특정 문자열이 있는 행 필터링
+        others = pitcher_heatmap_df[~pitcher_heatmap_df['Team'].str.contains(highlight_team)]         # 3. 나머지 행 필터링
+        pitcher_heatmap_df = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
+
+        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
+        pitcher_heatmap_df = pitcher_heatmap_df.drop(['Team', 'BF', 'AB'], axis=1).copy()
+        pitcher_heatmap_df.set_index('team_eng', inplace=True)
+
+        # 커스텀 컬러맵 설정 (어두운 빨강 → 흰색)
+        colors = ["#8b0000", "#ffffff"]
+        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
+
+        tab_sn_teams_allteams_heatmap_left, tab_sn_teams_allteams_heatmap_right = st.columns(2)
+
+        with tab_sn_teams_allteams_heatmap_left:
+            # 공격지표 히트맵 생성 및 출력
+            fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 5))
+            st.pyplot(fig_hitter)
+            # plt.close(fig_hitter)  # 필요시 리소스 해제
+
+        with tab_sn_teams_allteams_heatmap_right:
+            # 수비지표 히트맵 생성 및 출력
+            fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 5))
+            st.pyplot(fig_pitcher)
+            # plt.close(fig_pitcher)  # 히트맵 리소스 해제
+
         # 공격지표 테이블 출력
         st.write('공격지표')
         st.dataframe(
@@ -734,24 +780,6 @@ with tab_sn_teams: # 팀 기록 탭
             use_container_width=True,
             hide_index=True
         )
-
-        # 공격지표 히트맵용 데이터프레임 준비
-        hitter_heatmap_df = hitter_grpby_rank.copy()
-        # 팀명 컬럼을 영어 팀명으로 매핑하여 'team_eng' 컬럼 생성
-        hitter_heatmap_df['team_eng'] = hitter_heatmap_df['Team'].map(team_name_dict)
-        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
-        hitter_heatmap_df = hitter_heatmap_df.drop('Team', axis=1).copy()
-        hitter_heatmap_df.set_index('team_eng', inplace=True)
-
-        # 커스텀 컬러맵 설정 (어두운 빨강 → 흰색)
-        colors = ["#8b0000", "#ffffff"]
-        cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
-
-        # 공격지표 히트맵 생성 및 출력
-        fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 6))
-        st.pyplot(fig_hitter)
-        # plt.close(fig_hitter)  # 필요시 리소스 해제
-
         # 공격지표 순위 테이블 확장 영역
         with st.expander('공격지표 순위 테이블'):
             st.dataframe(
@@ -768,19 +796,6 @@ with tab_sn_teams: # 팀 기록 탭
             use_container_width=True,
             hide_index=True
         )
-
-        # 수비지표 히트맵용 데이터프레임 준비
-        pitcher_heatmap_df = pitcher_grpby_rank.copy()
-        # 팀명을 영어로 매핑하여 'team_eng' 컬럼 생성
-        pitcher_heatmap_df['team_eng'] = pitcher_heatmap_df['Team'].map(team_name_dict)
-        # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
-        pitcher_heatmap_df = pitcher_heatmap_df.drop('Team', axis=1).copy()
-        pitcher_heatmap_df.set_index('team_eng', inplace=True)
-
-        # 수비지표 히트맵 생성 및 출력
-        fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 6))
-        st.pyplot(fig_pitcher)
-        plt.close(fig_pitcher)  # 히트맵 리소스 해제
         
         # 수비지표 순위 테이블 확장 영역
         with st.expander('수비지표 순위 테이블'):
@@ -790,10 +805,9 @@ with tab_sn_teams: # 팀 기록 탭
                 hide_index=True
             )
 
-
     with tab_sn_teams_team: # 선택 팀 기록 탭
         # 메인팀 공격/수비지표 따로 필터링해 변수에 저장
-        mainteam_name = '코메츠 호시탐탐'      
+        mainteam_name = highlight_team 
         df1_h = hitter_grpby.loc[hitter_grpby.Team == mainteam_name, rank_by_cols_h_sorted].drop('Team', axis = 1) # , use_container_width = True, hide_index = True)
         df2_h = hitter_grpby_rank.loc[hitter_grpby_rank.Team == mainteam_name].drop('Team', axis = 1)
         df1_h.insert(0, '공격지표', '기록')
@@ -1040,8 +1054,7 @@ with tab_sn_viz:
 with tab_schd:
     st.markdown(soup.find('span', {'class': 'info'}), unsafe_allow_html=True) # 시즌 기록 출력
     st.write('') # 한줄 공백
-    # 강조할 팀명
-    highlight_team = "코메츠 호시탐탐"
+    # 강조할 팀명에 서식 적용
     highlighted_team = f"<span style='font-weight: bold; color: navy;'>{highlight_team}</span>" 
         #f"<b>{highlight_team}</b>"
 
@@ -1151,7 +1164,7 @@ with tab_dataload:
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
-        dataload_year = st.selectbox('데이터 수집 년도', [2025, 2024, 2023, 2022], index = 0, key = 'dataload_year_selectbox')
+        dataload_year = st.selectbox('데이터 수집 년도', year_list, index = 0, key = 'dataload_year_selectbox')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
             hitters = []
