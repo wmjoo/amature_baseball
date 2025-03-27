@@ -340,8 +340,8 @@ sn_standings_url = 'http://www.gameone.kr/league/record/rank?lig_idx=10373'
 try:        # Create GSheets connection AND Load Data from google sheets 
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
-    df_hitter = conn.read(worksheet="df_sk_hitter_{}".format(default_year))
-    df_pitcher = conn.read(worksheet="df_sk_pitcher_{}".format(default_year))
+    df_hitter = conn.read(worksheet="df_hitter_{}".format(default_year))
+    df_pitcher = conn.read(worksheet="df_pitcher_{}".format(default_year))
     st.write()    
     time.sleep(1.5)   
     st.toast(f'Loaded Data from Cloud!', icon='✅')
@@ -386,17 +386,17 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
     # click button to update worksheet / This is behind a button to avoid exceeding Google API Quota
     if st.button("Loading Dataset"):
         try:
-            df_hitter = conn.create(worksheet="df_sk_hitter_{}".format(default_year), data=df_hitter)
+            df_hitter = conn.create(worksheet="df_hitter_{}".format(default_year), data=df_hitter)
         except Exception as e:
             st.error(f"Failed to save df_hitter: {e}", icon="🚨")        
-            df_hitter = conn.update(worksheet="df_sk_hitter_{}".format(default_year), data=df_hitter)
+            df_hitter = conn.update(worksheet="df_hitter_{}".format(default_year), data=df_hitter)
             st.toast('Updete Hitter Data from Web to Cloud!', icon='💾')
         
         try:
-            df_pitcher = conn.create(worksheet="df_sk_pitcher_{}".format(default_year), data=df_pitcher)
+            df_pitcher = conn.create(worksheet="df_pitcher_{}".format(default_year), data=df_pitcher)
         except Exception as e:
             st.error(f"Failed to save df_pitcher: {e}", icon="🚨")        
-            df_pitcher = conn.update(worksheet="df_sk_pitcher_{}".format(default_year), data=df_pitcher)               
+            df_pitcher = conn.update(worksheet="df_pitcher_{}".format(default_year), data=df_pitcher)               
             st.toast('Updete Pitcher Data from Web to Cloud!', icon='💾')
         time.sleep(2)
         st.toast('Saved Data from Web to Cloud!', icon='💾')
