@@ -219,7 +219,7 @@ top_col1, top_col2, top_col3 = st.columns(3)
 ####################################
 #### 일정표 준비
 ####################################
-# 강조할 팀명
+# 강조할 팀명 (우리팀)
 highlight_team = 'SKCC Wings'
 
 # 스타일 적용 함수
@@ -409,6 +409,12 @@ rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG
                          'SB', 'MHit', '1B', '2B', '3B', 'HR', 'TB', 'CS', 'SH', 'SF', 'IBB', 'HBP', 'DP']
 hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
 hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
+
+# 팀명을 기준으로 우리팀이 맨위에 오도록 설정
+hitter_grpby = hitter_grpby.sort_values(by='Team')        # 1. Team 명 기준 오름차순 정렬
+target = hitter_grpby[hitter_grpby['Team'].str.contains('SKCC')]  # 2. 특정 문자열이 있는 행 필터링
+others = hitter_grpby[~hitter_grpby['Team'].str.contains('SKCC')]         # 3. 나머지 행 필터링
+hitter_grpby = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
 
 # 타율(AVG), 출루율(OBP), 장타율(SLG), OPS 계산 & 반올림
 hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
