@@ -721,7 +721,6 @@ with tab_sn_teams: # 팀 기록 탭
         others = hitter_heatmap_df[~hitter_heatmap_df['Team'].str.contains('SKCC')]         # 3. 나머지 행 필터링
         hitter_heatmap_df = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
         
-        st.write(hitter_heatmap_df)        
         # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
         hitter_heatmap_df = hitter_heatmap_df.drop(['Team', 'PA', 'AB'], axis=1).copy()
         hitter_heatmap_df.set_index('team_eng', inplace=True)
@@ -745,8 +744,7 @@ with tab_sn_teams: # 팀 기록 탭
         cmap = LinearSegmentedColormap.from_list("custom_red", colors, N=15)
 
         tab_sn_teams_allteams_heatmap_left, tab_sn_teams_allteams_heatmap_right = st.columns(2)
-        st.write(hitter_heatmap_df)
-        st.write(pitcher_heatmap_df)
+
         with tab_sn_teams_allteams_heatmap_left:
             # 공격지표 히트맵 생성 및 출력
             fig_hitter = create_heatmap(hitter_heatmap_df, cmap, input_figsize=(10, 5))
@@ -757,7 +755,7 @@ with tab_sn_teams: # 팀 기록 탭
             # 수비지표 히트맵 생성 및 출력
             fig_pitcher = create_heatmap(pitcher_heatmap_df, cmap, input_figsize=(10, 5))
             st.pyplot(fig_pitcher)
-            plt.close(fig_pitcher)  # 히트맵 리소스 해제
+            # plt.close(fig_pitcher)  # 히트맵 리소스 해제
 
         # 공격지표 테이블 출력
         st.write('공격지표')
