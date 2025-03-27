@@ -320,7 +320,8 @@ with top_col1:
     st.markdown(markdown_text, unsafe_allow_html=True)
 with top_col2:
     ## 년도 설정
-    default_year = st.selectbox('년도 선택', [2025, 2024, 2023, 2022], index = 0, key = 'year_selectbox')
+    year_list = [2025, 2024, 2023, 2022]
+    default_year = st.selectbox('년도 선택', year_list, index = 0, key = 'year_selectbox')
 with top_col3:
     team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
     team_id = team_id_dict[team_name]
@@ -523,7 +524,7 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 ##################################
 tot_df_hitter = pd.DataFrame()
 tot_df_pitcher = pd.DataFrame()
-for i in [2025, 2024, 2023, 2022]:
+for i in year_list:
     conn = st.connection("gsheets", type=GSheetsConnection)
     # Read Google WorkSheet as DataFrame
     tmp_df_hitter = conn.read(worksheet="df_sk_hitter_{}".format(i))
@@ -534,7 +535,6 @@ for i in [2025, 2024, 2023, 2022]:
     tmp_df_pitcher['Year'] = i
     tot_df_pitcher = pd.concat([tot_df_pitcher, tmp_df_pitcher], axis = 0).reset_index(drop=True)
 
-### === 타자 데이터 처리 === ###
 # 타자 누적합 가능한 컬럼
 sum_cols_hitter = [ "G", "PA", "AB", "R", "H", "1B", "2B", "3B", "HR", "TB", "RBI", 
                     "SB", "CS", "SH", "SF", "BB", "IBB", "HBP", "SO", "DP", "MHit"]
@@ -1164,7 +1164,7 @@ with tab_dataload:
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
-        dataload_year = st.selectbox('데이터 수집 년도', [2025, 2024, 2023, 2022], index = 0, key = 'dataload_year_selectbox')
+        dataload_year = st.selectbox('데이터 수집 년도', year_list, index = 0, key = 'dataload_year_selectbox')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
             hitters = []
