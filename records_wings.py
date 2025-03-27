@@ -723,7 +723,7 @@ with tab_sn_teams: # 팀 기록 탭
         
         st.write(hitter_heatmap_df)        
         # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
-        hitter_heatmap_df = hitter_heatmap_df.drop('Team', axis=1).copy()
+        hitter_heatmap_df = hitter_heatmap_df.drop(['Team', 'PA', 'AB'], axis=1).copy()
         hitter_heatmap_df.set_index('team_eng', inplace=True)
     
         # 수비지표 히트맵용 데이터프레임 준비
@@ -737,7 +737,7 @@ with tab_sn_teams: # 팀 기록 탭
         pitcher_heatmap_df = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
 
         # 기존 'Team' 컬럼 제거 후 'team_eng'를 인덱스로 설정
-        pitcher_heatmap_df = pitcher_heatmap_df.drop('Team', axis=1).copy()
+        pitcher_heatmap_df = pitcher_heatmap_df.drop(['Team', 'BF', 'AB'], axis=1).copy()
         pitcher_heatmap_df.set_index('team_eng', inplace=True)
 
         # 커스텀 컬러맵 설정 (어두운 빨강 → 흰색)
