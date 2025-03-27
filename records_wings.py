@@ -481,7 +481,7 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
     if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
-        pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(3)
+        pitcher_grpby['ERA'] = ((pitcher_grpby['ER'] / pitcher_grpby['IP']) * 9).round(2)
 
     # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
     if 'SO' in df_pitcher.columns and 'BB' in df_pitcher.columns and 'HA' in df_pitcher.columns:
@@ -540,20 +540,20 @@ sum_cols_hitter = [ "G", "PA", "AB", "R", "H", "1B", "2B", "3B", "HR", "TB", "RB
                     "SB", "CS", "SH", "SF", "BB", "IBB", "HBP", "SO", "DP", "MHit"]
 
 # 타자 데이터 그룹화 및 합계
-grouped_hitter = tot_df_hitter.groupby(["Team", "Name", "No"])[sum_cols_hitter].sum().reset_index()
+cumulative_hitter_stats = tot_df_hitter.groupby(["Team", "Name", "No"])[sum_cols_hitter].sum().reset_index()
 
 # 타자 비율 지표 재계산
-grouped_hitter["AVG"] = (grouped_hitter["H"] / grouped_hitter["AB"]).round(3)
-grouped_hitter["OBP"] = (
-    (grouped_hitter["H"] + grouped_hitter["BB"] + grouped_hitter["HBP"]) /
-    (grouped_hitter["AB"] + grouped_hitter["BB"] + grouped_hitter["HBP"] + grouped_hitter["SF"])
+cumulative_hitter_stats["AVG"] = (cumulative_hitter_stats["H"] / cumulative_hitter_stats["AB"]).round(3)
+cumulative_hitter_stats["OBP"] = (
+    (cumulative_hitter_stats["H"] + cumulative_hitter_stats["BB"] + cumulative_hitter_stats["HBP"]) /
+    (cumulative_hitter_stats["AB"] + cumulative_hitter_stats["BB"] + cumulative_hitter_stats["HBP"] + cumulative_hitter_stats["SF"])
 ).round(3)
-grouped_hitter["SLG"] = (grouped_hitter["TB"] / grouped_hitter["AB"]).round(3)
-grouped_hitter["OPS"] = (grouped_hitter["OBP"] + grouped_hitter["SLG"]).round(3)
-grouped_hitter["SB%"] = grouped_hitter["SB"] / (grouped_hitter["SB"] + grouped_hitter["CS"])
-grouped_hitter["BB/K"] = grouped_hitter["BB"] / grouped_hitter["SO"]
-grouped_hitter["XBH/H"] = (
-    (grouped_hitter["2B"] + grouped_hitter["3B"] + grouped_hitter["HR"]) / grouped_hitter["H"]
+cumulative_hitter_stats["SLG"] = (cumulative_hitter_stats["TB"] / cumulative_hitter_stats["AB"]).round(3)
+cumulative_hitter_stats["OPS"] = (cumulative_hitter_stats["OBP"] + cumulative_hitter_stats["SLG"]).round(3)
+cumulative_hitter_stats["SB%"] = cumulative_hitter_stats["SB"] / (cumulative_hitter_stats["SB"] + cumulative_hitter_stats["CS"])
+cumulative_hitter_stats["BB/K"] = cumulative_hitter_stats["BB"] / cumulative_hitter_stats["SO"]
+cumulative_hitter_stats["XBH/H"] = (
+    (cumulative_hitter_stats["2B"] + cumulative_hitter_stats["3B"] + cumulative_hitter_stats["HR"]) / cumulative_hitter_stats["H"]
 )
 
 ### === 투수 데이터 처리 === ###
@@ -561,25 +561,25 @@ grouped_hitter["XBH/H"] = (
 sum_cols_pitcher = ["G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR", "SH", "SF",
                     "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"]
 # 투수 데이터 그룹화 및 합계
-grouped_pitcher = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
+cumulative_pitcher_stats = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
 
 # 파생 변수 추가
 # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
-if 'ER' in grouped_pitcher.columns and 'IP' in grouped_pitcher.columns:
-    grouped_pitcher['ERA'] = ((grouped_pitcher['ER'] / grouped_pitcher['IP']) * 9).round(2)
+if 'ER' in cumulative_pitcher_stats.columns and 'IP' in cumulative_pitcher_stats.columns:
+    cumulative_pitcher_stats['ERA'] = ((cumulative_pitcher_stats['ER'] / cumulative_pitcher_stats['IP']) * 9).round(2)
 
 # 이닝당 삼진/볼넷/피안타 계산 (예제로 삼진(K), 볼넷(BB), 피안타(HA) 컬럼 필요)
-if 'SO' in grouped_pitcher.columns and 'BB' in grouped_pitcher.columns and 'HA' in df_pitcher.columns:
-    grouped_pitcher['SO/IP'] = (grouped_pitcher['SO'] / grouped_pitcher['IP']).round(2)
-    grouped_pitcher['BB/IP'] = (grouped_pitcher['BB'] / grouped_pitcher['IP']).round(2)
-    grouped_pitcher['H/IP'] = (grouped_pitcher['HA'] / grouped_pitcher['IP']).round(2)
-    grouped_pitcher['K9'] = (grouped_pitcher['SO/IP'] * 9)
+if 'SO' in cumulative_pitcher_stats.columns and 'BB' in cumulative_pitcher_stats.columns and 'HA' in df_pitcher.columns:
+    cumulative_pitcher_stats['SO/IP'] = (cumulative_pitcher_stats['SO'] / cumulative_pitcher_stats['IP']).round(2)
+    cumulative_pitcher_stats['BB/IP'] = (cumulative_pitcher_stats['BB'] / cumulative_pitcher_stats['IP']).round(2)
+    cumulative_pitcher_stats['H/IP'] = (cumulative_pitcher_stats['HA'] / cumulative_pitcher_stats['IP']).round(2)
+    cumulative_pitcher_stats['K9'] = (cumulative_pitcher_stats['SO/IP'] * 9)
 
 # WHIP 계산: (볼넷 + 피안타) / 이닝
-if 'BB' in grouped_pitcher.columns and 'HA' in grouped_pitcher.columns:
-    grouped_pitcher['WHIP'] = ((grouped_pitcher['BB'] + grouped_pitcher['HA']) / grouped_pitcher['IP']).round(3)
-    grouped_pitcher['BAA'] = (grouped_pitcher['HA'] / grouped_pitcher['AB']).round(3)
-    grouped_pitcher['OBP'] = (grouped_pitcher['HA'] + grouped_pitcher['BB'] + grouped_pitcher['HBP']) / (grouped_pitcher['AB'] + grouped_pitcher['BB'] + grouped_pitcher['HBP'] + grouped_pitcher['SF']).round(3)
+if 'BB' in cumulative_pitcher_stats.columns and 'HA' in cumulative_pitcher_stats.columns:
+    cumulative_pitcher_stats['WHIP'] = ((cumulative_pitcher_stats['BB'] + cumulative_pitcher_stats['HA']) / cumulative_pitcher_stats['IP']).round(3)
+    cumulative_pitcher_stats['BAA'] = (cumulative_pitcher_stats['HA'] / cumulative_pitcher_stats['AB']).round(3)
+    cumulative_pitcher_stats['OBP'] = (cumulative_pitcher_stats['HA'] + cumulative_pitcher_stats['BB'] + cumulative_pitcher_stats['HBP']) / (cumulative_pitcher_stats['AB'] + cumulative_pitcher_stats['BB'] + cumulative_pitcher_stats['HBP'] + cumulative_pitcher_stats['SF']).round(3)
 
 
 ################################################################
@@ -658,13 +658,13 @@ with tab_sn_players: # (팀별)선수기록 탭
             with st.expander(f'{default_year}시즌 데이터셋 평균/중앙값(참고용)'):
                 st.markdown(h_box_stylesetting_1 + " " + h_box_stylesetting_2, unsafe_allow_html=True)            
 
-        filtered_grouped_hitter = grouped_hitter.loc[
-            grouped_hitter['Team'] == team_name, 
+        filtered_cumulative_hitter_stats = cumulative_hitter_stats.loc[
+            cumulative_hitter_stats['Team'] == team_name, 
             ['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False).reset_index(drop=True)
         
         st.write('')
-        st.write(f'{team_name} : 타자 누적기록 [{len(filtered_grouped_hitter)}명]')
-        st.dataframe(filtered_grouped_hitter, use_container_width = True, hide_index = True)
+        st.write(f'{team_name} : 타자 누적기록 [{len(filtered_cumulative_hitter_stats)}명]')
+        st.dataframe(filtered_cumulative_hitter_stats, use_container_width = True, hide_index = True)
 
     with tab_sn_players_p: # 팀별 투수 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
@@ -712,13 +712,13 @@ with tab_sn_players: # (팀별)선수기록 탭
             with st.expander(f'{default_year}시즌 데이터셋 평균/중앙값(참고용)'):
                 st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
 
-        filtered_grouped_pitcher = grouped_pitcher.loc[
-            grouped_pitcher['Team'] == team_name, 
+        filtered_cumulative_pitcher_stats = cumulative_pitcher_stats.loc[
+            cumulative_pitcher_stats['Team'] == team_name, 
             ['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False).reset_index(drop=True)
         
         st.write('')
-        st.write(f'{team_name} : 투수 누적기록 [{len(filtered_grouped_pitcher)}명]')
-        st.dataframe(filtered_grouped_pitcher, use_container_width = True, hide_index = True)
+        st.write(f'{team_name} : 투수 누적기록 [{len(filtered_cumulative_pitcher_stats)}명]')
+        st.dataframe(filtered_cumulative_pitcher_stats, use_container_width = True, hide_index = True)
 
 with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
