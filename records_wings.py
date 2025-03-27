@@ -560,7 +560,10 @@ sum_cols_pitcher = ["G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR
                     "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"]
 # 투수 데이터 그룹화 및 합계
 cumulative_pitcher_stats = tot_df_pitcher.groupby(["Team", "Name", "No"])[sum_cols_pitcher].sum().reset_index()
-cumulative_pitcher_stats['IP'] = (cumulative_pitcher_stats['IP']+ 0.001).round(2) # 이닝수 계산 시 부동소수점 오차 해결
+
+# 잘못된 0.99 값을 올림 처리
+cumulative_pitcher_stats.loc[np.isclose(cumulative_pitcher_stats['IP'] % 1, 0.99, atol=0.01), 'IP'] = np.ceil(cumulative_pitcher_stats['IP'])
+# cumulative_pitcher_stats['IP'] = (cumulative_pitcher_stats['IP']+ 0.001).round(2) # 이닝수 계산 시 부동소수점 오차 해결
 # 파생 변수 추가
 # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
 if 'ER' in cumulative_pitcher_stats.columns and 'IP' in cumulative_pitcher_stats.columns:
