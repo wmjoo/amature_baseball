@@ -471,6 +471,13 @@ if df_pitcher.shape[0] > 0 : # pitcher data exists
 
     pitcher_grpby = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams), 
                                     ['Team']+pitcher_sumcols].groupby('Team')[pitcher_sumcols].sum().reset_index()  # 팀별 합계 (인덱스가 팀명)
+    
+    # 팀명을 기준으로 우리팀이 맨위에 오도록 설정
+    pitcher_grpby = pitcher_grpby.sort_values(by='Team')        # 1. Team 명 기준 오름차순 정렬
+    target = pitcher_grpby[pitcher_grpby['Team'].str.contains('SKCC')]  # 2. 특정 문자열이 있는 행 필터링
+    others = pitcher_grpby[~pitcher_grpby['Team'].str.contains('SKCC')]         # 3. 나머지 행 필터링
+    pitcher_grpby = pd.concat([target, others], ignore_index=True)  # 4. 두 데이터프레임을 위에서 아래로 concat
+    
     # 파생 변수 추가
     # 방어율(ERA) 계산: (자책점 / 이닝) * 9 (예제로 자책점과 이닝 컬럼 필요)
     if 'ER' in df_pitcher.columns and 'IP' in df_pitcher.columns:
