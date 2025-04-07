@@ -668,7 +668,7 @@ with tab_sn_players: # (팀별)선수기록 탭
         st.write(f'{team_name} : 타자 누적기록 [{len(filtered_cumulative_hitter_stats)}명]')
         st.dataframe(filtered_cumulative_hitter_stats, use_container_width = True, hide_index = True)
 
-        user_password_aireport = st.text_input('Input Password for Update', type='password')
+        user_password_aireport = st.text_input('Input Password for Update', type='password', key='password_genai_h')
         user_password_aireport = str(user_password_aireport)
         if user_password_aireport == st.secrets["password_update"]: # Correct Password
             st.write('Correct Password')
@@ -1226,7 +1226,7 @@ with tab_sn_terms: # 약어 설명
         st.components.v1.html(table_style + apply_row_styling(pitchers_term_table_html), height=800, scrolling=True)
 
 with tab_dataload:
-    user_password_update = st.text_input('Input Password for Update', type='password')
+    user_password_update = st.text_input('Input Password for Update', type='password', key = 'password_update')
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
