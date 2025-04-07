@@ -668,6 +668,70 @@ with tab_sn_players: # (팀별)선수기록 탭
         st.write(f'{team_name} : 타자 누적기록 [{len(filtered_cumulative_hitter_stats)}명]')
         st.dataframe(filtered_cumulative_hitter_stats, use_container_width = True, hide_index = True)
 
+        user_password_aireport = st.text_input('Input Password for Update', type='password')
+        user_password_aireport = str(user_password_aireport)
+        if user_password_aireport == st.secrets["password_update"]: # Correct Password
+            st.write('Correct Password')
+
+            # --- 초기 설정
+            # st.set_page_config(page_title="Gemini 데이터 요약기", layout="wide")
+            st.write("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
+
+            # --- API 키 입력
+            GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Google API Key", type="password")
+
+            if GOOGLE_API_KEY:
+                # Gemini 설정
+                genai.configure(api_key=GOOGLE_API_KEY)
+                model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+                # --- CSV 업로드
+                df_season = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
+                # df_season_median = df_h_mediandict_kr
+                df_total = filtered_cumulative_hitter_stats
+                if df_season is not None:
+                    # df = pd.read_csv(uploaded_file)
+                    # st.subheader("📌 데이터 미리보기")
+                    # st.dataframe(df, use_container_width=True)
+
+                    # --- 요약 버튼
+                    if st.button("🔍 Gemini 요약 요청"):
+                        def dataframe_to_text(df: pd.DataFrame, max_rows: int = 30) -> str:
+                            if len(df) > max_rows:
+                                df = df.head(max_rows)
+                            return df.to_csv(index=False)
+
+                        prompt = f"""
+            당신은 야구 데이터 분석가입니다. 
+            이 데이터는 특정 팀의 타자 혹은 투수 데이터입니다. 이 데이터를 보고 이 팀에서 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해줘.
+            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교하여 정량적으로 비교를 하기 위함이야.
+            이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
+
+            1. 우수선수들의 이름(#배번) : 해당 선수의 특징적인 기록
+            2. 데이터에서 눈에 띄는 패턴 또는 이상값
+            3. 간단한 해석 또는 인사이트
+
+            데이터(시즌):
+            {dataframe_to_text(df_season)}
+
+            데이터(이번 시즌 전체 팀의 중앙값):
+            {dataframe_to_text(df_h_mediandict_kr)}
+
+            데이터(통산):
+            {dataframe_to_text(df_total)}
+
+
+            """
+
+                        with st.spinner("Gemini가 데이터를 분석 중입니다..."):
+                            try:
+                                response = model.generate_content(prompt)
+                                st.write("📈 Gemini 분석 결과")
+                                st.write(response.text)
+                            except Exception as e:
+                                st.error(f"Gemini API 호출 중 오류 발생: {e}")
+
+
     with tab_sn_players_p: # 팀별 투수 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
         # team_id = team_id_dict[team_name]        
@@ -1165,53 +1229,53 @@ with tab_dataload:
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
 
-        # --- 초기 설정
-        # st.set_page_config(page_title="Gemini 데이터 요약기", layout="wide")
-        st.write("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
+        # # --- 초기 설정
+        # # st.set_page_config(page_title="Gemini 데이터 요약기", layout="wide")
+        # st.write("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
 
-        # --- API 키 입력
-        GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Google API Key", type="password")
+        # # --- API 키 입력
+        # GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Google API Key", type="password")
 
-        if GOOGLE_API_KEY:
-            # Gemini 설정
-            genai.configure(api_key=GOOGLE_API_KEY)
-            model = genai.GenerativeModel("models/gemini-1.5-flash")
+        # if GOOGLE_API_KEY:
+        #     # Gemini 설정
+        #     genai.configure(api_key=GOOGLE_API_KEY)
+        #     model = genai.GenerativeModel("models/gemini-1.5-flash")
 
-            # --- CSV 업로드
-            df = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
-                            #st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
-            if df is not None:
-                # df = pd.read_csv(uploaded_file)
-                # st.subheader("📌 데이터 미리보기")
-                st.dataframe(df, use_container_width=True)
+        #     # --- CSV 업로드
+        #     df = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
+        #                     #st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
+        #     if df is not None:
+        #         # df = pd.read_csv(uploaded_file)
+        #         # st.subheader("📌 데이터 미리보기")
+        #         st.dataframe(df, use_container_width=True)
 
-                # --- 요약 버튼
-                if st.button("🔍 Gemini 요약 요청"):
-                    def dataframe_to_text(df: pd.DataFrame, max_rows: int = 20) -> str:
-                        if len(df) > max_rows:
-                            df = df.head(max_rows)
-                        return df.to_csv(index=False)
+        #         # --- 요약 버튼
+        #         if st.button("🔍 Gemini 요약 요청"):
+        #             def dataframe_to_text(df: pd.DataFrame, max_rows: int = 20) -> str:
+        #                 if len(df) > max_rows:
+        #                     df = df.head(max_rows)
+        #                 return df.to_csv(index=False)
 
-                    prompt = f"""
-        당신은 야구 데이터 분석가입니다. 
-        이 데이터는 특정 팀의 타자 혹은 투수 데이터입니다. 이 데이터를 보고 이 팀에서 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해줘.
-        이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
+        #             prompt = f"""
+        # 당신은 야구 데이터 분석가입니다. 
+        # 이 데이터는 특정 팀의 타자 혹은 투수 데이터입니다. 이 데이터를 보고 이 팀에서 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해줘.
+        # 이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
 
-        1. 우수한 선수들의 명단과 배번, 해당 선수의 특징적인 기록
-        2. 데이터에서 눈에 띄는 패턴 또는 이상값
-        3. 간단한 해석 또는 인사이트
+        # 1. 우수한 선수들의 명단과 배번, 해당 선수의 특징적인 기록
+        # 2. 데이터에서 눈에 띄는 패턴 또는 이상값
+        # 3. 간단한 해석 또는 인사이트
 
-        데이터:
-        {dataframe_to_text(df)}
-        """
+        # 데이터:
+        # {dataframe_to_text(df)}
+        # """
 
-                    with st.spinner("Gemini가 데이터를 분석 중입니다..."):
-                        try:
-                            response = model.generate_content(prompt)
-                            st.write("📈 Gemini 분석 결과")
-                            st.write(response.text)
-                        except Exception as e:
-                            st.error(f"Gemini API 호출 중 오류 발생: {e}")
+        #             with st.spinner("Gemini가 데이터를 분석 중입니다..."):
+        #                 try:
+        #                     response = model.generate_content(prompt)
+        #                     st.write("📈 Gemini 분석 결과")
+        #                     st.write(response.text)
+        #                 except Exception as e:
+        #                     st.error(f"Gemini API 호출 중 오류 발생: {e}")
         else:
             st.warning("Google API Key를 입력해주세요.")
 
