@@ -636,7 +636,7 @@ if 'BB' in cumulative_pitcher_stats.columns and 'HA' in cumulative_pitcher_stats
 ## 탭 설정
 tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
                                                                                                           "전체선수", "약어", "데이터로딩"])
-with tab_sn_players: # (팀별)선수기록 탭
+with tab_sn_players: # (팀별)개잉 선수기록 탭
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
@@ -657,8 +657,9 @@ with tab_sn_players: # (팀별)선수기록 탭
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
         df_p_mediandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_mediandict.items()}    
 
-    tab_sn_players_h, tab_sn_players_p = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
-                                                  "투수 [{}명]".format(df_pitcher_team.shape[0])])
+    tab_sn_players_h, tab_sn_players_p, tab_sn_players_ai = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
+                                                                    "투수 [{}명]".format(df_pitcher_team.shape[0]),
+                                                                    "AI Report"])
 
     with tab_sn_players_h: # 팀별 타자 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
@@ -714,54 +715,6 @@ with tab_sn_players: # (팀별)선수기록 탭
         st.write(f'{team_name} : 타자 누적기록 [{len(filtered_cumulative_hitter_stats)}명]')
         st.dataframe(filtered_cumulative_hitter_stats, use_container_width = True, hide_index = True)
 
-        st.write("📊 Gemini AI Report")
-        user_password_aireport = st.text_input('Input Password for Update', type='password', key='password_genai_h')
-        user_password_aireport = str(user_password_aireport)
-        if user_password_aireport == st.secrets["password_update"]: # Correct Password
-            st.write('Correct Password')
-            # --- API 키 입력
-            GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
-
-            if GOOGLE_API_KEY:
-                # Gemini 설정
-                genai.configure(api_key=GOOGLE_API_KEY)
-                try :
-                    model = genai.GenerativeModel("models/gemini-2.5-pro-exp-03-25")
-                except :
-                    model = genai.GenerativeModel("models/gemini-1.5-flash")
-
-                df_season = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
-                df_total = filtered_cumulative_hitter_stats
-                if df_season is not None:
-                    # --- 요약 버튼
-                    if st.button("🔍 Gemini AI 요약 요청"):
-                        prompt = f"""
-                            당신은 야구 데이터 분석가입니다. 해당팀의 데이터를 보고 이 팀에 대해 분석 보고서를 작성해야 하는 상황입니다.
-                            이 데이터를 보고 이 팀에서 많은 타석을 소화한 타자를 우선적으로 우수한 타격 성적을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해주세요.
-                            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
-                            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
-                            이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
-                            이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
-
-                                1. 우수 선수들의 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?
-                                2. 간단한 해석 또는 인사이트
-
-                            데이터(시즌): {data_to_text(df_season)}
-                            데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_h_mediandict_kr)}
-                            데이터(통산): {data_to_text(df_total)}
-                            """
-
-                        with st.spinner("AI가 타자들의 데이터를 분석 중입니다..."):
-                            try:
-                                response = model.generate_content(prompt)
-                                st.write("📈 Gemini AI 분석 결과")
-                                st.write(response.text)
-                            except Exception as e:
-                                st.error(f"Gemini API 호출 중 오류 발생: {e}")
-        else:
-            st.warning("비밀번호를 입력해주세요.")
-
-
     with tab_sn_players_p: # 팀별 투수 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
         # team_id = team_id_dict[team_name]        
@@ -816,10 +769,11 @@ with tab_sn_players: # (팀별)선수기록 탭
         st.write(f'{team_name} : 투수 누적기록 [{len(filtered_cumulative_pitcher_stats)}명]')
         st.dataframe(filtered_cumulative_pitcher_stats, use_container_width = True, hide_index = True)
 
+    with tab_sn_players_ai: # AI Report 탭
         st.write("📊 Gemini AI Report")
-        user_password_aireport_p = st.text_input('Input Password for Update', type='password', key='password_genai_p')
-        user_password_aireport_p = str(user_password_aireport_p)
-        if user_password_aireport_p == st.secrets["password_update"]: # Correct Password
+        user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
+        user_password_aireport = str(user_password_aireport)
+        if user_password_aireport == st.secrets["password_update"]: # Correct Password
             st.write('Correct Password')
             # --- API 키 입력
             GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
@@ -828,16 +782,37 @@ with tab_sn_players: # (팀별)선수기록 탭
                 # Gemini 설정
                 genai.configure(api_key=GOOGLE_API_KEY)
                 try :
-                    model = genai.GenerativeModel("models/gemini-2.5-pro-exp-03-25")
-                except :
                     model = genai.GenerativeModel("models/gemini-1.5-flash")
+                except :
+                    model = genai.GenerativeModel("models/gemini-2.5-pro-exp-03-25") #
+
+                df_season = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
+                df_total = filtered_cumulative_hitter_stats
 
                 df_season_p = df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False)
                 df_total_p = filtered_cumulative_pitcher_stats
-                if df_season_p is not None:
-                    # --- 요약 버튼
-                    if st.button("🔍 Gemini AI 요약 요청(투수))"):
-                        prompt = f"""
+
+
+                if (df_season is not None) (df_season_p is not None):
+                    if st.button("🔍 Gemini AI Report"):
+                        prompt_h = f"""
+                            당신은 야구 데이터 분석가입니다. 해당팀의 데이터를 보고 이 팀에 대해 분석 보고서를 작성해야 하는 상황입니다.
+                            이 데이터를 보고 이 팀에서 많은 타석을 소화한 타자를 우선적으로 우수한 타격 성적을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해주세요.
+                            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
+                            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
+                            이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
+                            이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요
+                            리포트는 마크다운 형식이 아닌 Plain Text 형식으로 작성해 주세요.
+                            :
+
+                                1. 우수 선수들의 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?
+                                2. 간단한 해석 또는 인사이트
+
+                            데이터(시즌): {data_to_text(df_season)}
+                            데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_h_mediandict_kr)}
+                            데이터(통산): {data_to_text(df_total)}
+                            """
+                        prompt_p = f"""
                             당신은 야구 데이터 분석가입니다. 이 데이터는 특정 팀의 투수 데이터입니다. 해당팀의 데이터를 보고 이 팀에 대해 분석 보고서를 작성해야 하는 상황입니다.
                             이 데이터를 보고 이 팀에서 많은 이닝을 소화한 투수를 우선적으로 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해주세요.
                             데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
@@ -852,14 +827,17 @@ with tab_sn_players: # (팀별)선수기록 탭
                             데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_p_mediandict_kr)}
                             데이터(통산): {data_to_text(df_total_p)}
                             """
-
-                        with st.spinner("AI가 투수들의 데이터를 분석 중입니다..."):
+                        with st.spinner("AI가 데이터를 분석 중입니다..."):
                             try:
-                                response = model.generate_content(prompt)
-                                st.write("📈 Gemini AI 분석 결과(투수)")
-                                st.write(response.text)
+                                response_h = model.generate_content(prompt_h)
+                                response_p = model.generate_content(prompt_p)
+                                st.write("📈 Gemini AI 분석 결과 [타자]")
+                                st.write(response_h.text)
+                                st.write("📈 Gemini AI 분석 결과 [투수]")
+                                st.write(response_p.text)                                
                             except Exception as e:
                                 st.error(f"Gemini API 호출 중 오류 발생: {e}")
+
         else:
             st.warning("비밀번호를 입력해주세요.")
 
