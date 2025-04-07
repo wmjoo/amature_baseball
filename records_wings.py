@@ -799,7 +799,30 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
             user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
             user_password_aireport = str(user_password_aireport)
         with tab_sn_players_ai_topcol2:
-            ai_model = st.selectbox('AI Model 선택', ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], key = 'selbox_aimdl', index = 0)
+            # 우선순위 모델
+            priority_models = ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25']
+
+            # 모델 리스트 가져오기 및 필터링
+            available_models = genai.list_models()
+
+            # 멀티모달 및 비전 모델 제외
+            filtered_models = []
+            for model in available_models:
+                name = model.name.split("/")[-1]
+                if 'vision' in name.lower():
+                    continue
+                if 'generate_multimodal' in model.supported_generation_methods:
+                    continue
+                filtered_models.append(name)
+
+            # 우선순위 모델 상단 배치
+            model_list = [m for m in priority_models if m in filtered_models] + \
+                        [m for m in filtered_models if m not in priority_models]
+
+            # 선택 박스
+            ai_model = st.selectbox('AI Model 선택', model_list, key='selbox_aimdl', index=0)
+
+            # ai_model = st.selectbox('AI Model 선택', ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], key = 'selbox_aimdl', index = 0)
         if user_password_aireport == st.secrets["password_update"]: # Correct Password
             GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
             if GOOGLE_API_KEY:
