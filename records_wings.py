@@ -770,11 +770,11 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
         st.dataframe(filtered_cumulative_pitcher_stats, use_container_width = True, hide_index = True)
 
     with tab_sn_players_ai: # AI Report 탭
-        st.write("📊 Gemini AI Report")
+        # st.write("📊 Gemini AI Report")
         user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
         user_password_aireport = str(user_password_aireport)
         if user_password_aireport == st.secrets["password_update"]: # Correct Password
-            st.write('Correct Password')
+            # st.write('Correct Password')
             # --- API 키 입력
             GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
 
@@ -800,9 +800,10 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                         데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
                         데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
                         이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
-                        이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.:
+                        이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.
+                        보고서 제목은 없이 바로 본론을 작성해주세요:
 
-                            1. 우수 선수들의 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?
+                            1. 주요 타자 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?
                             2. 간단한 해석 또는 인사이트
 
                         데이터(시즌): {data_to_text(df_season)}
@@ -815,9 +816,10 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                         데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
                         특히 이닝당 삼진갯수로는 해당 투수의 구위를, 이닝당 볼넷갯수를 통해 해당 투수의 제구력을 평가할 수 있다고 생각합니다.
                         이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
-                        이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.:
+                        이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.
+                        보고서 제목은 없이 바로 본론을 작성해주세요.:
 
-                            1. 우수 선수들의 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?(중앙값보다 큰지, 작은지?)
+                            1. 주요 투수 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?(중앙값보다 큰지, 작은지?)
                             2. 간단한 해석 또는 인사이트
 
                         데이터(시즌): {data_to_text(df_season_p)}
