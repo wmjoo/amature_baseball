@@ -798,17 +798,16 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
             user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
             user_password_aireport = str(user_password_aireport)
         with tab_sn_players_ai_topcol2:
-            ai_model = st.selectbox('AI Model 선택', ['Gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], key = 'selbox_aimdl', index = 0)
+            ai_model = st.selectbox('AI Model 선택', ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], key = 'selbox_aimdl', index = 0)
         if user_password_aireport == st.secrets["password_update"]: # Correct Password
             GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
             if GOOGLE_API_KEY:
                 # Gemini 설정
                 genai.configure(api_key=GOOGLE_API_KEY)
-                model = genai.GenerativeModel('models/{}'.format(ai_model))
-                # try :
-                #     model = genai.GenerativeModel("models/gemini-1.5-flash")
-                # except :
-                #     model = genai.GenerativeModel("models/gemini-2.5-pro-exp-03-25") #
+                try:
+                    model = genai.GenerativeModel('models/{}'.format(ai_model))
+                except :
+                    model = genai.GenerativeModel("models/gemini-1.5-flash") #
 
                 df_season = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
                 df_total = filtered_cumulative_hitter_stats
