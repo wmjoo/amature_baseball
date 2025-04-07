@@ -465,16 +465,8 @@ df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy(
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
 # df_hitter["BB/K"] = df_hitter["BB"] / df_hitter["SO"]
-df_hitter["BB/K"] = np.where(
-    df_hitter["SO"] == 0, 
-    0, 
-    df_hitter["BB"] / df_hitter["SO"]
-)
-df_hitter["XBH/H"] = np.where(
-    df_hitter["H"] == 0,
-    0,
-    (df_hitter["2B"] + df_hitter["3B"] + df_hitter["HR"]) / df_hitter["H"]
-)
+df_hitter["BB/K"] = np.where(df_hitter["SO"] == 0, 0, df_hitter["BB"] / df_hitter["SO"])
+df_hitter["XBH/H"] = np.where(df_hitter["H"] == 0, 0, (df_hitter["2B"] + df_hitter["3B"] + df_hitter["HR"]) / df_hitter["H"])
 # 팀별 데이터셋 그룹바이로 준비
 ## 1) 타자 데이터셋 / 출력시 열 순서 변경
 rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 'BB/K',
@@ -493,6 +485,9 @@ hitter_grpby['AVG'] = (hitter_grpby['H'] / hitter_grpby['AB']).round(3)
 hitter_grpby['OBP'] = ((hitter_grpby['H'] + hitter_grpby['BB'] + hitter_grpby['HBP']) / (hitter_grpby['AB'] + hitter_grpby['BB'] + hitter_grpby['HBP'] + hitter_grpby['SF'])).round(3)
 hitter_grpby['SLG'] = (hitter_grpby['TB'] / hitter_grpby['AB']).round(3)
 hitter_grpby['OPS'] = (hitter_grpby['OBP'] + hitter_grpby['SLG']).round(3)
+# BB/K, XBH/H 계산 (0으로 나누는 경우 0으로 처리)
+hitter_grpby["BB/K"] = np.where(hitter_grpby["SO"] == 0, 0, hitter_grpby["BB"] / hitter_grpby["SO"])
+hitter_grpby["XBH/H"] = np.where(hitter_grpby["H"] == 0, 0, (hitter_grpby["2B"] + hitter_grpby["3B"] + hitter_grpby["HR"]) / hitter_grpby["H"])
 
 # 'Team' 컬럼 바로 다음에 계산된 컬럼들 삽입
 for col in ['OPS', 'SLG', 'OBP', 'AVG']:
@@ -502,7 +497,7 @@ for col in ['OPS', 'SLG', 'OBP', 'AVG']:
 # rank_by_ascending, rank_by_descending columns 
 rank_by_ascending_cols_h = ['SO', 'DP', 'CS'] # 낮을수록 좋은 지표들
 rank_by_descending_cols_h = ['AVG', 'OBP', 'SLG', 'OPS', 'PA', 'AB', 'R', 'H', 'MHit', 
-            '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP'] # 높을수록 좋은 지표들
+            '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'BB/K', 'XBH/H'] # 높을수록 좋은 지표들
 # st.dataframe(hitter_grpby.loc[:, rank_by_cols_h_sorted].rename(columns = hitter_data_EnKr, inplace=False), use_container_width = True, hide_index = True)
 hitter_grpby_rank = pd.concat([
                                 hitter_grpby.Team, 
