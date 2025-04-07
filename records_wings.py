@@ -1180,7 +1180,7 @@ with tab_dataload:
             # --- CSV 업로드
             df = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
                             #st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
-            if uploaded_file:
+            if df is not None:
                 # df = pd.read_csv(uploaded_file)
                 st.subheader("📌 데이터 미리보기")
                 st.dataframe(df, use_container_width=True)
