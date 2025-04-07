@@ -22,6 +22,7 @@ from sklearn.preprocessing import MinMaxScaler
 import re 
 
 from streamlit_gsheets import GSheetsConnection
+import google.generativeai as genai
 # import pandasql as psql
 
 warnings.filterwarnings('ignore')
@@ -1163,6 +1164,58 @@ with tab_dataload:
     user_password_update = str(user_password_update)
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
+
+        st.write('Ai 리포트')
+
+        # --- 초기 설정
+        # st.set_page_config(page_title="Gemini 데이터 요약기", layout="wide")
+        st.title("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
+
+        # --- API 키 입력
+        GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Google API Key", type="password")
+
+        if GOOGLE_API_KEY:
+            # Gemini 설정
+            genai.configure(api_key=GOOGLE_API_KEY)
+            model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+            # --- CSV 업로드
+            uploaded_file = st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
+            if uploaded_file:
+                df = pd.read_csv(uploaded_file)
+                st.subheader("📌 데이터 미리보기")
+                st.dataframe(df, use_container_width=True)
+
+                # --- 요약 버튼
+                if st.button("🔍 Gemini 요약 요청"):
+                    def dataframe_to_text(df: pd.DataFrame, max_rows: int = 20) -> str:
+                        if len(df) > max_rows:
+                            df = df.head(max_rows)
+                        return df.to_csv(index=False)
+
+                    prompt = f"""
+        당신은 통계 분석가입니다. 다음은 구조화된 정형 데이터이며 CSV 형식입니다. 이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
+
+        1. 주요 통계 지표 (예: 평균, 최댓값, 범위 등)
+        2. 범주형 변수의 분포 (ex. 직업이 학생인 사람 비율 등)
+        3. 데이터에서 눈에 띄는 패턴 또는 이상값
+        4. 간단한 해석 또는 인사이트
+
+        데이터:
+        {dataframe_to_text(df)}
+        """
+
+                    with st.spinner("Gemini가 데이터를 분석 중입니다..."):
+                        try:
+                            response = model.generate_content(prompt)
+                            st.subheader("📈 Gemini 분석 결과")
+                            st.write(response.text)
+                        except Exception as e:
+                            st.error(f"Gemini API 호출 중 오류 발생: {e}")
+        else:
+            st.warning("Google API Key를 입력해주세요.")
+
+
         dataload_year = st.selectbox('데이터 수집 년도', year_list, index = 0, key = 'dataload_year_selectbox')
         st.write('아래 버튼을 누르면 현재 시점의 데이터를 새로 로드합니다.')        
         if st.button('Data Update'):
