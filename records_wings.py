@@ -730,6 +730,8 @@ with tab_sn_players: # (팀별)선수기록 탭
                                 st.write(response.text)
                             except Exception as e:
                                 st.error(f"Gemini API 호출 중 오류 발생: {e}")
+        else:
+            st.warning("Google API Key를 입력해주세요.")
 
 
     with tab_sn_players_p: # 팀별 투수 탭
@@ -1276,8 +1278,8 @@ with tab_dataload:
         #                     st.write(response.text)
         #                 except Exception as e:
         #                     st.error(f"Gemini API 호출 중 오류 발생: {e}")
-        else:
-            st.warning("Google API Key를 입력해주세요.")
+        # else:
+        #     st.warning("Google API Key를 입력해주세요.")
 
 
         dataload_year = st.selectbox('데이터 수집 년도', year_list, index = 0, key = 'dataload_year_selectbox')
