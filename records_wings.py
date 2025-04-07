@@ -464,7 +464,7 @@ df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].co
 
 # 팀별 데이터셋 그룹바이로 준비
 ## 1) 타자 데이터셋 / 출력시 열 순서 변경
-rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 
+rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 'BB/K',
                          'SB', 'MHit', '1B', '2B', '3B', 'HR', 'TB', 'CS', 'SH', 'SF', 'IBB', 'HBP', 'DP']
 hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
 hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
@@ -810,7 +810,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                     이 데이터를 보고 이 팀에서 많은 타석을 소화한 타자를 우선적으로 고려하여 우수한 타격 성적을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해주세요.
                     데이터는 이번 시즌 이 팀의 타자 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
                     특히 OPS로는 해당 타자의 공격력을, BB/K로는 해당 타자의 선구안을 평가할 수 있다고 생각합니다. 
-                    그리고 사회인야구에서 홈런을 기록하는 것은 매우 어렵기 떄문에 통산 홈런이 하나라도 있는 타자는 우수 선수가 아니라도 리포트에 이름을 언급해줘.
+                    그리고 사회인야구에서 홈런을 기록하는 것은 매우 어렵기 떄문에 통산 홈런이 있다면 해당 내용을 언급해주세요.
                     이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
                     이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.
                     보고서 제목은 없이 바로 본론을 작성해주세요:
