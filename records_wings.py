@@ -476,7 +476,7 @@ df_hitter["XBH/H"] = np.where(
 # 팀별 데이터셋 그룹바이로 준비
 ## 1) 타자 데이터셋 / 출력시 열 순서 변경
 rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 'BB/K',
-                         'SB', 'MHit', '1B', '2B', '3B', 'HR', 'TB', 'CS', 'SH', 'SF', 'IBB', 'HBP', 'DP']
+                         'SB', 'XBH/H', 'MHit', '1B', '2B', '3B', 'HR', 'TB', 'CS', 'SH', 'SF', 'IBB', 'HBP', 'DP']
 hitter_sumcols = ['PA', 'AB', 'R', 'H', '1B', '2B', '3B', 'HR', 'TB', 'RBI', 'SB', 'CS', 'SH', 'SF', 'BB', 'IBB', 'HBP', 'SO', 'DP', 'MHit']
 hitter_grpby = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams), hitter_sumcols + ['Team']].groupby('Team').sum().reset_index()
 
