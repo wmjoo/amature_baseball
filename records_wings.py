@@ -659,7 +659,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
 
     tab_sn_players_h, tab_sn_players_p, tab_sn_players_ai = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
                                                                     "투수 [{}명]".format(df_pitcher_team.shape[0]),
-                                                                    "AI Report"])
+                                                                    "AI 리포트"])
 
     with tab_sn_players_h: # 팀별 타자 탭
         # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
@@ -792,8 +792,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                 df_season_p = df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False)
                 df_total_p = filtered_cumulative_pitcher_stats
 
-
-                if (df_season is not None) (df_season_p is not None):
+                if (df_season is not None) & (df_season_p is not None):
                     if st.button("🔍 Gemini AI Report"):
                         prompt_h = f"""
                             당신은 야구 데이터 분석가입니다. 해당팀의 데이터를 보고 이 팀에 대해 분석 보고서를 작성해야 하는 상황입니다.
@@ -839,7 +838,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                                 st.error(f"Gemini API 호출 중 오류 발생: {e}")
 
         else:
-            st.warning("비밀번호를 입력해주세요.")
+            st.warning("비밀번호를 입력해주세요")
 
 with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
