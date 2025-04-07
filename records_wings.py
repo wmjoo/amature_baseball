@@ -464,9 +464,10 @@ except Exception as e: ## 만약 csv 파일 로드에 실패하거나 에러가 
 df_hitter = df_hitter.loc[df_hitter['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 df_pitcher = df_pitcher.loc[df_pitcher['Team'].isin(rank_calc_include_teams)].copy().reset_index(drop=True)
 
-# df_hitter["BB/K"] = df_hitter["BB"] / df_hitter["SO"]
+# BB/K, XBH/H 계산 (0으로 나누는 경우 0으로 처리)
 df_hitter["BB/K"] = np.where(df_hitter["SO"] == 0, 0, df_hitter["BB"] / df_hitter["SO"])
 df_hitter["XBH/H"] = np.where(df_hitter["H"] == 0, 0, (df_hitter["2B"] + df_hitter["3B"] + df_hitter["HR"]) / df_hitter["H"])
+
 # 팀별 데이터셋 그룹바이로 준비
 ## 1) 타자 데이터셋 / 출력시 열 순서 변경
 rank_by_cols_h_sorted = ['Team', 'AVG', 'PA', 'AB', 'H', 'RBI', 'R', 'OBP', 'SLG', 'OPS', 'SO', 'BB', 'BB/K',
@@ -617,10 +618,12 @@ cumulative_hitter_stats["OBP"] = (
 cumulative_hitter_stats["SLG"] = (cumulative_hitter_stats["TB"] / cumulative_hitter_stats["AB"]).round(3)
 cumulative_hitter_stats["OPS"] = (cumulative_hitter_stats["OBP"] + cumulative_hitter_stats["SLG"]).round(3)
 cumulative_hitter_stats["SB%"] = cumulative_hitter_stats["SB"] / (cumulative_hitter_stats["SB"] + cumulative_hitter_stats["CS"])
-cumulative_hitter_stats["BB/K"] = cumulative_hitter_stats["BB"] / cumulative_hitter_stats["SO"]
-cumulative_hitter_stats["XBH/H"] = (
-    (cumulative_hitter_stats["2B"] + cumulative_hitter_stats["3B"] + cumulative_hitter_stats["HR"]) / cumulative_hitter_stats["H"]
-)
+
+# BB/K, XBH/H 계산 (0으로 나누는 경우 0으로 처리)
+cumulative_hitter_stats["BB/K"] = np.where(cumulative_hitter_stats["SO"] == 0, 0, cumulative_hitter_stats["BB"] / cumulative_hitter_stats["SO"])
+cumulative_hitter_stats["XBH/H"] = np.where(cumulative_hitter_stats["H"] == 0, 0, 
+                                    (cumulative_hitter_stats["2B"] + cumulative_hitter_stats["3B"] + cumulative_hitter_stats["HR"]) / cumulative_hitter_stats["H"]
+                                )
 # 투수 누적합 가능한 컬럼
 sum_cols_pitcher = ["G", "W", "L", "SV", "HLD", "BF", "AB", "P", "IP", "HA", "HR", "SH", "SF",
                     "BB", "IBB", "HBP", "SO", "WP", "BK", "R", "ER"]
