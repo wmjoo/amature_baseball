@@ -748,9 +748,8 @@ with tab_sn_players: # (팀별)선수기록 탭
                             데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교하여 정량적으로 비교를 하기 위함이야.
                             이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
 
-                                1. 우수선수들의 이름(#배번) : 해당 선수의 특징적인 기록
-                                2. 데이터에서 눈에 띄는 패턴 또는 이상값
-                                3. 간단한 해석 또는 인사이트
+                                1. 우수 선수들의 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?
+                                2. 간단한 해석 또는 인사이트
 
                             데이터(시즌): {data_to_text(df_season)}
                             데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_h_mediandict_kr)}
@@ -760,7 +759,7 @@ with tab_sn_players: # (팀별)선수기록 탭
                         with st.spinner("Gemini가 데이터를 분석 중입니다..."):
                             try:
                                 response = model.generate_content(prompt)
-                                st.write("📈 Gemini 분석 결과")
+                                st.write("📈 Gemini AI 분석 결과")
                                 st.write(response.text)
                             except Exception as e:
                                 st.error(f"Gemini API 호출 중 오류 발생: {e}")
