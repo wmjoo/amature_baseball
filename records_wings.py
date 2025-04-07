@@ -1182,7 +1182,7 @@ with tab_dataload:
                             #st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
             if df is not None:
                 # df = pd.read_csv(uploaded_file)
-                st.subheader("📌 데이터 미리보기")
+                # st.subheader("📌 데이터 미리보기")
                 st.dataframe(df, use_container_width=True)
 
                 # --- 요약 버튼
@@ -1208,7 +1208,7 @@ with tab_dataload:
                     with st.spinner("Gemini가 데이터를 분석 중입니다..."):
                         try:
                             response = model.generate_content(prompt)
-                            st.subheader("📈 Gemini 분석 결과")
+                            st.write("📈 Gemini 분석 결과")
                             st.write(response.text)
                         except Exception as e:
                             st.error(f"Gemini API 호출 중 오류 발생: {e}")
