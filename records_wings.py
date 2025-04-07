@@ -834,7 +834,7 @@ with tab_sn_players: # (팀별)선수기록 탭
 
                 df_season_p = df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False)
                 df_total_p = filtered_cumulative_pitcher_stats
-                if df_season is not None:
+                if df_season_p is not None:
                     # --- 요약 버튼
                     if st.button("🔍 Gemini AI 요약 요청(투수))"):
                         prompt = f"""
