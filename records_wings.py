@@ -805,15 +805,27 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
             # 모델 리스트 가져오기 및 필터링
             available_models = genai.list_models()
 
-            # 멀티모달 및 비전 모델 제외
+            # 필터링
             filtered_models = []
             for model in available_models:
                 name = model.name.split("/")[-1]
+                methods = model.supported_generation_methods
+
+                # 우선순위 모델이면 무조건 포함
+                if name in priority_models:
+                    filtered_models.append(name)
+                    continue
+
+                # 제외 조건: vision 포함, 멀티모달 지원, latest 없음
                 if 'vision' in name.lower():
                     continue
-                if 'generate_multimodal' in model.supported_generation_methods:
+                if 'generate_multimodal' in methods:
                     continue
+                if 'latest' not in name.lower():
+                    continue
+
                 filtered_models.append(name)
+
 
             # 우선순위 모델 상단 배치
             model_list = [m for m in priority_models if m in filtered_models] + \
