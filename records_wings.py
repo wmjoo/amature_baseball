@@ -765,7 +765,7 @@ with tab_sn_players: # (팀별)선수기록 탭
                             except Exception as e:
                                 st.error(f"Gemini API 호출 중 오류 발생: {e}")
         else:
-            st.warning("Google API Key를 입력해주세요.")
+            st.warning("비밀번호를 입력해주세요.")
 
 
     with tab_sn_players_p: # 팀별 투수 탭
