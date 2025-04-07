@@ -370,7 +370,18 @@ with top_col2:
     year_list = [2025, 2024, 2023, 2022]
     default_year = st.selectbox('년도 선택', year_list, index = 0, key = 'year_selectbox')
 with top_col3:
-    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
+    # 전체 팀 목록
+    team_list_all = list(team_id_dict.keys())
+
+    # highlight_team & next_game_teamname 제외한 나머지 팀들 정렬
+    other_teams = sorted(
+        team for team in team_list_all
+        if team != highlight_team and team != next_game_teamname
+    )
+
+    # 최종 정렬된 팀 리스트
+    team_list = [highlight_team, next_game_teamname] + other_teams    
+    team_name = st.selectbox('팀 선택', team_list, key = 'selbox_team_entire')
     team_id = team_id_dict[team_name]
     rank_calc_include_teams = list(team_id_dict.keys())
     team_groupname = "토요 마이너B"       
@@ -804,7 +815,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                         보고서 제목은 없이 바로 본론을 작성해주세요:
 
                             1. 주요 타자 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?
-                            2. 간단한 해석 또는 인사이트
+                            2. 간단한 해석 또는 인사이트 (3문장 이하)
 
                         데이터(시즌): {data_to_text(df_season)}
                         데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_h_mediandict_kr)}
@@ -820,7 +831,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
                         보고서 제목은 없이 바로 본론을 작성해주세요.:
 
                             1. 주요 투수 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?(중앙값보다 큰지, 작은지?)
-                            2. 간단한 해석 또는 인사이트
+                            2. 간단한 해석 또는 인사이트 (3문장 이하)
 
                         데이터(시즌): {data_to_text(df_season_p)}
                         데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_p_mediandict_kr)}
@@ -1077,9 +1088,9 @@ with tab_sn_viz:
         template_input = 'plotly_white'    
         try:
             # 'SKCC Wings'의 인덱스 찾기
-            idx_hstt = teams.index('SKCC Wings')
+            idx_wings = teams.index('SKCC Wings')
         except ValueError:
-            idx_hstt = 0
+            idx_wings = 0
 
         # st.subheader('팀 간 전력 비교')      
         tab_sn_vs_col1, tab_sn_vs_col2, tab_sn_vs_col3 = st.columns(3)
@@ -1087,7 +1098,7 @@ with tab_sn_viz:
             team_all = st.toggle("Select All Teams")
         with tab_sn_vs_col2:         # # 스트림릿 셀렉트박스로 팀 선택
             if not team_all: #team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택
-                team1 = st.selectbox('Select Team 1:', options = teams, index=idx_hstt)
+                team1 = st.selectbox('Select Team 1:', options = teams, index=idx_wings)
         with tab_sn_vs_col3:  
             if not team_all: #if team_selection_rader == 'VS':            # 스트림릿 셀렉트박스로 팀 선택              
                 team2 = st.selectbox('Select Team 2:', options = teams, index=1)
