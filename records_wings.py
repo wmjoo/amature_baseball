@@ -1,4 +1,6 @@
 import os
+import io
+import csv
 import time
 import lxml
 import streamlit as st
@@ -183,6 +185,50 @@ table_style_12px = """
         }
     </style>
 """
+
+def data_to_text(data, max_rows: int = 30) -> str:
+    # 딕셔너리인 경우 처리
+    if isinstance(data, dict):
+        # 딕셔너리를 DataFrame으로 변환
+        # 딕셔너리 구조에 따라 다르게 처리
+        if all(isinstance(v, (list, tuple)) for v in data.values()):
+            # 키가 열 이름이고 값이 리스트인 경우 (일반적인 형태)
+            df = pd.DataFrame(data)
+        else:
+            # 중첩된 딕셔너리나 다른 형태의 딕셔너리
+            df = pd.DataFrame([data])
+        
+        return data_to_text(df, max_rows)
+    
+    # DataFrame인 경우 처리
+    elif isinstance(data, pd.DataFrame):
+        if len(data) > max_rows:
+            data = data.head(max_rows)
+        return data.to_csv(index=False)
+    
+    # 리스트인 경우 처리 (추가 기능)
+    elif isinstance(data, list):
+        if all(isinstance(item, dict) for item in data):
+            # 딕셔너리 리스트인 경우
+            df = pd.DataFrame(data)
+            return data_to_text(df, max_rows)
+        else:
+            # 일반 리스트인 경우
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # 행 제한 적용
+            if len(data) > max_rows:
+                data = data[:max_rows]
+                
+            for item in data:
+                writer.writerow([item])
+            
+            return output.getvalue()
+    
+    # 그 외 타입인 경우
+    else:
+        return str(data)
 
 
 @st.cache_data
@@ -678,7 +724,7 @@ with tab_sn_players: # (팀별)선수기록 탭
             st.write("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
 
             # --- API 키 입력
-            GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Google API Key", type="password")
+            GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
 
             if GOOGLE_API_KEY:
                 # Gemini 설정
@@ -696,32 +742,20 @@ with tab_sn_players: # (팀별)선수기록 탭
 
                     # --- 요약 버튼
                     if st.button("🔍 Gemini 요약 요청"):
-                        def dataframe_to_text(df: pd.DataFrame, max_rows: int = 30) -> str:
-                            if len(df) > max_rows:
-                                df = df.head(max_rows)
-                            return df.to_csv(index=False)
-
                         prompt = f"""
-            당신은 야구 데이터 분석가입니다. 
-            이 데이터는 특정 팀의 타자 혹은 투수 데이터입니다. 이 데이터를 보고 이 팀에서 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해줘.
-            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교하여 정량적으로 비교를 하기 위함이야.
-            이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
+                            당신은 야구 데이터 분석가입니다. 
+                            이 데이터는 특정 팀의 타자 혹은 투수 데이터입니다. 이 데이터를 보고 이 팀에서 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해줘.
+                            데이터는 이번 시즌 이 팀의 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교하여 정량적으로 비교를 하기 위함이야.
+                            이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주세요:
 
-            1. 우수선수들의 이름(#배번) : 해당 선수의 특징적인 기록
-            2. 데이터에서 눈에 띄는 패턴 또는 이상값
-            3. 간단한 해석 또는 인사이트
+                                1. 우수선수들의 이름(#배번) : 해당 선수의 특징적인 기록
+                                2. 데이터에서 눈에 띄는 패턴 또는 이상값
+                                3. 간단한 해석 또는 인사이트
 
-            데이터(시즌):
-            {dataframe_to_text(df_season)}
-
-            데이터(이번 시즌 전체 팀의 중앙값):
-            {dataframe_to_text(df_h_mediandict_kr)}
-
-            데이터(통산):
-            {dataframe_to_text(df_total)}
-
-
-            """
+                            데이터(시즌): {data_to_text(df_season)}
+                            데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_h_mediandict_kr)}
+                            데이터(통산): {data_to_text(df_total)}
+                            """
 
                         with st.spinner("Gemini가 데이터를 분석 중입니다..."):
                             try:
