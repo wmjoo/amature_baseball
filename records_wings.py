@@ -1165,11 +1165,9 @@ with tab_dataload:
     if user_password_update == st.secrets["password_update"]: # Correct Password
         st.write('Correct Password')
 
-        st.write('Ai 리포트')
-
         # --- 초기 설정
         # st.set_page_config(page_title="Gemini 데이터 요약기", layout="wide")
-        st.title("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
+        st.write("📊 Gemini 1.5 Flash 기반 정형 데이터 요약 리포트")
 
         # --- API 키 입력
         GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Google API Key", type="password")
@@ -1180,9 +1178,10 @@ with tab_dataload:
             model = genai.GenerativeModel("models/gemini-1.5-flash")
 
             # --- CSV 업로드
-            uploaded_file = st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
+            df = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
+                            #st.file_uploader("CSV 파일을 업로드하세요", type=["csv"])
             if uploaded_file:
-                df = pd.read_csv(uploaded_file)
+                # df = pd.read_csv(uploaded_file)
                 st.subheader("📌 데이터 미리보기")
                 st.dataframe(df, use_container_width=True)
 
