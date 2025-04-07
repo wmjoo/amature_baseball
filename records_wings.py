@@ -793,7 +793,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
 
     with tab_sn_players_ai: # AI Report 탭
         # st.write("📊 Gemini AI Report")
-        st.write("본 분석결과는 AI가 생성한 결과로, 구체적인 수치 및 사실관계는 확인이 필요합니다.")
+        st.write("본 리포트는 생성형 AI가 작성하였으므로, 구체적인 수치 및 사실관계는 확인이 필요합니다.")
         tab_sn_players_ai_topcol1, tab_sn_players_ai_topcol2 = st.columns([1, 1])
         with tab_sn_players_ai_topcol1:
             user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
