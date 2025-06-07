@@ -329,7 +329,26 @@ with top_col2:
     year_list = [2025, 2024, 2023, 2022, 2021]
     default_year = st.selectbox('년도 선택', year_list, index = 0, key = 'year_selectbox')
 with top_col3:
-    team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_entire')
+    # 전체 팀 목록
+    team_list_all = list(team_id_dict.keys())
+
+    # highlight_team & next_game_teamname 제외한 나머지 팀들 정렬
+    next_game = df_schd2.loc[df_schd2['결과'] == '경기전', ['일시', '구장', '선공', '후공']].head(1).reset_index(drop=True)
+    next_game_teamname = ((next_game['선공'] + next_game['후공']).str.replace(highlight_team, ''))[0] if not next_game.empty else None
+
+    # 나머지 팀들 정렬 (highlight_team과 next_game_teamname 제외)
+    other_teams = sorted(
+        team for team in team_list_all
+        if team != highlight_team and team != next_game_teamname
+    )
+
+    # 최종 정렬된 팀 리스트 (우리팀 -> 다음 경기 상대팀 -> 나머지 팀들)
+    team_list = [highlight_team]
+    if next_game_teamname:
+        team_list.append(next_game_teamname)
+    team_list.extend(other_teams)
+
+    team_name = st.selectbox('팀 선택', team_list, key = 'selbox_team_entire')
     team_id = team_id_dict[team_name]
     rank_calc_include_teams = list(team_id_dict.keys())
     team_groupname = "토요 마이너B"       
