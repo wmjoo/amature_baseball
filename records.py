@@ -1,4 +1,6 @@
 import os
+import io
+import csv
 import time
 import lxml
 import streamlit as st
@@ -22,6 +24,7 @@ from sklearn.preprocessing import MinMaxScaler
 import re 
 
 from streamlit_gsheets import GSheetsConnection
+import google.generativeai as genai
 # import pandasql as psql
 
 warnings.filterwarnings('ignore')
@@ -1214,3 +1217,148 @@ with tab_dataload:
             st.dataframe(df_pitcher, use_container_width = True, hide_index = True)
     else:
         st.write('Wrong Password!!')
+
+# AI 분석 탭 추가
+with st.expander("AI 분석"):
+    # Google AI API 키 설정
+    GOOGLE_API_KEY = st.secrets["google_api_key"]
+    genai.configure(api_key=GOOGLE_API_KEY)
+
+    # 모델 설정
+    generation_config = {
+        "temperature": 0.7,
+        "top_p": 1,
+        "top_k": 1,
+        "max_output_tokens": 2048,
+    }
+
+    safety_settings = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+        {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+        {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    ]
+
+    model = genai.GenerativeModel(
+        model_name="gemini-pro",
+        generation_config=generation_config,
+        safety_settings=safety_settings
+    )
+
+    # 분석 대상 선택
+    analysis_target = st.radio("분석 대상 선택", ["타자", "투수", "팀"], horizontal=True)
+    
+    if analysis_target == "타자":
+        # 타자 데이터 분석
+        selected_team = st.selectbox('팀 선택 (타자)', options=df_hitter['Team'].unique())
+        team_data = df_hitter[df_hitter['Team'] == selected_team]
+        
+        if not team_data.empty:
+            data_text = data_to_text(team_data)
+            prompt = f"""
+            다음은 야구팀 {selected_team}의 타자 기록입니다. 이 데이터를 분석하여 다음 사항들을 알려주세요:
+            1. 팀의 주요 강점과 약점
+            2. 가장 좋은 성적을 보이는 선수들과 그들의 특징
+            3. 개선이 필요한 부분
+            4. 전반적인 팀 타격 성향
+
+            데이터:
+            {data_text}
+            """
+            
+            if st.button('타자 분석 시작'):
+                response = model.generate_content(prompt)
+                st.write(response.text)
+                
+    elif analysis_target == "투수":
+        # 투수 데이터 분석
+        selected_team = st.selectbox('팀 선택 (투수)', options=df_pitcher['Team'].unique())
+        team_data = df_pitcher[df_pitcher['Team'] == selected_team]
+        
+        if not team_data.empty:
+            data_text = data_to_text(team_data)
+            prompt = f"""
+            다음은 야구팀 {selected_team}의 투수 기록입니다. 이 데이터를 분석하여 다음 사항들을 알려주세요:
+            1. 팀 투수진의 주요 강점과 약점
+            2. 가장 좋은 성적을 보이는 투수들과 그들의 특징
+            3. 개선이 필요한 부분
+            4. 전반적인 투수진의 성향
+
+            데이터:
+            {data_text}
+            """
+            
+            if st.button('투수 분석 시작'):
+                response = model.generate_content(prompt)
+                st.write(response.text)
+                
+    else:  # 팀 분석
+        selected_team = st.selectbox('팀 선택 (전체)', options=df_hitter['Team'].unique())
+        team_hitting = df_hitter[df_hitter['Team'] == selected_team]
+        team_pitching = df_pitcher[df_pitcher['Team'] == selected_team]
+        
+        if not team_hitting.empty and not team_pitching.empty:
+            hitting_text = data_to_text(team_hitting)
+            pitching_text = data_to_text(team_pitching)
+            prompt = f"""
+            다음은 야구팀 {selected_team}의 타자와 투수 기록입니다. 전체적인 팀 분석을 다음 사항들을 중심으로 해주세요:
+            1. 팀의 전반적인 특징 (공격과 수비 밸런스)
+            2. 팀의 주요 강점과 약점
+            3. 핵심 선수들의 역할과 기여도
+            4. 개선이 필요한 부분
+            5. 향후 전략적 제안
+
+            타자 데이터:
+            {hitting_text}
+
+            투수 데이터:
+            {pitching_text}
+            """
+            
+            if st.button('팀 분석 시작'):
+                response = model.generate_content(prompt)
+                st.write(response.text)
+
+def data_to_text(data, max_rows: int = 30) -> str:
+    # 딕셔너리인 경우 처리
+    if isinstance(data, dict):
+        # 딕셔너리를 DataFrame으로 변환
+        # 딕셔너리 구조에 따라 다르게 처리
+        if all(isinstance(v, (list, tuple)) for v in data.values()):
+            # 키가 열 이름이고 값이 리스트인 경우 (일반적인 형태)
+            df = pd.DataFrame(data)
+        else:
+            # 중첩된 딕셔너리나 다른 형태의 딕셔너리
+            df = pd.DataFrame([data])
+        
+        return data_to_text(df, max_rows)
+    
+    # DataFrame인 경우 처리
+    elif isinstance(data, pd.DataFrame):
+        if len(data) > max_rows:
+            data = data.head(max_rows)
+        return data.to_csv(index=False)
+    
+    # 리스트인 경우 처리 (추가 기능)
+    elif isinstance(data, list):
+        if all(isinstance(item, dict) for item in data):
+            # 딕셔너리 리스트인 경우
+            df = pd.DataFrame(data)
+            return data_to_text(df, max_rows)
+        else:
+            # 일반 리스트인 경우
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # 행 제한 적용
+            if len(data) > max_rows:
+                data = data[:max_rows]
+                
+            for item in data:
+                writer.writerow([item])
+            
+            return output.getvalue()
+    
+    # 그 외 타입인 경우
+    else:
+        return str(data)
