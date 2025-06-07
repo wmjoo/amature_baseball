@@ -613,7 +613,7 @@ if 'BB' in cumulative_pitcher_stats.columns and 'HA' in cumulative_pitcher_stats
 ## 탭 설정
 tab_sn_players, tab_sn_teams, tab_sn_viz, tab_schd, tab_sn_league, tab_sn_terms, tab_dataload = st.tabs(["개인기록", "팀기록", "시각화/통계", "일정", 
                                                                                                           "전체선수", "약어", "데이터로딩"])
-with tab_sn_players: # (팀별)선수기록 탭
+with tab_sn_players: # (팀별)개잉 선수기록 탭
     DATA_URL_B = "http://www.gameone.kr/club/info/ranking/hitter?club_idx={}&kind=&season={}".format(team_id, default_year)
     df_hitter_team = df_hitter.loc[df_hitter.Team == team_name].reset_index(drop=True).drop('Team', axis = 1)
     DATA_URL_P = "http://www.gameone.kr/club/info/ranking/pitcher?club_idx={}&kind=&season={}".format(team_id, default_year)
@@ -634,15 +634,12 @@ with tab_sn_players: # (팀별)선수기록 탭
         df_p_mediandict = {k: round(v, 3) for k, v in df_pitcher[rank_by_cols_p_sorted].dropna().median(numeric_only=True).to_dict().items()}
         df_p_mediandict_kr = {pitcher_data_EnKr.get(k, k): v for k, v in df_p_mediandict.items()}    
 
-    tab_sn_players_h, tab_sn_players_p = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
-                                                  "투수 [{}명]".format(df_pitcher_team.shape[0])])
+    tab_sn_players_h, tab_sn_players_p, tab_sn_players_ai = st.tabs(["타자 [{}명]".format(df_hitter_team.shape[0]), 
+                                                                    "투수 [{}명]".format(df_pitcher_team.shape[0]),
+                                                                    "AI 리포트"])
 
     with tab_sn_players_h: # 팀별 타자 탭
-        # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_b')
-        # team_id = team_id_dict[team_name]        
         if (df_hitter.shape[0] > 0) : # data exists            
-
-            # st.write('{} [{}명]'.format(team_name, df_hitter_team.shape[0]))
             st.dataframe(df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False),
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_B)
@@ -692,15 +689,12 @@ with tab_sn_players: # (팀별)선수기록 탭
         st.dataframe(filtered_cumulative_hitter_stats, use_container_width = True, hide_index = True)
 
     with tab_sn_players_p: # 팀별 투수 탭
-        # team_name = st.selectbox('팀 선택', (team_id_dict.keys()), key = 'selbox_team_p')
-        # team_id = team_id_dict[team_name]        
-        if (df_pitcher.shape[0] > 0) : # data exists         z
-            # st.write('{} [{}명]'.format(team_name, df_pitcher_team.shape[0]))
-            st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False), 
+        if (df_pitcher.shape[0] > 0) :
+            st.dataframe(df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False),
                         use_container_width = True, hide_index = True)
             st.write(DATA_URL_P)
-            
-            # 공통 박스 스타일 설정 (다크모드/라이트모드 모두 잘 보이게)
+
+            # 첫 번째 div 스타일
             p_box_stylesetting_1 = """
                 <div style="
                     background-color: rgba(240, 240, 240, 0.8);  
@@ -715,8 +709,7 @@ with tab_sn_players: # (팀별)선수기록 탭
                 <b>[전체 투수 평균값]</b><br>
                 {}
                 </div>
-            """.format(", ".join([f"{k}: {v}" for k, v in df_p_meandict_kr.items()])
-            )
+            """.format(", ".join([f"{k}: {v}" for k, v in df_p_meandict_kr.items()]))
 
             # 두 번째 div 스타일
             p_box_stylesetting_2 = """
@@ -735,7 +728,7 @@ with tab_sn_players: # (팀별)선수기록 탭
                 </div>
             """.format(", ".join([f"{k}: {v}" for k, v in df_p_mediandict_kr.items()]))
             with st.expander(f'{default_year}시즌 데이터셋 평균/중앙값(참고용)'):
-                st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)
+                st.markdown(p_box_stylesetting_1 + " " + p_box_stylesetting_2, unsafe_allow_html=True)            
 
         filtered_cumulative_pitcher_stats = cumulative_pitcher_stats.loc[
             cumulative_pitcher_stats['Team'] == team_name, 
@@ -744,6 +737,87 @@ with tab_sn_players: # (팀별)선수기록 탭
         st.write('')
         st.write(f'{team_name} : 투수 누적기록 [{len(filtered_cumulative_pitcher_stats)}명]')
         st.dataframe(filtered_cumulative_pitcher_stats, use_container_width = True, hide_index = True)
+
+    with tab_sn_players_ai: # AI Report 탭
+        st.write("본 리포트는 생성형 AI가 작성하였으므로, 구체적인 수치 및 사실관계는 확인이 필요합니다.")
+        tab_sn_players_ai_topcol1, tab_sn_players_ai_topcol2 = st.columns([1, 1])
+        with tab_sn_players_ai_topcol1:
+            user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
+            user_password_aireport = str(user_password_aireport)
+            if user_password_aireport == st.secrets["password_update"]: # Correct Password
+                st.write('Correct Password')
+                # 분석 대상 선택
+                analysis_target = st.radio("분석 대상 선택", ["타자", "투수", "팀"], horizontal=True)
+                
+                if analysis_target == "타자":
+                    # 타자 데이터 분석
+                    team_data = df_hitter_team
+                    
+                    if not team_data.empty:
+                        data_text = data_to_text(team_data)
+                        prompt = f"""
+                        다음은 야구팀 {team_name}의 타자 기록입니다. 이 데이터를 분석하여 다음 사항들을 알려주세요:
+                        1. 팀의 주요 강점과 약점
+                        2. 가장 좋은 성적을 보이는 선수들과 그들의 특징
+                        3. 개선이 필요한 부분
+                        4. 전반적인 팀 타격 성향
+
+                        데이터:
+                        {data_text}
+                        """
+                        
+                        if st.button('타자 분석 시작'):
+                            response = model.generate_content(prompt)
+                            st.write(response.text)
+                            
+                elif analysis_target == "투수":
+                    # 투수 데이터 분석
+                    team_data = df_pitcher_team
+                    
+                    if not team_data.empty:
+                        data_text = data_to_text(team_data)
+                        prompt = f"""
+                        다음은 야구팀 {team_name}의 투수 기록입니다. 이 데이터를 분석하여 다음 사항들을 알려주세요:
+                        1. 팀 투수진의 주요 강점과 약점
+                        2. 가장 좋은 성적을 보이는 투수들과 그들의 특징
+                        3. 개선이 필요한 부분
+                        4. 전반적인 투수진의 성향
+
+                        데이터:
+                        {data_text}
+                        """
+                        
+                        if st.button('투수 분석 시작'):
+                            response = model.generate_content(prompt)
+                            st.write(response.text)
+                            
+                else:  # 팀 분석
+                    team_hitting = df_hitter_team
+                    team_pitching = df_pitcher_team
+                    
+                    if not team_hitting.empty and not team_pitching.empty:
+                        hitting_text = data_to_text(team_hitting)
+                        pitching_text = data_to_text(team_pitching)
+                        prompt = f"""
+                        다음은 야구팀 {team_name}의 타자와 투수 기록입니다. 전체적인 팀 분석을 다음 사항들을 중심으로 해주세요:
+                        1. 팀의 전반적인 특징 (공격과 수비 밸런스)
+                        2. 팀의 주요 강점과 약점
+                        3. 핵심 선수들의 역할과 기여도
+                        4. 개선이 필요한 부분
+                        5. 향후 전략적 제안
+
+                        타자 데이터:
+                        {hitting_text}
+
+                        투수 데이터:
+                        {pitching_text}
+                        """
+                        
+                        if st.button('팀 분석 시작'):
+                            response = model.generate_content(prompt)
+                            st.write(response.text)
+            else:
+                st.write('Wrong Password!!')
 
 with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
