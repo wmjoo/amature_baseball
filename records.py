@@ -824,7 +824,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
             ai_model = st.selectbox('AI Model 선택', model_list, key='selbox_aimdl', index=0)
 
             # ai_model = st.selectbox('AI Model 선택', ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], key = 'selbox_aimdl', index = 0)
-        if user_password_aireport == st.secrets["password_update"]: # Correct Password
+        if user_password_aireport == st.secrets["password_gai"]: # Correct Password
             GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
             if GOOGLE_API_KEY:
                 # Gemini 설정
