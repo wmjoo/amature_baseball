@@ -28,7 +28,7 @@ import google.generativeai as genai
 # import pandasql as psql
 
 warnings.filterwarnings('ignore')
-st.set_page_config(page_title="성남리그 기록실")
+st.set_page_config(page_title="호시탐탐 기록실")
 #st.title('성남리그(토요) 기록실') ### title
 
 ## 성남리그 팀 딕셔너리 및 영문 그래프용 딕셔너리 & 리스트
