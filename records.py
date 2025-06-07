@@ -789,7 +789,7 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
             user_password_aireport = str(user_password_aireport)
         with tab_sn_players_ai_topcol2:
             # 우선순위 모델
-            priority_models = ['gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro-exp-03-25']
+            priority_models = ['gemini-1.5-flash', 'gemini-2.0-flash']
 
             # 모델 리스트 가져오기 및 필터링
             available_models = genai.list_models()
