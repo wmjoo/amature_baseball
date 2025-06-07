@@ -189,6 +189,49 @@ table_style_12px = """
     </style>
 """
 
+def data_to_text(data, max_rows: int = 30) -> str:
+    # 딕셔너리인 경우 처리
+    if isinstance(data, dict):
+        # 딕셔너리를 DataFrame으로 변환
+        # 딕셔너리 구조에 따라 다르게 처리
+        if all(isinstance(v, (list, tuple)) for v in data.values()):
+            # 키가 열 이름이고 값이 리스트인 경우 (일반적인 형태)
+            df = pd.DataFrame(data)
+        else:
+            # 중첩된 딕셔너리나 다른 형태의 딕셔너리
+            df = pd.DataFrame([data])
+        
+        return data_to_text(df, max_rows)
+    
+    # DataFrame인 경우 처리
+    elif isinstance(data, pd.DataFrame):
+        if len(data) > max_rows:
+            data = data.head(max_rows)
+        return data.to_csv(index=False)
+    
+    # 리스트인 경우 처리 (추가 기능)
+    elif isinstance(data, list):
+        if all(isinstance(item, dict) for item in data):
+            # 딕셔너리 리스트인 경우
+            df = pd.DataFrame(data)
+            return data_to_text(df, max_rows)
+        else:
+            # 일반 리스트인 경우
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # 행 제한 적용
+            if len(data) > max_rows:
+                data = data[:max_rows]
+                
+            for item in data:
+                writer.writerow([item])
+            
+            return output.getvalue()
+    
+    # 그 외 타입인 경우
+    else:
+        return str(data)
 
 @st.cache_data
 def load_data(team_name, team_id, default_year):
@@ -744,80 +787,111 @@ with tab_sn_players: # (팀별)개잉 선수기록 탭
         with tab_sn_players_ai_topcol1:
             user_password_aireport = st.text_input('Input Password for AI Report', type='password', key='password_genai_h')
             user_password_aireport = str(user_password_aireport)
-            if user_password_aireport == st.secrets["password_update"]: # Correct Password
-                st.write('Correct Password')
-                # 분석 대상 선택
-                analysis_target = st.radio("분석 대상 선택", ["타자", "투수", "팀"], horizontal=True)
-                
-                if analysis_target == "타자":
-                    # 타자 데이터 분석
-                    team_data = df_hitter_team
-                    
-                    if not team_data.empty:
-                        data_text = data_to_text(team_data)
-                        prompt = f"""
-                        다음은 야구팀 {team_name}의 타자 기록입니다. 이 데이터를 분석하여 다음 사항들을 알려주세요:
-                        1. 팀의 주요 강점과 약점
-                        2. 가장 좋은 성적을 보이는 선수들과 그들의 특징
-                        3. 개선이 필요한 부분
-                        4. 전반적인 팀 타격 성향
+        with tab_sn_players_ai_topcol2:
+            # 우선순위 모델
+            priority_models = ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25']
 
-                        데이터:
-                        {data_text}
-                        """
-                        
-                        if st.button('타자 분석 시작'):
-                            response = model.generate_content(prompt)
-                            st.write(response.text)
-                            
-                elif analysis_target == "투수":
-                    # 투수 데이터 분석
-                    team_data = df_pitcher_team
-                    
-                    if not team_data.empty:
-                        data_text = data_to_text(team_data)
-                        prompt = f"""
-                        다음은 야구팀 {team_name}의 투수 기록입니다. 이 데이터를 분석하여 다음 사항들을 알려주세요:
-                        1. 팀 투수진의 주요 강점과 약점
-                        2. 가장 좋은 성적을 보이는 투수들과 그들의 특징
-                        3. 개선이 필요한 부분
-                        4. 전반적인 투수진의 성향
+            # 모델 리스트 가져오기 및 필터링
+            available_models = genai.list_models()
 
-                        데이터:
-                        {data_text}
-                        """
-                        
-                        if st.button('투수 분석 시작'):
-                            response = model.generate_content(prompt)
-                            st.write(response.text)
-                            
-                else:  # 팀 분석
-                    team_hitting = df_hitter_team
-                    team_pitching = df_pitcher_team
-                    
-                    if not team_hitting.empty and not team_pitching.empty:
-                        hitting_text = data_to_text(team_hitting)
-                        pitching_text = data_to_text(team_pitching)
-                        prompt = f"""
-                        다음은 야구팀 {team_name}의 타자와 투수 기록입니다. 전체적인 팀 분석을 다음 사항들을 중심으로 해주세요:
-                        1. 팀의 전반적인 특징 (공격과 수비 밸런스)
-                        2. 팀의 주요 강점과 약점
-                        3. 핵심 선수들의 역할과 기여도
-                        4. 개선이 필요한 부분
-                        5. 향후 전략적 제안
+            # 필터링
+            filtered_models = []
+            for model in available_models:
+                name = model.name.split("/")[-1]
+                methods = model.supported_generation_methods
 
-                        타자 데이터:
-                        {hitting_text}
+                # 우선순위 모델이면 무조건 포함
+                if name in priority_models:
+                    filtered_models.append(name)
+                    continue
 
-                        투수 데이터:
-                        {pitching_text}
-                        """
-                        
-                        if st.button('팀 분석 시작'):
-                            response = model.generate_content(prompt)
-                            st.write(response.text)
-            else:
-                st.write('Wrong Password!!')
+                # 제외 조건: vision 포함, 멀티모달 지원, latest 없음
+                if 'vision' in name.lower():
+                    continue
+                if 'generate_multimodal' in methods:
+                    continue
+                if 'latest' not in name.lower():
+                    continue
+
+                filtered_models.append(name)
+
+
+            # 우선순위 모델 상단 배치
+            model_list = [m for m in priority_models if m in filtered_models] + \
+                        [m for m in filtered_models if m not in priority_models]
+
+            # 선택 박스
+            ai_model = st.selectbox('AI Model 선택', model_list, key='selbox_aimdl', index=0)
+
+            # ai_model = st.selectbox('AI Model 선택', ['gemini-1.5-flash', 'gemini-2.5-pro-exp-03-25'], key = 'selbox_aimdl', index = 0)
+        if user_password_aireport == st.secrets["password_update"]: # Correct Password
+            GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"] if "GOOGLE_API_KEY" in st.secrets else st.text_input("🔑 Password", type="password")
+            if GOOGLE_API_KEY:
+                # Gemini 설정
+                genai.configure(api_key=GOOGLE_API_KEY)
+                try:
+                    model = genai.GenerativeModel('models/{}'.format(ai_model))
+                except :
+                    model = genai.GenerativeModel("models/gemini-1.5-flash") #
+
+                df_season = df_hitter_team[['No', 'Name'] + rank_by_cols_h_sorted[1:]].sort_values(by = ['PA', 'AVG'], ascending = False).rename(columns = hitter_data_EnKr, inplace=False) 
+                df_total = filtered_cumulative_hitter_stats
+
+                df_season_p = df_pitcher_team[['No', 'Name'] + rank_by_cols_p_sorted[1:]].sort_values(by = ['IP', 'ERA'], ascending = False).rename(columns = pitcher_data_EnKr, inplace=False)
+                df_total_p = filtered_cumulative_pitcher_stats
+
+                if (df_season is not None) & (df_season_p is not None):
+                    # if st.button("🔍 Gemini AI Report"):
+                    prompt_h = f"""
+                    당신은 야구 데이터 분석가입니다. 이 데이터는 사회인야구의 특정 팀의 타자 데이터입니다. 해당팀의 데이터를 보고 이 팀에 대해 분석 보고서를 작성해야 하는 상황입니다.
+                    이 데이터를 보고 이 팀에서 많은 타석을 소화한 타자를 우선적으로 고려하여 우수한 타격 성적을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해주세요.
+                    데이터는 이번 시즌 이 팀의 타자 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
+                    특히 OPS로는 해당 타자의 공격력을, BB/K로는 해당 타자의 선구안을 평가할 수 있다고 생각합니다. 
+                    그리고 사회인야구에서 홈런을 기록하는 것은 매우 어렵기 떄문에 통산 홈런이 있다면 해당 내용을 언급해주세요 
+                    (특히 홈런 숫자를 언급할 떄는 틀리지 않도록 신중하게 생각하고 말해주세요! 자꾸 '3루타'랑 헷갈리는 것 같은데 혼동하지 않도록 주의).
+                    이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
+                    이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.
+                    보고서 제목은 없이 바로 본론을 작성해주세요:
+
+                        1. 주요 타자 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?(중앙값보다 큰지, 작은지?)
+                        2. 간단한 해석 또는 인사이트 (3문장 이하)
+
+                    데이터(시즌): {data_to_text(df_season)}
+                    데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_h_mediandict_kr)}
+                    데이터(통산): {data_to_text(df_total)}
+                    """
+                    prompt_p = f"""
+                    당신은 야구 데이터 분석가입니다. 이 데이터는 사회인야구의 특정 팀의 투수 데이터입니다. 해당팀의 데이터를 보고 이 팀에 대해 분석 보고서를 작성해야 하는 상황입니다.
+                    이 데이터를 보고 이 팀에서 많은 이닝을 소화한 투수를 우선적으로 고려하여 우수한 기록을 나타내는 핵심선수를 3명정도 찾아주고, 해당 선수들의 특성을 분석해주세요.
+                    데이터는 이번 시즌 이 팀의 투수 데이터와, 이번 시즌 리그 전체 팀의 중앙값, 그리고 통산 데이터로 구성되어 있습니다. 
+                    특히 이닝당 삼진갯수로는 해당 투수의 구위를, 이닝당 볼넷갯수를 통해 해당 투수의 제구력을 평가할 수 있다고 생각합니다.
+                    이렇게 주는 이유는 이번 시즌 데이터를 분석할 때는 각 선수별 기록을 중앙값과 비교해 해당 선수의 수준을 정량적으로 비교/평가 하기 위함입니다.
+                    이 데이터의 특성을 분석해 다음 내용을 포함하여 한국어로 간결하게 요약해 주십시오.
+                    보고서 제목은 없이 바로 본론을 작성해주세요.:
+
+                        1. 주요 투수 이름(#배번) : 해당 선수의 특징적인 기록과, 중앙값 대비 각 선수들은 어떤 값을 갖고 있는지?(중앙값보다 큰지, 작은지?)
+                        2. 간단한 해석 또는 인사이트 (3문장 이하)
+
+                    데이터(시즌): {data_to_text(df_season_p)}
+                    데이터(이번 시즌 전체 팀의 중앙값): {data_to_text(df_p_mediandict_kr)}
+                    데이터(통산): {data_to_text(df_total_p)}
+                    """
+                    with st.spinner("AI가 데이터를 분석하고 있습니다..."):
+                        try:
+                            response_h = model.generate_content(prompt_h)
+                            response_p = model.generate_content(prompt_p)
+                            tab_sn_players_ai_colh, tab_sn_players_ai_colp = st.columns(2)
+                            with tab_sn_players_ai_colh:
+                                # st.write("📈 Gemini AI 분석 결과 [타자]")
+                                st.write(response_h.text)
+                            with tab_sn_players_ai_colp:
+                                # st.write("📈 Gemini AI 분석 결과 [투수]")
+                                st.write(response_p.text)                                
+                        except Exception as e:
+                            st.error(f"Gemini API 호출 중 오류 발생: {e}")
+
+        else:
+            st.warning("비밀번호를 입력해주세요")
 
 with tab_sn_teams: # 팀 기록 탭
     tab_sn_teams_allteams, tab_sn_teams_team = st.tabs(['전체 팀', '선택 팀 : {}'.format(team_name)])
@@ -1412,46 +1486,3 @@ with st.expander("AI 분석"):
                 response = model.generate_content(prompt)
                 st.write(response.text)
 
-def data_to_text(data, max_rows: int = 30) -> str:
-    # 딕셔너리인 경우 처리
-    if isinstance(data, dict):
-        # 딕셔너리를 DataFrame으로 변환
-        # 딕셔너리 구조에 따라 다르게 처리
-        if all(isinstance(v, (list, tuple)) for v in data.values()):
-            # 키가 열 이름이고 값이 리스트인 경우 (일반적인 형태)
-            df = pd.DataFrame(data)
-        else:
-            # 중첩된 딕셔너리나 다른 형태의 딕셔너리
-            df = pd.DataFrame([data])
-        
-        return data_to_text(df, max_rows)
-    
-    # DataFrame인 경우 처리
-    elif isinstance(data, pd.DataFrame):
-        if len(data) > max_rows:
-            data = data.head(max_rows)
-        return data.to_csv(index=False)
-    
-    # 리스트인 경우 처리 (추가 기능)
-    elif isinstance(data, list):
-        if all(isinstance(item, dict) for item in data):
-            # 딕셔너리 리스트인 경우
-            df = pd.DataFrame(data)
-            return data_to_text(df, max_rows)
-        else:
-            # 일반 리스트인 경우
-            output = io.StringIO()
-            writer = csv.writer(output)
-            
-            # 행 제한 적용
-            if len(data) > max_rows:
-                data = data[:max_rows]
-                
-            for item in data:
-                writer.writerow([item])
-            
-            return output.getvalue()
-    
-    # 그 외 타입인 경우
-    else:
-        return str(data)
